@@ -1,0 +1,47 @@
+-
+-
+ The need for collaborative design - Collaborative Software Design
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ [https://collaborative-software-design.com/]
+- Home [https://collaborative-software-design.com/]
+- What’s inside [https://collaborative-software-design.com/#whatsinside]
+- Bookings [#]
+- Training [https://collaborative-software-design.com/training/]
+- Consulting [https://collaborative-software-design.com/facilitation/]
+- FAQ [https://collaborative-software-design.com/faq/]
+- Contact [https://collaborative-software-design.com/#contact]
+ BUY BOOK [https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d]
+ Chapter #01 | Chapter #02 [https://collaborative-software-design.com/what-is-collaborative-modeling/] | Chapter #05 [https://collaborative-software-design.com/facilitating-collaborative-modeling/]
+# The need for collaborative design
+ Great technical teams working closely with well-meaning business stakeholders can still deliver software that fails to meet an organization’s needs. We see it every day. Software teams become too focused on finding solutions without fully appreciating the context of the organization. Business stakeholders can be reluctant to voice their concerns in technical sessions. Tensions escalate, and conflicts go unresolved.
+ Effective software requires effective collaboration, and just like every other aspect of software development and design, collaboration is a skill you have to learn and practice. Collaborative modeling can be a key strategy in doing so since it can clarify assumptions and foster improved collaboration between development teams and stakeholders. Read more in Chapter 1 of our book to understand the need for collaborative software design better.
+ BUY BOOK [https://www.manning.com/books/collaborative-software-design]
+ Contact
+### Get in touch
+ Do you have any question about Collaborative Software Design or do you want to book a training or consulting, we’d love to hear from you.
+### Follow us
+ [https://www.linkedin.com/company/collaborative-software-design/%20]
+ [https://bsky.app/profile/collaborative-software-design.com]
+ Name
+ Email
+ Message
+ I want to book a:
+ I want to book a:
+ training
+ consulting
+ SEND MESSAGE
+ ©2024 Collaborative Software Design | Webdesign by Art of Design [https://artofdesign.nl/]

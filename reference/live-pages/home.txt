@@ -1,0 +1,83 @@
+-
+-
+ Home - Collaborative Software Design
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ [https://collaborative-software-design.com/]
+- Home [https://collaborative-software-design.com/]
+- What’s inside [https://collaborative-software-design.com/#whatsinside]
+- Bookings [#]
+- Training [https://collaborative-software-design.com/training/]
+- Consulting [https://collaborative-software-design.com/facilitation/]
+- FAQ [https://collaborative-software-design.com/faq/]
+- Contact [https://collaborative-software-design.com/#contact]
+ BUY BOOK [https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d]
+# A book about
+Collaborative
+Software Design
+ An inside track on how to facilitate domain modeling decisions. Lay out of pragmatic techniques for making collaborative design decisions, ensuring you’re getting a group’s full participation and input to solve real business problems.
+ Chapter #01
+## The need for collaborative software design
+ Great technical teams working closely with well-meaning business stakeholders can still deliver software that fails to meet an organization’s needs. We see it every day. Software teams become too focused on finding solutions without fully appreciating the context of the organization. Business stakeholders can be reluctant to voice their concerns in technical sessions. Tensions escalate, and conflicts go unresolved.
+ SEE THIS CHAPTER [https://collaborative-software-design.com/the-need-for-collaborative-design]
+ Chapter #02
+### What is collaborative modeling
+ A visualization technique to analyze complex and conflict-laden decision-making processes with all relevant stakeholders and decision-makers to create a shared understanding.
+ SEE THIS CHAPTER [https://collaborative-software-design.com/what-is-collaborative-modeling/]
+ Chapter #05
+### Facilitating collaborative modeling
+ Collaborative modeling tools alone do not guarantee effective collaboration; someone needs to guide people during collaboration: a facilitator.
+ SEE THIS CHAPTER [https://collaborative-software-design.com/facilitating-collaborative-modeling/]
+ Discover
+## The book
+ Making domain modeling desicions can be hard. Great technical teams working closely with well-meaning business stakeholders can still deliver software that fails to meet an organization’s needs.
+ But how do you know if they are making the right desiscions? How do you know if they are focusing on the right solutions?
+ This guide is made by industry experts, taking you through all the steps and techniques for making collaborative design decisions, ensuring you’re getting a group’s full participation and input to solve real business problems.
+ “ An indispensable guide to modern software development collaboration techniques, with clear explanations of how to facilitate each of them. Grounded in research, but born out of many years of practice !”
+## What you will learn
+### Holding and facilitating collaborative modeling sessions
+### How to make sustainable software design decisions
+### Heuristics for software design
+through collaborative modeling
+### How to deal with social dynamics
+when making design decisions
+ Bookings
+## In need of consultancy or training around making sustainable domain modeling decisions?
+ We can train technical leaders in your company to facilitate collaborative modeling sessions, coach current facilitators to become more effective or facilitate a session for you.
+ BOOK A TRAINING OR CONSULTING [https://collaborative-software-design.com/#contact]
+ About
+## The authors
+## Evelyn van Kelle
+ is a behavioral change consultant that helps organizations and teams in designing and maintaining socio-technical systems to change environments in such a way that desired behavior can flourish.
+## Kenny Baas-Schwegler
+ is an independent software consultant and trainer specialising in software architecture, technical leadership, and sociotechnical systems design, catalysing organisations and teams towards designing and building sustainable and resilient software architectures.
+## Gien Verschatse
+ is an experienced consultant and software engineer that specializes in domain modelling and software architecture and always looking to bridge the gaps between experts, users, and engineers
+ Contact
+### Get in touch
+ Do you have any question about Collaborative Software Design or do you want to book a training or consulting, we’d love to hear from you.
+### Follow us
+ [https://www.linkedin.com/company/collaborative-software-design/%20]
+ [https://bsky.app/profile/collaborative-software-design.com]
+ Name
+ Email
+ Message
+ I want to book a:
+ I want to book a:
+ training
+ consulting
+ SEND MESSAGE
+ ©2024 Collaborative Software Design | Webdesign by Art of Design [https://artofdesign.nl/]

@@ -1,0 +1,48 @@
+# Every address the WordPress site answers, from its Yoast sitemaps
+# (post, page, category, post_tag, author), crawled 2026-08-21.
+#
+# npm run check:urls proves each one is served by dist, redirected
+# exactly once, or 410 Gone on purpose. There is no fourth answer.
+
+/dear-como/dear-como-how-can-i-convince-my-company-or-colleagues-to-start-doing-collaborative-modelling/
+/dear-como/getting-buy-in-for-design-decisions/
+/dear-como/equal-contributions-in-meetings/
+/dear-como/can-i-be-both-facilitator-and-participant-during-an-evenstorm-session/
+/dear-como/i-have-this-colleague-whos-always-taking-over-meetings-and-hijacking-topics-what-can-i-do/
+/dear-como/help-quiet-members-speak-up/
+/dear-como/stop-chasing-shiny-objects/
+/dear-como/how-to-stop-meeting-interruptions/
+/dear-como/ambiguous-language-team-discussions/
+/dear-como/conflict-avoidant-colleague/
+/dear-como/leave-the-judging-to-the-cats/
+/dear-como/team-clings-ideas-collaborative-modelling-endowment-effect/
+/dear-como/collaborative-modeling-group-size/
+/dear-como/facilitator-hat-switch-technical-decisions/
+/dear-como/secret-guerrilla-modelling/
+/
+/facilitation/
+/the-need-for-collaborative-design/
+/what-is-collaborative-modeling/
+/facilitating-collaborative-modeling/
+/faq/
+/training/
+/category/dear-como/
+/tag/active-listening/
+/tag/behavioural-patterns/
+/tag/cognitive-bias/
+/tag/collaboration-styles/
+/tag/collaborative-modelling/
+/tag/conflict-management/
+/tag/crucial-conversations/
+/tag/deep-democracy/
+/tag/facilitation/
+/tag/group-dynamics/
+/tag/handling-resistance/
+/tag/power-dynamics/
+/tag/preperation/
+/tag/psychological-safety/
+/tag/role-switching/
+/tag/software-architecture/
+/tag/team-dynamics/
+/tag/ubiquitous-language/
+/author/kenny/

@@ -1,0 +1,119 @@
+-
+-
+ FAQ - Collaborative Software Design
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ [https://collaborative-software-design.com/]
+- Home [https://collaborative-software-design.com/]
+- What’s inside [https://collaborative-software-design.com/#whatsinside]
+- Bookings [#]
+- Training [https://collaborative-software-design.com/training/]
+- Consulting [https://collaborative-software-design.com/facilitation/]
+- FAQ [https://collaborative-software-design.com/faq/]
+- Contact [https://collaborative-software-design.com/#contact]
+ BUY BOOK [https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d]
+# Dear Como
+##
+ I would love to do collaborative modelling, but I am not allowed to do so because it does not fit in my job description [https://collaborative-software-design.com/dear-como/secret-guerrilla-modelling/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Oh, the classic "not in my job description" roadblock. Here's the thing, though: collaborative modelling doesn't require anyone's permission to start. It just requires a different approach—and maybe a little creative interpretation of what...
+##
+ Can I tell the group their technical choice is wrong while I am facilitating? [https://collaborative-software-design.com/dear-como/facilitator-hat-switch-technical-decisions/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well. Look at you, caught in the ultimate tug-of-war between being a Zen master of neutrality and a screaming internal expert. I know the feeling. You are standing at the whiteboard, marker in hand, watching the team enthusiastically agree to build a...
+##
+ How many people should I invite for a collaborative modelling sessions? [https://collaborative-software-design.com/dear-como/collaborative-modeling-group-size/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well, isn't that a familiar feeling? You're starting on a great journey, and it's so smart to be thinking about who to bring along. Collaborative modeling is all about including as many voices as possible, especially those who can make...
+##
+ I would love to do collaborative modelling, but I am not allowed to do so because it does not fit in my job description [https://collaborative-software-design.com/dear-como/secret-guerrilla-modelling/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Oh, the classic "not in my job description" roadblock. Here's the thing, though: collaborative modelling doesn't require anyone's permission to start. It...
+##
+ Can I tell the group their technical choice is wrong while I am facilitating? [https://collaborative-software-design.com/dear-como/facilitator-hat-switch-technical-decisions/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well. Look at you, caught in the ultimate tug-of-war between being a Zen master of neutrality and a screaming internal expert. I know the feeling. You are standing at...
+##
+ How many people should I invite for a collaborative modelling sessions? [https://collaborative-software-design.com/dear-como/collaborative-modeling-group-size/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well, isn't that a familiar feeling? You're starting on a great journey, and it's so smart to be thinking about who to bring along. Collaborative...
+##
+ My Team Clings to Their Ideas – Help! [https://collaborative-software-design.com/dear-como/team-clings-ideas-collaborative-modelling-endowment-effect/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well, isn't that a familiar feeling? You start doing a collaborative modelling session. A place where brilliant minds come together, stickies fly, and shared...
+##
+ If we leave the judging to the cats, how can we address the shadows in collaborative modelling sessions? [https://collaborative-software-design.com/dear-como/leave-the-judging-to-the-cats/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Well, well, well, there they are again. Those fluffy creatures of my authors that did make it to the dedication of the book… But let’s be honest, they have mastered the judging...
+##
+ Why does my colleague never contradict me? [https://collaborative-software-design.com/dear-como/conflict-avoidant-colleague/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ It sounds like your colleague might be dealing with a classic case of conflict avoidance. Now, don’t get me wrong—I don’t say that to be unkind. The truth is, we all have some...
+##
+ Why do we often find that people in our team use the same words but seem to mean different things, leading to confusion? [https://collaborative-software-design.com/dear-como/ambiguous-language-team-discussions/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Ambiguous language in team discussions is a very common problem, and you're wise to recognise it as a hurdle to effective collaboration. The good news is that there are...
+##
+ What can I do if people keep interrupting each other? [https://collaborative-software-design.com/dear-como/how-to-stop-meeting-interruptions/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ You've hit upon a common challenge in collaborative settings, and it's admirable that you're seeking ways to address it. Interrupting can derail even the most...
+##
+ My team wants to adopt any shiny new framework or tool that pops up. How can I stop this? [https://collaborative-software-design.com/dear-como/stop-chasing-shiny-objects/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Ah, the untamable attraction to new shiny things. Personally, I am more drawn to actual shiny things rather than frameworks, but hey, we all got our preferences. You’re not alone...
+##
+ There are people in the group who stay quiet all the time. How do I ensure they speak up? [https://collaborative-software-design.com/dear-como/help-quiet-members-speak-up/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ This is a question I hear often, and it's a thoughtful one! Let me start by saying this: the goal of a collaborative session isn’t to make sure everyone speaks—it’s to...
+##
+ How can I convince my company or colleagues to start doing collaborative modelling? [https://collaborative-software-design.com/dear-como/dear-como-how-can-i-convince-my-company-or-colleagues-to-start-doing-collaborative-modelling/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Getting your company on board with collaborative modeling can be tricky, but there are some clever, low-key ways to start. Try what I call “Secret Modeling,” a term from Ben...
+##
+ How can I get people to fully support design decisions and feel included in the process? [https://collaborative-software-design.com/dear-como/getting-buy-in-for-design-decisions/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Wouldn’t it be wonderful if everyone simply agreed with every decision? Sadly, that’s not how people—or teams—work. Getting buy-in on design decisions can be challenging, but it...
+##
+ How can I make contributions of people in meetings more equal? [https://collaborative-software-design.com/dear-como/equal-contributions-in-meetings/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Now that would be the dream, right? Unfortunately, there always seems to be that somebody who takes up the most air time, always reacts first and occasionally adding unrelated...
+##
+ Can I be both facilitator and participant during an EventStorming session? [https://collaborative-software-design.com/dear-como/can-i-be-both-facilitator-and-participant-during-an-evenstorm-session/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Ah, the age-old question: Can you be both a facilitator and a participant during an EventStorming session? The short answer is yes—but tread carefully. It’s a balancing act, and...
+##
+ I have this colleague who’s always taking over meetings and hijacking topics. What can I do? [https://collaborative-software-design.com/dear-como/i-have-this-colleague-whos-always-taking-over-meetings-and-hijacking-topics-what-can-i-do/]
+ Dear Como [https://collaborative-software-design.com/category/dear-como/]
+ Oh my, that sounds like you’re in some challenging meetings. Social dynamics are a league on their own, aren’t they? While we can't tell you why this person is showing this...
+## Dear Como
+ If you have any questions about Collaborative Software Design, let us know!
+ CONTACT US [https://collaborative-software-design.com/#contact]
+ Contact
+### Get in touch
+ Do you have any question about Collaborative Software Design or do you want to book a training or consulting, we’d love to hear from you.
+### Follow us
+ [https://www.linkedin.com/company/collaborative-software-design/%20]
+ [https://bsky.app/profile/collaborative-software-design.com]
+ Name
+ Email
+ Message
+ I want to book a:
+ I want to book a:
+ training
+ consulting
+ SEND MESSAGE
+ ©2024 Collaborative Software Design | Webdesign by Art of Design [https://artofdesign.nl/]

@@ -1,0 +1,91 @@
+-
+-
+ Collaborative Software Design Training
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ [https://collaborative-software-design.com/]
+- Home [https://collaborative-software-design.com/]
+- What’s inside [https://collaborative-software-design.com/#whatsinside]
+- Bookings [#]
+- Training [https://collaborative-software-design.com/training/]
+- Consulting [https://collaborative-software-design.com/facilitation/]
+- FAQ [https://collaborative-software-design.com/faq/]
+- Contact [https://collaborative-software-design.com/#contact]
+ BUY BOOK [https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d]
+ 2 day workshop
+# Collaborative Software Design: How to facilitate domain modelling decisions
+ Do your modeling sessions suffer from silence, circular arguments, or dominance by the loudest voice in the room? Is there a persistent gap between Business and IT that leads to software products that miss the mark?
+ Contact Us [https://collaborative-software-design.com/#contact]
+ Tickets: June 16 - 17 / Amsterdam [https://collaborative-software-design.com/#contact]
+ Effective software design hinges on strong collaboration. But let’s be honest: collaboration is messy. Misunderstandings, hidden assumptions, and social dynamics often undermine even the best technical plans. While collaborative modeling tools provide the visual canvas, they don’t solve the human problem. Collaboration is not innate; it is a discipline.
+ The Collaborative Software Design Workshop is designed to close the gap between technical modeling and social dynamics. We’ll move beyond the “happy path” of cooperation and look at what actually happens when people disagree.
+ This course tackles the hardest part of software design: the people.
+You will gain insight into how cognitive biases, and conflict patterns influence the architecture of your software and practice how to facilitate the “invisible” dynamics of the room, learning to spot how social ranking, silence, and behavior influence the architecture.
+ We’ll provide you with the practical facilitation skills needed to guide a group and lead impactful modeling sessions.
+## What You Will Learn
+ N
+#### The “Why” of Collaborative Design
+ We explore why involving stakeholders early isn’t just “nice to have,” but essential for sustainable software, and the concrete risks of keeping design siloed.
+ N
+#### The Facilitator’s Stance
+ You don’t have to be an extrovert to facilitate. We outline the necessary skills to hold the room, clarifying the difference between participating in the design and guiding the process.
+ N
+#### Navigating “Ranking”
+ Power dynamics exist in every room. You will learn how conscious and unconscious rank impacts who gets heard, and practice techniques to level the playing field so the best ideas win.
+ N
+#### Reading the Room
+ Behavior is data. You will learn to observe what isn’t being said (body language, silence, and disengagement) and how to use those observations to steer the group back to productivity.
+ N
+#### Active Listening & Inquiry
+ Move beyond standard questions. We practice Socratic questioning and “Crucial Conversations” techniques to uncover the deep domain knowledge that stakeholders often struggle to articulate.
+ N
+#### Sense-Making & Flow
+ Learn the practical utility of Check-ins and Check-outs to set the stage. We will cover how to restore flow when discussions become fragmented or stuck in the weeds.
+ N
+#### Conflict & Resistance
+ Resistance isn’t always bad; often, it’s a signal. You will develop the confidence to address conflict head-on, using it to clarify constraints and reach a shared understanding.
+ N
+#### Sustainable Decision Making
+ We connect the social to the technical. Learn how to converge the group’s collective knowledge into concrete, sustainable software design decisions.
+## Before the workshop
+- Will I be learning about collaborative modeling tools like EventStorming, Domain Storytelling, Wardley Mapping, Business model canvas, Example mapping?
+ Not directly. However we will use some of the tools based on your experience during the training. So having experience and knowledge of doing collaborative modeling is needed to make the most out of the training.
+- Will I receive materials to read/watch/study prior to the workshop?
+ We will provide optional video materials, and you are always welcome to read the book which you will get a discount code for when you take the training!
+## Audience
+ This workshop is designed for technical leaders who want to move beyond “running meetings” to effectively facilitating shared understanding. It is ideal for:
+- Software, Solution, & Domain Architects
+- Tech Leads, Staff+ Engineers, and Senior Developers
+- Product Managers & Product Owners
+- Business Analysts & QA Professionals
+- Engineering Managers & Scrum Masters
+- If you are responsible for bridging the gap between business requirements and technical implementation, this workshop is for you.
+ Whether you are a Technical Lead, Engineering Manager, Product Owner, Architect, or Engineer, we’ll provide you with the facilitation stance needed to guide a group.
+ Contact
+### Get in touch
+ Do you have any question about Collaborative Software Design or do you want to book a training or consulting, we’d love to hear from you.
+### Follow us
+ [https://www.linkedin.com/company/collaborative-software-design/%20]
+ [https://bsky.app/profile/collaborative-software-design.com]
+ Name
+ Email
+ Message
+ I want to book a:
+ I want to book a:
+ training
+ consulting
+ SEND MESSAGE
+ ©2024 Collaborative Software Design | Webdesign by Art of Design [https://artofdesign.nl/]

@@ -1,0 +1,26 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables and secrets: local.env holds NOTION_TOKEN
+*.env
+.env.*
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# sync --dry-run output, for inspecting before it lands in src/content/
+preview/
