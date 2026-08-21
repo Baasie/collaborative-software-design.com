@@ -1,0 +1,75 @@
+---
+/** The Dear CoMo index.
+ *
+ * At `/faq/` because that is where the WordPress site put it, and an address
+ * is a promise. It is not a list of questions about the book — it is the
+ * archive of the column, and the h1 says so, so that somebody arriving from a
+ * "FAQ" link is not confused about what they are looking at.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LetterCard from '../components/LetterCard.astro';
+import TagFilter from '../components/TagFilter.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { letters, tagCounts } from '../lib/collections';
+import { pageTitle, organisation, mailto } from '../lib/seo';
+
+const entries = await letters();
+const tags = tagCounts(entries);
+
+const description =
+  'Dear CoMo answers the questions facilitators actually write in with: the '
+  + 'colleague who takes over every meeting, the group that goes quiet, the team '
+  + 'that clings to its own ideas. One question, one letter, every time.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Dear CoMo',
+  description,
+  url: new URL('/faq/', Astro.site).toString(),
+  publisher: organisation(Astro.site),
+};
+---
+<BaseLayout title={pageTitle('Dear CoMo')} description={description} jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow eyebrow--ink">Questions and answers</p>
+      <h1>Dear CoMo</h1>
+      <p class="hero-lede">
+        Somebody writes in with a question about a room that is not working. CoMo
+        writes back. No framework to adopt and no maturity model to climb — just what
+        is actually happening between the people in the session, and what you can do
+        about it on Monday.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--primary" href={mailto(
+          'A question for Dear CoMo',
+          'Dear CoMo,\n\n',
+        )}>Ask CoMo a question</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section section--paper">
+    <div class="wrap">
+      <TagFilter tags={tags} allLabel="All letters" />
+      {entries.length > 0 ? (
+        <>
+          <div class="grid grid--3">
+            {entries.map((e) => <LetterCard entry={e} level={2} />)}
+          </div>
+          {/* Reachable from a legacy /tag/ redirect for a tag no live letter
+              carries any more, so it has to say something useful. */}
+          <p class="empty js-filter-empty" hidden>
+            No letters carry that topic yet. Pick another, or
+            <a href="/faq/"> see all of them</a>.
+          </p>
+        </>
+      ) : (
+        <p class="empty">No letters have been published yet.</p>
+      )}
+    </div>
+  </div>
+
+  <ContactSection />
+</BaseLayout>

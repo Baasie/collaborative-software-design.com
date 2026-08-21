@@ -1,0 +1,44 @@
+---
+/** One Dear CoMo letter, as a card. */
+import { Image } from 'astro:assets';
+import { formatDate, isoDate } from '../lib/dates';
+import { hrefOf, INDEX_PATH, type Letter } from '../lib/collections';
+import { normaliseTags, tagSlug } from '../lib/tags';
+import { excerpt } from '../lib/excerpt';
+
+interface Props {
+  entry: Letter;
+  /** The heading level. A card inside a section that already has an h2 needs
+   *  an h3, or the outline skips a level. */
+  level?: 2 | 3;
+}
+const { entry, level = 3 } = Astro.props;
+const Title = `h${level}` as 'h2' | 'h3';
+const allTags = normaliseTags(entry.data.tags);
+const tags = allTags.slice(0, 3);
+// The meta description wins: an editor wrote it *to be* the summary. The body
+// is the fallback, not the first choice.
+const summary = entry.data.metaDescription ?? excerpt(entry.body ?? '', '', 150);
+---
+<article class="card js-filter-item" data-test="letter-card" data-pagefind-ignore
+         data-tags={allTags.map(tagSlug).join(' ')}>
+  {entry.data.featuredImage && (
+    <div class="card-media">
+      <Image src={entry.data.featuredImage} alt="" width={640} height={360} />
+    </div>
+  )}
+  <div class="card-body">
+    <Title><a class="card-link" href={hrefOf(entry)}>{entry.data.title}</a></Title>
+    {summary && <p class="card-excerpt">{summary}</p>}
+    {tags.length > 0 && (
+      <ul class="chips">
+        {tags.map((t) => <li><a class="chip" href={`${INDEX_PATH}#tag=${tagSlug(t)}`}>{t}</a></li>)}
+      </ul>
+    )}
+    {entry.data.publishDate && (
+      <p class="card-meta">
+        <time datetime={isoDate(entry.data.publishDate)}>{formatDate(entry.data.publishDate)}</time>
+      </p>
+    )}
+  </div>
+</article>

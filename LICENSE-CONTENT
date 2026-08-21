@@ -1,0 +1,23 @@
+# The content is not MIT
+
+The MIT licence in [LICENSE](./LICENSE) covers the **code**: the Astro site, the
+sync, the scripts and the tests.
+
+It does **not** cover the content.
+
+Everything under `src/content/` is generated from Notion. The Dear CoMo letters
+and the workshop descriptions are © Evelyn van Kelle, Gien Verschatse and Kenny
+Baas-Schwegler, all rights reserved. They are published here to be read on this
+site. They are not licensed for republication, for inclusion in another product,
+or for use as training data.
+
+The same goes for `src/content/**/_assets/`, some of which are figures from
+*Collaborative Software Design* and are © Manning Publications, and for
+everything under `reference/` — that is a crawl of the authors' own site, kept
+so the migration can be checked against it.
+
+**The logo** (`src/assets/logo.png`, `reference/brand/*.png`) was made by
+[Art of Design](https://artofdesign.nl/) and is theirs. The footer credit stays.
+
+If you want to quote or reuse any of it, ask — the authors are easy to find, and
+the answer is usually yes.

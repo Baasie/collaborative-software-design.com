@@ -1,0 +1,32 @@
+---
+/** The wordmark.
+ *
+ * The real logo from the live site: three condensed uppercase words
+ * overlapping — COLLABORATIVE in pink, SOFTWARE in crimson, DESIGN outlined.
+ * The overlap is the idea, so it is a picture rather than type, and it is not
+ * something CSS should try to reproduce.
+ *
+ * A raster PNG, 500×82, because that is the only original there is. It renders
+ * at up to 320px wide, so a 500px source still has headroom on a 1× screen and
+ * is soft on a 2× one — worth asking Art of Design for a vector.
+ */
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { SITE_NAME } from '../lib/seo';
+
+interface Props {
+  /** Rendered width in px. */
+  width?: number;
+  /** Screen-reader name. Empty when the logo sits beside the site name in
+   *  text, so it is not announced twice. */
+  alt?: string;
+  class?: string;
+}
+const { width = 260, alt = SITE_NAME, class: cls } = Astro.props;
+---
+<Image src={logo} alt={alt} width={width} height={Math.round((width / 500) * 82)}
+       densities={[1, 2]} class:list={['logo', cls]} loading="eager" />
+
+<style>
+  .logo { width: auto; max-width: 100%; height: auto; }
+</style>

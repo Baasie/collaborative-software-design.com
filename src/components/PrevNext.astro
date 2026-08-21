@@ -1,0 +1,17 @@
+---
+/** Previous and next within a section, in the order the index shows them.
+ *  Both optional: the newest has no previous and the oldest no next, and a
+ *  grid with one cell in it beats an empty box saying so. */
+interface Props {
+  prev?: { href: string; title: string };
+  next?: { href: string; title: string };
+  label?: string;
+}
+const { prev, next, label = 'More' } = Astro.props;
+---
+{(prev || next) && (
+  <nav class="prevnext" aria-label={label} data-test="prevnext" data-pagefind-ignore>
+    {prev && <a href={prev.href} rel="prev"><span>Newer</span>{prev.title}</a>}
+    {next && <a class="next" href={next.href} rel="next"><span>Older</span>{next.title}</a>}
+  </nav>
+)}

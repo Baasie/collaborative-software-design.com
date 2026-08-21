@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { CHAPTERS } from '../lib/nav';
+import { BOOK_URL, AUTHORS, pageTitle, organisation, bookJsonLd } from '../lib/seo';
+
+const description =
+  'An inside track on how to facilitate domain modelling decisions. Pragmatic '
+  + 'techniques for making collaborative design decisions, ensuring you get a '
+  + "group's full participation and input to solve real business problems.";
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [organisation(Astro.site), bookJsonLd(Astro.site)],
+};
+
+/** What the book teaches — the four items the live site sets under icons. */
+const LEARN = [
+  { title: 'Holding and facilitating collaborative modeling sessions' },
+  { title: 'How to make sustainable software design decisions' },
+  { title: 'Heuristics for software design', sub: 'through collaborative modeling' },
+  { title: 'How to deal with social dynamics', sub: 'when making design decisions' },
+];
+---
+<BaseLayout title={pageTitle('', { home: true })} description={description} jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow eyebrow--ink">A book about</p>
+      <h1>Collaborative<br />Software Design</h1>
+      <p class="hero-lede">
+        An inside track on how to facilitate domain modelling decisions. A layout of
+        pragmatic techniques for making collaborative design decisions, ensuring
+        you’re getting a group’s full participation and input to solve real business
+        problems.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a>
+        <a class="btn btn--outline" href="#whatsinside">What’s inside</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper" id="whatsinside">
+    <div class="wrap">
+      <div class="section-head"><h2>What’s inside</h2></div>
+      <div class="grid grid--3">
+        {CHAPTERS.map((c) => (
+          <article class="card">
+            <div class="card-body">
+              <p class="eyebrow">Chapter #{c.number}</p>
+              <h3><a class="card-link" href={c.href}>{c.title}</a></h3>
+              <p class="card-excerpt">
+                {c.number === '01' && 'Great technical teams working closely with well-meaning business stakeholders can still deliver software that fails to meet an organization’s needs. We see it every day.'}
+                {c.number === '02' && 'A visualization technique to analyze complex and conflict-laden decision-making processes with all relevant stakeholders and decision-makers to create a shared understanding.'}
+                {c.number === '05' && 'Collaborative modeling tools alone do not guarantee effective collaboration; someone needs to guide people during collaboration: a facilitator.'}
+              </p>
+              <p class="card-meta">See this chapter →</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap book-grid">
+      <div>
+        <p class="eyebrow eyebrow--ink">Discover</p>
+        <h2>The book</h2>
+        <p>
+          Making domain modelling decisions can be hard. Great technical teams working
+          closely with well-meaning business stakeholders can still deliver software
+          that fails to meet an organization’s needs.
+        </p>
+        <p>
+          But how do you know if they are making the right decisions? How do you know
+          if they are focusing on the right solutions?
+        </p>
+        <p>
+          This guide is made by industry experts, taking you through all the steps and
+          techniques for making collaborative design decisions, ensuring you’re getting
+          a group’s full participation and input to solve real business problems.
+        </p>
+        <p><a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a></p>
+      </div>
+      <blockquote class="book-quote">
+        An indispensable guide to modern software development collaboration techniques,
+        with clear explanations of how to facilitate each of them. Grounded in research,
+        but born out of many years of practice!
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="wrap">
+      <div class="section-head"><h2>What you will learn</h2></div>
+      <div class="grid grid--4">
+        {LEARN.map((l) => (
+          <article class="learn">
+            <h3>{l.title}</h3>
+            {l.sub && <p class="card-excerpt">{l.sub}</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="panel">
+        <p class="eyebrow">Bookings</p>
+        <h2>In need of consultancy or training around making sustainable domain modelling decisions?</h2>
+        <p>
+          We can train technical leaders in your company to facilitate collaborative
+          modelling sessions, coach current facilitators to become more effective, or
+          facilitate a session for you.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="/training/">See the training</a>
+          <a class="btn btn--outline" href="/facilitation/">Consulting</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper" id="authors">
+    <div class="wrap">
+      <p class="eyebrow">About</p>
+      <div class="section-head"><h2>The authors</h2></div>
+      <div class="grid grid--3">
+        {AUTHORS.map((a) => (
+          <article class="card" id={a.slug}>
+            <div class="card-body">
+              <h3><a class="card-link" href={a.url} rel="noopener">{a.name}</a></h3>
+              <p class="card-excerpt">{a.bio}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .hero h1 { line-height: 0.95; }
+  .book-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  @media (min-width: 900px) { .book-grid { grid-template-columns: 1.4fr 1fr; gap: var(--space-16); } }
+  .book-quote {
+    background: var(--color-ink); color: var(--on-colour);
+    border-left-color: var(--color-brand); border-left-width: 8px;
+    font-family: var(--font-heading); font-size: var(--text-xl); line-height: 1.35;
+    text-transform: none; margin: 0; padding: var(--space-8);
+  }
+  .learn { border-top: 8px solid var(--color-brand); padding-top: var(--space-4); }
+  .learn h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+</style>

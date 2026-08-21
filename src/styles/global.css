@@ -1,0 +1,116 @@
+/* Base reset + typography. Uses tokens.css; components live in patterns.css. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; color-scheme: light; }
+
+/* The header sits over the page, so anything jumped to — the skip link's
+   target, `#whatsinside`, `#contact` — has to be pushed clear of it or it
+   arrives hidden underneath. Every item in the main navigation is an anchor on
+   this site, so this is load-bearing rather than a nicety. `--header-slim-h`
+   is measured in src/scripts/header.ts; the fallback is the tall header, which
+   is what is on screen before that script runs and the only thing there is
+   without JavaScript. */
+html { scroll-padding-top: calc(var(--header-slim-h, 6rem) + var(--space-4)); }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-ink);
+  /* The ground is orange. This is the brand's most distinctive decision and
+     the easiest one to lose in a rebuild. */
+  background: var(--color-ground);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-4);
+  /* Titles come from Notion, and a Dear CoMo title is a whole question. Set
+     condensed and uppercase, one long compound word can still beat the
+     narrowest phone; only ever breaks a word that cannot fit. */
+  overflow-wrap: break-word;
+}
+h1 { font-size: var(--text-4xl); }
+h2 { font-size: var(--text-3xl); margin-top: var(--space-12); }
+h3 { font-size: var(--text-xl); margin-top: var(--space-8); }
+h4 { font-size: var(--text-lg); margin-top: var(--space-6); }
+
+/* Prose headings inside a rendered Notion body are sentence case: a letter's
+   own headings are sentences, and shouting them changes their tone. The
+   display headings above are the site's voice; these are the author's. */
+.prose h2, .prose h3, .prose h4 { text-transform: none; letter-spacing: 0.01em; }
+
+p { margin: 0 0 var(--space-5); }
+a { color: var(--color-brand); text-decoration: none; }
+a:hover { color: var(--color-brand-deep); text-decoration: underline; }
+
+/* A link inside a sentence is underlined. Colour alone is not enough to mark
+   one, and here it is worse than usual: magenta on the orange ground is
+   2.73:1 against its surroundings, so a reader who does not perceive the hue
+   sees nothing at all. Rows of links that are not prose — the footer, a card,
+   a filter bar — are excluded, because nothing there is a sentence. */
+p a, li a, blockquote a, dd a { text-decoration: underline; text-underline-offset: 0.18em; }
+.btn, .chip, .eyebrow a, .card a, .filters a,
+.footer-links a, .footer-explore a, .detail-back a, .prevnext a, .site-nav a {
+  text-decoration: none;
+}
+img { max-width: 100%; height: auto; display: block; }
+
+blockquote {
+  margin: var(--space-8) 0;
+  padding: var(--space-4) var(--space-6);
+  border-left: 4px solid var(--color-brand);
+  background: var(--color-paper);
+  color: var(--color-ink-muted);
+  font-style: normal;
+}
+code {
+  font-family: var(--font-body);
+  font-size: 0.95em;
+  background: var(--tint-ink);
+  padding: 0.1em 0.35em;
+}
+pre { background: var(--color-ink); color: var(--on-colour); padding: var(--space-4); overflow-x: auto; }
+pre code { background: none; padding: 0; color: inherit; }
+table { width: 100%; border-collapse: collapse; margin: var(--space-6) 0; font-size: var(--text-sm); }
+th, td { border: 1px solid var(--color-border); padding: var(--space-2) var(--space-3); text-align: left; }
+th { background: var(--tint-ink); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; }
+
+/* Layout containers */
+.wrap { width: 100%; max-width: var(--wide-width); margin-inline: auto; padding-inline: var(--space-5); }
+.prose { max-width: var(--content-width); }
+
+/* Ensure the hidden attribute always wins over component display rules. */
+[hidden] { display: none !important; }
+
+/* Focus. Black rather than the brand, because the ring has to be visible on
+   the orange ground, on a magenta panel and on white — and only the ink is
+   legible on all three. */
+:focus-visible { outline: 3px solid var(--color-ink); outline-offset: 3px; }
+.panel-brand :focus-visible, .section--brand :focus-visible { outline-color: var(--on-colour); }
+
+/* Skip link — off-screen until focused, then a solid plate at the top left. */
+.skip-link {
+  position: absolute; left: var(--space-4); top: -5rem; z-index: 100;
+  background: var(--color-brand); color: var(--on-brand);
+  font-family: var(--font-heading); font-weight: 700; text-transform: uppercase;
+  padding: var(--space-3) var(--space-5); text-decoration: none;
+  transition: top 0.15s;
+}
+.skip-link:focus { top: var(--space-4); }
+main:focus { outline: none; }
+
+/* Motion is decoration here — never information — so it is safe to stop. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

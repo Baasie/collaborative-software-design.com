@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageTitle } from '../lib/seo';
+---
+<BaseLayout title={pageTitle('Page not found')} noindex>
+  <div class="wrap section prose">
+    <h1>That page is not here</h1>
+    <p>
+      The address you followed does not exist on this site. It may have been a typo, or
+      the page may have moved when the site did.
+    </p>
+    <ul>
+      <li><a href="/">The book</a></li>
+      <li><a href="/training/">The workshops</a></li>
+      <li><a href="/faq/">Dear CoMo</a></li>
+      <li><a href="/search/">Search the site</a></li>
+    </ul>
+  </div>
+</BaseLayout>

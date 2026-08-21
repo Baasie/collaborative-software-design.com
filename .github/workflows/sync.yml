@@ -1,0 +1,108 @@
+# Fetch content from Notion, commit what changed, and deploy it.
+#
+# This is the only thing that writes src/content/. It runs on a clock so that
+# publishing a letter in Notion is the whole of publishing it — nobody has to
+# come here and press anything.
+#
+# It commits and then *calls* deploy.yml rather than relying on the push to
+# trigger it: a push made with GITHUB_TOKEN does not start another workflow, by
+# design, so a sync that only pushed would update the repository and never the
+# site.
+name: Sync from Notion
+
+on:
+  schedule:
+    # Hourly. GitHub drops and delays scheduled runs on a quiet repository, so
+    # treat this as a backstop rather than a clock: it is expected to run late.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Re-fetch every body, ignoring data/sync-state.json.
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Sync
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
+          if [ -z "$NOTION_TOKEN" ]; then
+            echo "::error::NOTION_TOKEN is not set. Add it as a repository secret."
+            exit 1
+          fi
+          FLAGS=""
+          [ "${{ inputs.full }}" = "true" ] && FLAGS="--full"
+          npx tsx scripts/sync-notion.ts content --write $FLAGS
+          npx tsx scripts/sync-notion.ts trainings --write $FLAGS
+
+      # A slug change is an address change, and the sync has just recorded it.
+      # Regenerating here means the redirect ships in the same commit as the
+      # rename — never a deploy later.
+      - name: Regenerate redirects
+        run: npm run redirects
+
+      - name: Commit
+        id: commit
+        run: |
+          git config user.name 'CoMo sync'
+          git config user.email 'noreply@collaborative-software-design.com'
+          git add src/content data public/.htaccess
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing changed in Notion." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          SUMMARY=$(git diff --cached --name-status | head -20)
+          git commit -m "content: sync from Notion" -m "$SUMMARY"
+          git push
+          {
+            echo "changed=true"
+            echo "sha=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+          { echo '```'; echo "$SUMMARY"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      # What a person has to decide, that the sync cannot decide for them.
+      # Surfaced in the run summary rather than left in a file nobody opens.
+      - name: What needs a person
+        if: always()
+        run: |
+          [ -s data/sync-alerts.json ] || exit 0
+          node -e '
+            const a = require("./data/sync-alerts.json");
+            const rows = Object.entries(a).flatMap(([s, items]) => items.map((i) => ({ s, ...i })));
+            if (!rows.length) process.exit(0);
+            console.log("## Needs a person\n");
+            for (const r of rows) console.log(`- **${r.kind}** (${r.s}) ${r.title}${r.detail ? " — " + r.detail : ""}${r.url ? " <" + r.url + ">" : ""}`);
+          ' >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      # The sha the sync just pushed. Without it the called workflow builds the
+      # caller's commit, which is the one *before* the content.
+      ref: ${{ needs.sync.outputs.sha }}

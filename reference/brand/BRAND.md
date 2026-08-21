@@ -64,3 +64,29 @@ soften on a high-DPI screen.
 
 The footer reads: `©2024 Collaborative Software Design | Webdesign by Art of
 Design` → https://artofdesign.nl/. **Keep that credit.**
+
+## Which logo goes where
+
+There are two variants, and the live site uses both:
+
+- `logo.png` — the full wordmark, with DESIGN as a black outline. Drawn for a
+  **light** ground. Yoast names this one as the organisation logo.
+- `logo-diap.png` — the same wordmark without the outline, for a **coloured**
+  ground. The live footer uses this one.
+
+This rebuild uses `logo.png` throughout: on the orange header (light, so it
+works as drawn) and on a white plate in the dark footer. Swapping the footer to
+`logo-diap.png` is a one-line change in `src/components/Logo.astro` if you
+prefer it.
+
+## What the header does
+
+Worth knowing before "correcting" it: the live header is the **orange** ground
+with **black** menu links, and turns **white** on scroll —
+`.et_pb_section_0_tb_header` is `#E37B45`, and `#FFFFFF` in its fixed state,
+with `.et_pb_menu_0_tb_header … a{color:#000000!important}`.
+
+The rebuild does the same, and the current nav item is marked by a magenta rule
+**under** the word rather than by colouring it. That is not a style preference:
+magenta type on the orange header measures 2.74:1, and the header changes ground
+on scroll, so the ink is the only text colour that reads on both.

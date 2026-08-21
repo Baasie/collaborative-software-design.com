@@ -1,0 +1,40 @@
+{
+  "name": "collaborative-software-design-com",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/prune-dist.mjs && pagefind --site dist",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "npm run test:unit && npx astro check && npm run build && node --import tsx --test \"tests/*.test.mjs\"",
+    "test:unit": "node --import tsx --test \"tests/unit/*.test.mjs\"",
+    "test:quick": "npm run test:unit && node --import tsx --test \"tests/{build,urls}.test.mjs\"",
+    "redirects": "node scripts/build-redirects.mjs",
+    "check:urls": "node scripts/check-redirects.mjs",
+    "verify:live": "node scripts/verify-live.mjs",
+    "sync": "npm run sync:writing && npm run sync:trainings",
+    "sync:writing": "tsx scripts/sync-notion.ts content --write",
+    "sync:trainings": "tsx scripts/sync-notion.ts trainings --write"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/ibm-plex-mono": "^5.2.5",
+    "@fontsource/pt-sans-narrow": "^5.2.5",
+    "@notionhq/client": "^5.25.2",
+    "astro": "^5.13.0",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.10.0",
+    "axe-core": "^4.13.0",
+    "pagefind": "^1.5.2",
+    "playwright": "^1.56.0",
+    "sharp": "^0.34.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,0 +1,62 @@
+---
+/** "Get in touch", the section every page on the live site ends with.
+ *
+ * The WordPress original is a form (Name, Email, Message, and a "I want to
+ * book a: training / consulting" selector). A static site cannot process a
+ * form post, so this is a `mailto:` instead — two of them, pre-filled with the
+ * subject, so a booking enquiry still arrives labelled and the authors can
+ * tell training from consulting without reading the body.
+ *
+ * That is a deliberate downgrade and it is worth knowing about: a mailto
+ * exposes the address to scrapers and does nothing on a machine with no mail
+ * client configured. If either becomes a problem the fix is a hosted form
+ * endpoint, and this component is the only place that changes.
+ */
+import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
+---
+<section class="section section--brand" id="contact" data-test="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <p class="eyebrow eyebrow--on-colour">Contact</p>
+      <h2>Get in touch</h2>
+      <p>
+        Any question about Collaborative Software Design, or want to book a
+        training or consulting? We would love to hear from you.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--inverse" href={mailto(
+          'Booking enquiry: training',
+          'Hi,\n\nI would like to talk about a training.\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
+        )}>Book a training</a>
+        <a class="btn btn--inverse" href={mailto(
+          'Booking enquiry: consulting',
+          'Hi,\n\nI would like to talk about consulting / facilitation.\n\nWhat we are working on:\nRough timing:\n\nThanks,\n',
+        )}>Book consulting</a>
+      </div>
+      <p class="contact-direct">
+        Or write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+      </p>
+    </div>
+    <div>
+      <h3>Follow us</h3>
+      <ul class="contact-socials">
+        {SOCIALS.map((s) => <li><a href={s.url} rel="noopener">{s.name}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); }
+  @media (min-width: 800px) { .contact-grid { grid-template-columns: 1.6fr 0.8fr; gap: var(--space-16); } }
+  .contact-grid p { max-width: 34rem; }
+  .contact-direct { margin-top: var(--space-6); font-size: var(--text-sm); }
+  .contact-socials { list-style: none; margin: 0; padding: 0; }
+  .contact-socials li { margin-bottom: var(--space-3); }
+  .contact-socials a {
+    display: inline-flex; align-items: center; min-height: 24px;
+    font-family: var(--font-heading); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--on-colour);
+  }
+  .contact-socials a:hover { color: var(--color-ground); }
+</style>

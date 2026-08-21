@@ -1,0 +1,179 @@
+# Build the site and put it on the host.
+#
+# This never talks to Notion: the content is committed, so a deploy is
+# reproducible from the repository alone. `sync.yml` is what fetches content,
+# and it calls this once it has committed something.
+#
+# The tests gate the deploy on purpose. If they fail the previous release stays
+# live — a stale site is better than a broken one.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md', 'LICENSE*', 'reference/**']
+  # A pull request gets everything above the deploy line: types, build, the
+  # blocking suite. Without this a dependency bump could only be judged after it
+  # had already landed on main.
+  pull_request:
+    branches: [main]
+    paths-ignore: ['**.md', 'LICENSE*', 'reference/**']
+  workflow_call:
+    inputs:
+      changes:
+        description: A short human summary of what changed, for the notification.
+        type: string
+        required: false
+      ref:
+        # A called workflow runs at the *caller's* commit, and the sync commits
+        # after its run began — so without this the deploy builds the site as it
+        # was before the content it was called to publish.
+        description: The commit to build. Defaults to the one that triggered the run.
+        type: string
+        required: false
+  workflow_dispatch:
+
+# One deploy at a time: two rsyncs into the same directory would interleave.
+# Production is one queue and stays one queue. Pull requests get a queue each,
+# keyed by branch, so a rehearsal cannot jostle a release in either direction.
+concurrency:
+  group: >-
+    deploy-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Read-only. This job builds and rsyncs; it never writes to the repository.
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the guard below diffs against the previous commit
+          ref: ${{ inputs.ref || github.sha }}
+
+      # Say which commit is being published, every time. The defect this guards
+      # against is invisible precisely because nothing ever prints it: the run
+      # is green, the summary names the content that changed, and the build is
+      # of the commit before it.
+      - name: What is being built?
+        env:
+          ASKED: ${{ inputs.ref }}
+        run: |
+          echo "Building $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          echo "  asked for: ${ASKED:-<the triggering commit>}" >> "$GITHUB_STEP_SUMMARY"
+          git log -1 --format='  %s' >> "$GITHUB_STEP_SUMMARY"
+
+      # Rule 1: src/content/ is generated. A push that changes it from anyone
+      # but the sync is rejected here rather than quietly becoming the new truth
+      # until the next sync overwrites it.
+      - name: Was src/content/ hand-edited?
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "New branch; nothing to diff against." && exit 0
+          fi
+          CHANGED=$(git diff --name-only "$BEFORE" "$SHA" -- src/content/ || true)
+          [ -z "$CHANGED" ] && exit 0
+          AUTHORS=$(git log --format='%an' "$BEFORE".."$SHA" -- src/content/ | sort -u)
+          if echo "$AUTHORS" | grep -qvE '^(github-actions\[bot\]|CoMo sync)$'; then
+            echo "::error::src/content/ changed, and not only by the sync. It is generated from Notion — edit Notion, not these files."
+            echo "$CHANGED"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - name: Install the browser the tests drive
+        run: npx playwright install --with-deps chromium
+
+      # Types, unit tests, the build, then the blocking suite. `npm test` runs
+      # them in that order on purpose: `astro check` is the cheapest thing that
+      # can fail, so it fails first.
+      - name: Test
+        run: npm test
+
+      - name: Is there anywhere to deploy to?
+        id: gate
+        env:
+          HOST: ${{ secrets.KUALO_HOST }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "Pull request: built and tested, not deployed." >> "$GITHUB_STEP_SUMMARY"
+          elif [ -z "$HOST" ]; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "No KUALO_HOST secret set, so nothing was deployed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Releases are atomic. Each deploy is rsynced into its own directory and a
+      # symlink is moved when it is complete, so a visitor never meets a
+      # half-copied site and a rollback is one `ln -sfn` away.
+      - name: Deploy
+        if: steps.gate.outputs.go == 'true'
+        env:
+          SSH_KEY: ${{ secrets.KUALO_SSH_KEY }}
+          HOST: ${{ secrets.KUALO_HOST }}
+          SSH_USER: ${{ secrets.KUALO_USER }}
+          DOCROOT: ${{ secrets.KUALO_PATH }}
+          PORT: ${{ secrets.KUALO_SSH_PORT || '22' }}
+          KNOWN_HOSTS: ${{ secrets.KUALO_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # StrictHostKeyChecking=yes with a pinned key, not `no`. Turning it off
+          # to save a secret is how a deploy quietly starts trusting whatever
+          # answers on that address.
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+          SSH="ssh -i $HOME/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
+
+          # Fail here, loudly, rather than four minutes later mid-rsync.
+          if ! $SSH "$SSH_USER@$HOST" true; then
+            echo "::error::Cannot reach the host. If this is the first failure it is usually the host's brute-force protection blocking this runner's shared IP; re-run on another runner."
+            exit 1
+          fi
+
+          RELEASE="releases/$(date -u +%Y%m%dT%H%M%SZ)-${GITHUB_SHA::7}"
+          $SSH "$SSH_USER@$HOST" "mkdir -p '$DOCROOT/$RELEASE'"
+          rsync -az --delete -e "$SSH" dist/ "$SSH_USER@$HOST:$DOCROOT/$RELEASE/"
+
+          # The swap, and the tidy-up. `ln -sfn` is atomic; keeping five releases
+          # means a rollback needs no deploy at all.
+          $SSH "$SSH_USER@$HOST" "
+            set -e
+            ln -sfn '$DOCROOT/$RELEASE' '$DOCROOT/current.tmp'
+            mv -Tf '$DOCROOT/current.tmp' '$DOCROOT/current'
+            cd '$DOCROOT/releases' && ls -1t | tail -n +6 | xargs -r rm -rf
+          "
+          echo "Published $RELEASE" >> "$GITHUB_STEP_SUMMARY"
+          rm -f ~/.ssh/deploy_key
+
+      # A deploy that rsyncs successfully and serves the previous release is the
+      # failure this catches: everything green, site stale. `secrets` is not
+      # available in a step-level `if:`, so the check is inside the step.
+      - name: Verify the deployed host
+        if: steps.gate.outputs.go == 'true'
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "No SITE_URL secret, so the deploy was not verified." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          npm run verify:live "$SITE_URL"

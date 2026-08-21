@@ -1,0 +1,74 @@
+---
+/** A chapter teaser page.
+ *
+ * Three of these exist (#01, #02, #05) and they differ only in their words, so
+ * one layout carries the shape: the chapter switcher every one of them shows,
+ * the body, and the call to action. A second copy would drift the first time
+ * the switcher gained a fourth chapter.
+ */
+import BaseLayout from './BaseLayout.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { CHAPTERS } from '../lib/nav';
+import { pageTitle, organisation, BOOK_URL_PLAIN, BOOK_URL, SITE_NAME } from '../lib/seo';
+
+interface Props {
+  number: string;
+  title: string;
+  description: string;
+}
+const { number, title, description } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  isPartOf: {
+    '@type': 'Book',
+    name: `${SITE_NAME}: How to facilitate domain modelling decisions`,
+    url: BOOK_URL_PLAIN,
+  },
+  publisher: organisation(Astro.site),
+};
+---
+<BaseLayout title={pageTitle(title)} description={description} jsonLd={jsonLd}>
+  <div class="section--paper">
+  <div class="wrap chapter">
+    {/* The switcher the live site puts at the top of every chapter. The
+        current one is plain text rather than a link to itself — a link that
+        goes where you already are is noise for everyone and a trap for a
+        screen-reader user. */}
+    <nav class="chapter-nav" aria-label="Chapters" data-test="chapter-nav">
+      {CHAPTERS.map((c) => (
+        c.number === number
+          ? <span class="current" aria-current="page">Chapter #{c.number}</span>
+          : <a href={c.href}>Chapter #{c.number}</a>
+      ))}
+    </nav>
+
+    <header class="detail-head">
+      <p class="eyebrow">Chapter #{number}</p>
+      <h1>{title}</h1>
+    </header>
+
+    <div class="prose"><slot /></div>
+
+    <p class="chapter-cta"><a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a></p>
+  </div>
+  </div>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .chapter { padding-block: var(--space-16); }
+  .chapter-nav {
+    display: flex; flex-wrap: wrap; gap: var(--space-5); margin-bottom: var(--space-10);
+    font-family: var(--font-heading); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .chapter-nav a { color: var(--color-ink); border-bottom: 3px solid transparent; }
+  .chapter-nav a:hover { border-bottom-color: var(--color-ink); text-decoration: none; }
+  .chapter-nav .current { color: var(--color-brand); border-bottom: 3px solid var(--color-brand); }
+  .chapter-cta { margin-top: var(--space-10); }
+</style>

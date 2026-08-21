@@ -1,0 +1,338 @@
+---
+// Latin subsets only. The default entrypoints ship several more — files where
+// only a handful are ever requested. A browser would not download the rest
+// (unicode-range keeps them out), but they still travel in every deploy.
+import '@fontsource/pt-sans-narrow/latin-400.css';
+import '@fontsource/pt-sans-narrow/latin-700.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-400-italic.css';
+import '@fontsource/ibm-plex-mono/latin-700.css';
+// The two above the fold: the body face and the face every heading uses.
+// Without a preload they are discovered only after the CSS parses, which is a
+// flash of fallback text — and with a monospace body that reflows the page.
+import mono400 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
+import narrow700 from '@fontsource/pt-sans-narrow/files/pt-sans-narrow-latin-700-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import '../styles/patterns.css';
+import Logo from '../components/Logo.astro';
+import { NAV, footerLinks } from '../lib/nav';
+import { SITE_NAME, SITE_TAGLINE, BOOK_URL, CONTACT_EMAIL, SOCIALS, abs } from '../lib/seo';
+import { socialCard } from '../lib/social-card';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  jsonLd?: Record<string, unknown>;
+  image?: ImageMetadata;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  /** This page also exists as markdown at `<path>index.md`. */
+  markdown?: boolean;
+}
+const {
+  title, description, canonical, jsonLd, image, ogType = 'website',
+  noindex = false, markdown = false,
+} = Astro.props;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const canonicalUrl = canonical ?? pageUrl;
+
+// A page with no picture of its own falls back to the site card in `public/`
+// rather than to an imported asset: it is a fixed 1200×630 plate that needs no
+// derivative, and routing it through the image pipeline would emit a copy of
+// it on every page.
+const ogImage = image ? await socialCard(Astro.site, image) : abs(Astro.site, '/og-default.png');
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) =>
+  href === '/' ? path === '/' : href.startsWith('/') && !href.includes('#') && path.startsWith(href);
+
+// Which section a page belongs to, so /search/ can label its results without a
+// second table to keep in step.
+const section = NAV.flatMap((n) => (n.children ? n.children : [n]))
+  .filter((n) => n.href.startsWith('/') && n.href !== '/' && !n.href.includes('#') && path.startsWith(n.href))
+  .sort((a, b) => b.href.length - a.href.length)[0]?.label;
+
+// Pagefind treats the first `data-pagefind-body` it finds as opting every page
+// in — so a page without one is skipped whole, which is what /404/, /410/ and
+// /search/ want. Tied to `noindex`: a page kept out of Google is kept out of
+// ours, for the same reason.
+const searchable = !noindex;
+
+const year = new Date().getFullYear();
+const analyticsSrc = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_SRC : undefined;
+const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_DOMAIN : undefined;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <!-- Marks that scripting is available, before anything paints, so the
+         mobile nav can ship open for everyone else without a flash. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#e37b45" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="preload" as="font" type="font/woff2" href={mono400} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={narrow700} crossorigin />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} — Dear CoMo`} href="/rss.xml" />
+    {markdown && (
+      <link rel="alternate" type="text/markdown" title={`${title} — markdown`} href={`${path}index.md`} />
+    )}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    {/* Counts page views and nothing else: no cookies, no cross-site
+        identifier, nothing needing a consent banner — see the privacy policy,
+        which has to keep saying something true. Absent unless both variables
+        are set, so a fork and a local build are silent by default. */}
+    {analyticsSrc && analyticsDomain && (
+      <script is:inline defer src={analyticsSrc} data-domain={analyticsDomain}></script>
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-test="skip-link">Skip to content</a>
+
+    <header class="site-header" id="site-header" data-test="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand" aria-label={`${SITE_NAME} — home`}><Logo width={240} alt="" /></a>
+
+        <button class="nav-toggle" data-test="nav-toggle" type="button"
+                aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" data-test="nav" aria-label="Main">
+          <ul class="nav-list">
+            {NAV.map((n) => (
+              <li class:list={['nav-item', { 'has-children': !!n.children }]}>
+                {n.children ? (
+                  <>
+                    {/* A label, not a link: the live menu's parent goes to `#`,
+                        which is a trap for a keyboard visitor. The submenu is
+                        always in the DOM and revealed on hover or focus, so it
+                        works with no JavaScript at all. */}
+                    <span class="nav-label" aria-hidden="true">{n.label}</span>
+                    <ul class="nav-sub" aria-label={n.label}>
+                      {n.children.map((c) => (
+                        <li>
+                          <a href={c.href} class:list={[{ current: isCurrent(c.href) }]}
+                             aria-current={isCurrent(c.href) ? 'page' : undefined}>{c.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a href={n.href} class:list={[{ current: isCurrent(n.href) }]}
+                     aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a>
+                )}
+              </li>
+            ))}
+            <li class="nav-item">
+              <a href="/search/" data-test="nav-search" aria-label="Search this site" title="Search"
+                 class:list={['nav-search', { current: isCurrent('/search/') }]}>
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+                </svg>
+                <span class="nav-search-label">Search</span>
+              </a>
+            </li>
+          </ul>
+          <a class="btn btn--primary btn--buy" href={BOOK_URL} rel="noopener" data-test="buy-book">Buy book</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1"
+          data-pagefind-body={searchable ? true : undefined}
+          data-pagefind-meta={searchable && section ? `section:${section}` : undefined}>
+      <slot />
+    </main>
+
+    <footer class="site-footer" data-test="site-footer">
+      <div class="wrap footer-grid">
+        <div class="footer-about">
+          <Logo width={220} />
+          <p>{SITE_TAGLINE}.</p>
+          <ul class="footer-socials">
+            {SOCIALS.map((s) => <li><a href={s.url} rel="noopener">{s.name}</a></li>)}
+            <li><a href={`mailto:${CONTACT_EMAIL}`}>Email</a></li>
+          </ul>
+        </div>
+        <div class="footer-explore">
+          <h2>Explore</h2>
+          <ul>
+            {footerLinks().map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="footer-explore">
+          <h2>The book</h2>
+          <ul>
+            <li><a href={BOOK_URL} rel="noopener">Buy it at Manning</a></li>
+            <li><a href="/faq/">Dear CoMo</a></li>
+            <li><a href="/search/">Search</a></li>
+            <li><a href="/rss.xml">RSS</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="wrap footer-bottom">
+        {/* The credit the live site carries. Keep it. */}
+        <p>© {year} {SITE_NAME} | Webdesign by <a href="https://artofdesign.nl/" rel="noopener">Art of Design</a></p>
+        <p class="footer-links"><a href="/privacy-policy/">Privacy</a></p>
+      </div>
+    </footer>
+
+    <style>
+      /* The header is the ORANGE ground with black type, and turns white once
+         you scroll — which is exactly what the live site does
+         (`.et_pb_section_0_tb_header` is #E37B45, and #FFFFFF in its fixed
+         state). Both grounds are light, which is why the wordmark needs no
+         plate behind it: it was drawn for a light ground. */
+      .site-header {
+        position: sticky; top: 0; z-index: 30;
+        background: var(--color-ground); color: var(--color-ink);
+        border-bottom: 3px solid var(--color-ink);
+        transition: background 0.2s ease;
+      }
+      .site-header.scrolled { background: var(--color-paper); }
+      .header-inner {
+        position: relative; display: flex; align-items: center; justify-content: space-between;
+        gap: var(--space-6); padding-block: var(--space-4); transition: padding 0.2s ease;
+      }
+      .site-header.scrolled .header-inner { padding-block: var(--space-2); }
+      .brand { display: inline-flex; }
+
+      .site-nav { display: flex; align-items: center; gap: var(--space-6); }
+      .nav-list {
+        display: flex; align-items: center; gap: var(--space-5);
+        list-style: none; margin: 0; padding: 0;
+        font-family: var(--font-heading); font-weight: 700; font-size: var(--text-base);
+        text-transform: uppercase; letter-spacing: 0.05em;
+      }
+      .nav-item { position: relative; }
+      /* Black, as the live menu is (`color:#000000!important`). It has to read
+         on the orange and on the white the header becomes, and the ink is the
+         only colour that does both. */
+      .nav-list a, .nav-label { color: var(--color-ink); padding-block: var(--space-1); border-bottom: 3px solid transparent; display: inline-block; }
+      /* The state is carried by the RULE under the word, not by its colour.
+         Magenta type would be 2.74:1 against the orange header — the same trap
+         the eyebrow fell into — and the header changes ground on scroll, so the
+         only text colour that works on both is the ink. */
+      .nav-list a:hover { border-bottom-color: var(--color-ink); text-decoration: none; }
+      .nav-list a.current { border-bottom-color: var(--color-brand); }
+      .nav-label { cursor: default; opacity: 0.95; }
+      .has-children > .nav-label::after { content: ' ▾'; font-size: 0.8em; }
+
+      /* The submenu is in the DOM always, revealed on hover or keyboard focus.
+         `:focus-within` is what makes it reachable by tab with no JavaScript. */
+      .nav-sub {
+        list-style: none; margin: 0; padding: var(--space-3);
+        position: absolute; top: 100%; left: 0; min-width: 12rem;
+        background: var(--color-paper); border: 2px solid var(--color-ink);
+        display: none; z-index: 2;
+      }
+      .nav-sub li + li { margin-top: var(--space-2); }
+      .has-children:hover > .nav-sub, .has-children:focus-within > .nav-sub { display: block; }
+
+      .nav-search { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 24px; min-height: 24px; }
+      .nav-search-label { display: none; }
+      /* Magenta on white text, as the live site's primary button is. */
+      .btn--buy { min-height: 40px; padding-inline: var(--space-5); }
+
+      .nav-toggle {
+        display: none; flex-direction: column; align-items: center; justify-content: center;
+        gap: 5px; width: 48px; height: 46px; background: none;
+        border: 2px solid var(--color-ink); cursor: pointer; padding: 0;
+      }
+      .nav-toggle span { display: block; width: 22px; height: 3px; background: var(--color-ink); }
+
+      @media (max-width: 799.98px) {
+        .header-inner { flex-wrap: wrap; }
+        /* Without JavaScript the navigation is simply there, stacked under the
+           brand, and the hamburger stays hidden — a button that cannot open
+           anything is worse than no button. */
+        .site-nav { width: 100%; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding-top: var(--space-4); }
+        .nav-list { flex-direction: column; align-items: flex-start; gap: var(--space-3); width: 100%; }
+        .nav-sub { position: static; display: block; border: 0; padding: var(--space-2) 0 0 var(--space-4); }
+        .has-children > .nav-label::after { content: ''; }
+        .nav-search-label { display: inline; }
+
+        :global(html.js) .nav-toggle { display: inline-flex; }
+        :global(html.js) .site-nav {
+          display: none; position: absolute; top: 100%; left: 0; right: 0; width: auto;
+          padding: var(--space-5); background: var(--color-paper);
+          border-bottom: 3px solid var(--color-ink);
+        }
+        :global(html.js) .site-header.nav-open .site-nav { display: flex; }
+      }
+
+      main { min-height: 60vh; }
+
+      .site-footer { margin-top: var(--space-20); background: var(--color-ink); color: var(--on-colour); }
+      .footer-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); padding-block: var(--space-16) var(--space-10); }
+      .footer-grid h2 {
+        font-size: var(--text-lg); text-transform: uppercase; letter-spacing: 0.08em;
+        margin: 0 0 var(--space-4); color: var(--color-ground);
+      }
+      /* The footer IS dark, and the wordmark is drawn for a light ground, so
+         here it does need a plate. */
+      .footer-about :global(img) { background: var(--color-paper); padding: var(--space-3) var(--space-4); }
+      .footer-about p { color: var(--on-colour-muted); font-size: var(--text-sm); margin-top: var(--space-5); max-width: 26rem; }
+      .footer-explore ul, .footer-socials { list-style: none; margin: 0; padding: 0; }
+      .footer-explore li, .footer-socials li { margin-bottom: var(--space-2); }
+      /* A 24px target: these are a list, not a sentence, so the inline
+         exception to WCAG 2.5.8 does not apply. */
+      .footer-explore a, .footer-socials a, .footer-links a {
+        display: inline-flex; align-items: center; min-height: 24px;
+        color: var(--on-colour-muted); font-size: var(--text-sm);
+      }
+      .footer-explore a:hover, .footer-socials a:hover, .footer-links a:hover { color: var(--color-ground); }
+      .footer-socials { display: flex; gap: var(--space-4); margin-top: var(--space-4); }
+      .footer-bottom {
+        display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);
+        padding-block: var(--space-6); border-top: 1px solid var(--scrim-weak);
+        font-size: var(--text-sm); color: var(--on-colour-muted);
+      }
+      .footer-bottom p { margin: 0; }
+      .footer-bottom a { color: var(--on-colour-muted); }
+      .footer-bottom a:hover { color: var(--color-ground); }
+
+      @media (min-width: 800px) {
+        .footer-grid { grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: var(--space-12); }
+      }
+    </style>
+
+    <script>
+      // Every behaviour on this page is a module, so each can be read, changed
+      // and reasoned about on its own. See src/scripts/.
+      import { initHeader } from '../scripts/header';
+      import { initCardFilter } from '../scripts/card-filter';
+
+      initHeader();
+      initCardFilter();
+    </script>
+  </body>
+</html>

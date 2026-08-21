@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageTitle } from '../lib/seo';
+
+/** Search, powered by Pagefind.
+ *
+ * The index is built from `dist` by `npm run build`, so `astro dev` has none
+ * and this page says so rather than looking broken. `noindex` because an empty
+ * results page is the last thing worth offering somebody as an answer, and the
+ * sitemap filter agrees with it — a test checks the two do.
+ */
+const dev = import.meta.env.DEV;
+---
+<BaseLayout title={pageTitle('Search')} description="Search this site." noindex>
+  <div class="wrap section">
+    <h1>Search</h1>
+    {dev ? (
+      <p class="empty">
+        The search index is built by <code>npm run build</code>, so there is nothing to
+        search in the dev server. Run a build and use <code>npm run preview</code>.
+      </p>
+    ) : (
+      <>
+        <div id="search" data-test="search"></div>
+        <noscript>
+          <p class="empty">
+            Search needs JavaScript. Without it, the
+            <a href="/faq/"> Dear CoMo index</a> and the
+            <a href="/training/"> workshop list</a> are complete pages you can read
+            straight through.
+          </p>
+        </noscript>
+      </>
+    )}
+  </div>
+</BaseLayout>
+
+{!dev && (
+  <>
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script is:inline src="/pagefind/pagefind-ui.js"></script>
+    <script is:inline>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!window.PagefindUI) return;
+        new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false });
+      });
+    </script>
+  </>
+)}
+
+<style is:global>
+  /* Pagefind ships its own tokens; point them at ours so the widget is part of
+     the site rather than a component from somewhere else. */
+  :root {
+    --pagefind-ui-primary: var(--color-brand);
+    --pagefind-ui-text: var(--color-ink);
+    --pagefind-ui-background: var(--color-paper);
+    --pagefind-ui-border: var(--color-ink);
+    --pagefind-ui-tag: var(--color-paper-2);
+    --pagefind-ui-border-radius: 0px;
+    --pagefind-ui-border-width: 2px;
+    --pagefind-ui-font: var(--font-body);
+  }
+  #search { background: var(--color-paper); padding: var(--space-6); border: 2px solid var(--color-ink); }
+</style>

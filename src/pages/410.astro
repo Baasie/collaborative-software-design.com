@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageTitle } from '../lib/seo';
+
+/** The body of a 410 response, served by `.htaccess` for addresses that were
+ *  retired on purpose. Not somewhere anyone should arrive from search, which
+ *  is why it is `noindex` and out of the sitemap. */
+---
+<BaseLayout title={pageTitle('Page removed')} noindex>
+  <div class="wrap section prose">
+    <h1>That page has been removed</h1>
+    <p>
+      This address used to serve a page and no longer does — on purpose, rather than by
+      accident. Nothing has moved to replace it.
+    </p>
+    <ul>
+      <li><a href="/">The book</a></li>
+      <li><a href="/faq/">Dear CoMo</a></li>
+    </ul>
+  </div>
+</BaseLayout>

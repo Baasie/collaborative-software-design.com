@@ -1,0 +1,149 @@
+/* Reusable components. Every colour here is a token from tokens.css — a
+   literal in this file or in a component is what `conformance.test.mjs` fails
+   on, so that swapping the brand stays a one-file change. */
+
+/* --- buttons -------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  font-family: var(--font-heading); font-weight: 700; font-size: var(--text-base);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: var(--space-3) var(--space-6);
+  border: 2px solid transparent; cursor: pointer; text-align: center;
+  min-height: 48px;   /* a real tap target */
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+/* Magenta fill, white text: 8.02:1. The site's primary action. */
+.btn--primary { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); }
+.btn--primary:hover { background: var(--color-brand-deep); border-color: var(--color-brand-deep); color: var(--on-brand); text-decoration: none; }
+/* Black fill, white text — the live site's second button style. */
+.btn--ink { background: var(--color-ink); color: var(--on-colour); border-color: var(--color-ink); }
+.btn--ink:hover { background: var(--color-brand); border-color: var(--color-brand); color: var(--on-brand); text-decoration: none; }
+/* Outlined, on the orange ground. Black rather than magenta: magenta on orange
+   is 2.73:1 and would be unreadable as a border and a label. */
+.btn--outline { background: transparent; color: var(--color-ink); border-color: var(--color-ink); }
+.btn--outline:hover { background: var(--color-ink); color: var(--on-colour); text-decoration: none; }
+/* For use on a magenta panel, where the ink outline would disappear. */
+.btn--inverse { background: var(--overlay-white-strong); color: var(--color-brand); border-color: transparent; }
+.btn--inverse:hover { background: var(--on-colour); color: var(--color-brand-deep); text-decoration: none; }
+
+/* --- chips (tags) --------------------------------------------------------- */
+.chip {
+  display: inline-flex; align-items: center; min-height: 26px;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-heading); font-size: var(--text-sm); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3;
+  background: var(--color-paper); color: var(--color-ink);
+  border: 1px solid var(--color-border);
+}
+a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); text-decoration: none; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+
+/* --- eyebrow -------------------------------------------------------------- */
+/* "Chapter #01", "2 day workshop", "Bookings" — the small label above a
+   heading, which the live site uses on almost every section.
+ *
+ * INK BY DEFAULT, and this is the important part. The obvious choice is the
+ * brand magenta, and on a white plate it is right (8:1). But the page ground
+ * here is orange, and magenta on orange is 2.74:1 — so a magenta-by-default
+ * eyebrow is unreadable everywhere the page has not been given a plate, which
+ * is most of it. A browser test caught exactly that on three pages.
+ *
+ * So the safe colour is the default and the brand colour is opted into by
+ * CONTEXT rather than by a modifier class somebody has to remember: anywhere
+ * there is a white plate underneath, the magenta comes back on its own. */
+.eyebrow {
+  font-family: var(--font-heading); font-size: var(--text-base); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-ink);
+  margin: 0 0 var(--space-3);
+}
+.section--paper .eyebrow, .card .eyebrow, .panel .eyebrow { color: var(--color-brand); }
+.eyebrow--ink { color: var(--color-ink); }
+.section--brand .eyebrow, .panel-brand .eyebrow, .eyebrow--on-colour { color: var(--on-colour-muted); }
+
+/* --- layout --------------------------------------------------------------- */
+.grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+@media (min-width: 640px) { .grid--2, .grid--3, .grid--4 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) {
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+.section { padding-block: var(--space-16); }
+.section--brand { background: var(--color-brand); color: var(--on-colour); }
+.section--brand h1, .section--brand h2, .section--brand h3 { color: var(--on-colour); }
+/* Without this a link in prose on the magenta band is magenta ON magenta, i.e.
+   invisible — which is what happened to the "or write to <address>" line in the
+   contact section. The `.panel-brand` twin below had the rule; this did not. */
+.section--brand a:not(.btn) { color: var(--on-colour); }
+.section--brand a:not(.btn):hover { color: var(--color-ground); }
+.section--paper { background: var(--color-paper); }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-8); }
+.section-head h2 { margin: 0; }
+.section-head a { font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* --- cards ---------------------------------------------------------------- */
+.card {
+  position: relative;
+  display: flex; flex-direction: column; height: 100%;
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.card-media { aspect-ratio: 16 / 9; background: var(--tint-ink); overflow: hidden; }
+.card-media img { width: 100%; height: 100%; object-fit: cover; }
+.card-body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); flex: 1; }
+.card-body h3 { margin: 0; font-size: var(--text-lg); }
+/* The whole card is the link target, without nesting a second <a> inside the
+   first: the title carries the real href and this stretches its hit area. */
+.card-link { color: var(--color-ink); }
+.card-link::after { content: ''; position: absolute; inset: 0; }
+.card:hover .card-link { color: var(--color-brand); }
+.card-meta { margin-top: auto; font-size: var(--text-sm); color: var(--color-ink-muted); }
+.card-excerpt { font-size: var(--text-sm); color: var(--color-ink-muted); margin: 0; line-height: 1.7; }
+/* Chips sit above the stretched link, or they cannot be clicked. */
+.card .chips { position: relative; z-index: 1; }
+
+/* --- hero ----------------------------------------------------------------- */
+.hero { padding-block: var(--space-20) var(--space-16); }
+.hero-inner { max-width: 52rem; }
+.hero h1 { margin-bottom: var(--space-6); }
+.hero-lede { font-size: var(--text-lg); margin-bottom: var(--space-8); max-width: 42rem; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+
+/* --- panels --------------------------------------------------------------- */
+.panel { background: var(--color-paper); padding: var(--space-10); border: 2px solid var(--color-ink); }
+.panel-brand { background: var(--color-brand); color: var(--on-colour); padding: var(--space-10); }
+.panel-brand h2, .panel-brand h3 { color: var(--on-colour); }
+.panel-brand p { color: var(--on-colour-muted); }
+.panel-brand a:not(.btn) { color: var(--on-colour); }
+
+/* --- prose (a rendered Notion body) --------------------------------------- */
+.prose > :first-child { margin-top: 0; }
+.prose img { margin-block: var(--space-8); border: 2px solid var(--color-ink); }
+.prose ul, .prose ol { padding-left: var(--space-6); margin: 0 0 var(--space-5); }
+.prose li { margin-bottom: var(--space-3); }
+.prose details { border: 2px solid var(--color-ink); padding: var(--space-4); margin-bottom: var(--space-4); background: var(--color-paper); }
+.prose summary { cursor: pointer; font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; }
+
+/* --- detail pages --------------------------------------------------------- */
+.detail-back { margin-bottom: var(--space-6); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: var(--text-sm); }
+.detail-back a { color: var(--color-ink); }
+.detail-back a:hover { color: var(--color-brand); }
+.detail-head { margin-bottom: var(--space-8); }
+.detail-meta { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; color: var(--color-ink-muted); font-size: var(--text-sm); margin-bottom: var(--space-4); }
+.detail-figure { margin: 0 0 var(--space-8); }
+
+/* --- prev / next ---------------------------------------------------------- */
+.prevnext { display: grid; gap: var(--space-4); margin-top: var(--space-12); padding-top: var(--space-8); border-top: 2px solid var(--color-ink); }
+@media (min-width: 640px) { .prevnext { grid-template-columns: 1fr 1fr; } }
+.prevnext a { display: block; padding: var(--space-4); background: var(--color-paper); border: 2px solid var(--color-ink); color: var(--color-ink); font-size: var(--text-sm); }
+.prevnext a:hover { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); }
+.prevnext span { display: block; font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-1); }
+.prevnext .next { text-align: right; }
+
+/* --- filters -------------------------------------------------------------- */
+.filters { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-8); }
+
+/* --- empty state ---------------------------------------------------------- */
+.empty { padding: var(--space-10); text-align: center; color: var(--color-ink-muted); border: 2px dashed var(--color-border-strong); background: var(--color-paper); }

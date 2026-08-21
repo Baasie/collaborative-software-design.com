@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageTitle, SITE_NAME, CONTACT_EMAIL } from '../lib/seo';
+
+const description = `How ${SITE_NAME} handles your data. Briefly: it does not collect any.`;
+---
+<BaseLayout title={pageTitle('Privacy')} description={description}>
+  <div class="wrap section prose">
+    <h1>Privacy</h1>
+    <p>
+      This site is a set of static files. It sets no cookies, asks for nothing, and has
+      no login, no comments and no forms.
+    </p>
+
+    <h2>There is no contact form</h2>
+    <p>
+      Getting in touch is a plain <code>mailto:</code> link to
+      <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>, which opens your own mail
+      client. Nothing you type is submitted to this site, because there is nothing here
+      to submit it to.
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      If page-view counting is enabled, it is done with a privacy-preserving analytics
+      script that stores no cookie, creates no cross-site identifier and records no
+      personal data. There is nothing here that needs a consent banner, and this page
+      has to keep being able to say that.
+    </p>
+
+    <h2>What your browser reaches</h2>
+    <p>
+      Pages here link out — to Manning, to LinkedIn, to Bluesky. Following one of those
+      takes you to somebody else’s site under somebody else’s policy. Fonts and images
+      are served from this site rather than from a third party, so simply reading a page
+      contacts nobody else.
+    </p>
+
+    <h2>Server logs</h2>
+    <p>
+      The host that serves these files keeps ordinary web-server logs, which include IP
+      addresses, for a short period and for the purpose of running the server.
+    </p>
+  </div>
+</BaseLayout>

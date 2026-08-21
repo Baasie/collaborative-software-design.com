@@ -1,0 +1,40 @@
+---
+/** The tags in use on the index, as a filter bar.
+ *
+ * Progressive enhancement, and the degraded state is the important one: with
+ * scripting off the bar is not rendered at all and every card is shown. A
+ * filter that cannot filter is worse than no filter, and "all the letters" is
+ * a perfectly good index — which is why this hides itself rather than the
+ * cards. `html.js` is set before anything paints, so it does not flash.
+ *
+ * The state lives in the URL hash, which is load-bearing here: the eighteen
+ * `/tag/{slug}/` addresses the WordPress site answers are redirected to
+ * `/faq/#tag={slug}`, and this is what makes them land on something.
+ */
+import { tagSlug } from '../lib/tags';
+
+interface Props {
+  tags: { tag: string; count: number }[];
+  allLabel?: string;
+}
+const { tags, allLabel = 'Everything' } = Astro.props;
+---
+{tags.length > 0 && (
+  <nav class="filters js-filter" aria-label="Filter by topic" data-test="tag-filter" data-pagefind-ignore>
+    <button class="chip js-filter-btn is-on" type="button" data-tag="" aria-pressed="true">{allLabel}</button>
+    {tags.map(({ tag, count }) => (
+      <button class="chip js-filter-btn" type="button" data-tag={tagSlug(tag)} aria-pressed="false">
+        {tag} <span class="count">{count}</span>
+      </button>
+    ))}
+  </nav>
+)}
+
+<style>
+  /* Hidden until the script that makes it work has had a chance to run. */
+  .filters.js-filter { display: none; }
+  :global(html.js) .filters.js-filter { display: flex; }
+  .js-filter-btn { cursor: pointer; font: inherit; font-family: var(--font-heading); font-weight: 700; font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.04em; }
+  .js-filter-btn.is-on { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); }
+  .count { opacity: 0.7; margin-left: var(--space-1); font-variant-numeric: tabular-nums; }
+</style>

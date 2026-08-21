@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TrainingCard from '../../components/TrainingCard.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import { trainingsByFormat, trainings } from '../../lib/collections';
+import { pageTitle, organisation, mailto, AUTHORS, BOOK_URL } from '../../lib/seo';
+
+const groups = await trainingsByFormat();
+const all = await trainings();
+
+const description =
+  'Hands-on workshops in the facilitation discipline behind good domain modelling '
+  + 'decisions: reading the room, working with ranking and resistance, and closing '
+  + 'on decisions that hold. Two-day deep dives and shorter formats.';
+
+// An `ItemList` rather than one Course node: this page is the list, and each
+// workshop has a page of its own carrying its own Course.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Training',
+  description,
+  publisher: organisation(Astro.site),
+  itemListElement: all.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: new URL(`/training/${t.id}/`, Astro.site).toString(),
+    name: t.data.title,
+  })),
+};
+---
+<BaseLayout title={pageTitle('Training')} description={description} jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow eyebrow--ink">Bookings</p>
+      <h1>Practise the moments that break a design session</h1>
+      <p class="hero-lede">
+        You will not sit and listen to theory. Every workshop puts you in the room —
+        facilitating, getting it wrong, getting feedback, and going again — because
+        facilitation is a skill, and skills are not acquired from slides. All formats
+        run online or in person, in-house or open enrolment.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--primary" href={mailto(
+          'Booking enquiry: training',
+          'Hi,\n\nI would like to talk about a training.\n\nWhich workshop:\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
+        )}>Ask about a date</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section section--paper">
+    <div class="wrap">
+      {all.length > 0 ? (
+        [...groups].map(([format, items]) => (
+          <section class="format-group">
+            <div class="section-head"><h2>{format}</h2></div>
+            <div class="grid grid--3">
+              {items.map((t) => <TrainingCard entry={t} />)}
+            </div>
+          </section>
+        ))
+      ) : (
+        <p class="empty">The workshop list is being updated.</p>
+      )}
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="panel">
+        <p class="eyebrow">Who runs these</p>
+        <h2>The authors of the book</h2>
+        <p>
+          {AUTHORS.map((a) => a.name).join(', ')} — the workshops are where the book’s
+          material is practised rather than read.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a>
+          <a class="btn btn--outline" href="/facilitation/">Or hire us to facilitate</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .format-group + .format-group { margin-top: var(--space-16); }
+</style>
