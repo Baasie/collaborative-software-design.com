@@ -118,6 +118,23 @@ A pull request gets everything above step 4 and deploys nothing.
 | `KUALO_KNOWN_HOSTS` | The host's public key. `StrictHostKeyChecking=yes` with a pinned key, not `no`: turning it off to save a secret is how a deploy quietly starts trusting whatever answers on that address. |
 | `SITE_URL` | `verify:live`. Optional; without it the deploy says it was not verified. |
 
+Set them with **`./scripts/setup-secrets.sh`**, which prompts for each, generates
+the deploy keypair, and runs `ssh-keyscan` for `KUALO_KNOWN_HOSTS` — the two
+that are fiddly to get right by pasting. Values go straight to `gh` and never
+touch this repository.
+
+**Do not create these with placeholder values to reserve the name.** Both
+workflows gate on a secret being *present*, and that is exactly what makes them
+skip cleanly while you are still setting up:
+
+- no `NOTION_TOKEN` → the hourly sync skips with a notice. A placeholder makes
+  it *fail* every hour instead.
+- no `KUALO_HOST` → the deploy builds, tests, and stops. A placeholder points an
+  rsync at a machine that is not there.
+
+GitHub has no empty secret, so there is no way to reserve a name without this
+cost. The script is the way round it.
+
 ## API pacing
 
 Notion allows roughly three requests per second and answers 429 above that.

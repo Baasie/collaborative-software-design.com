@@ -68,6 +68,19 @@ NOTION_TOKEN=ntn_...
 The integration needs read access to the **Collaborative software design**
 teamspace. In CI it is the `NOTION_TOKEN` repository secret.
 
+### Setting up CI
+
+```bash
+./scripts/setup-secrets.sh          # everything
+./scripts/setup-secrets.sh notion   # just the Notion token
+./scripts/setup-secrets.sh deploy   # just the host
+```
+
+Prompts for each value, generates the SSH deploy key, and scans the host's
+public key. Values go straight to `gh` and never touch this repository. See
+[docs/pipeline.md](docs/pipeline.md) for what each secret is for — and for why
+placeholder values are worse than none.
+
 The database and page ids in `scripts/sync-notion.ts` are published on purpose.
 They identify a database; they do not grant access to one.
 
