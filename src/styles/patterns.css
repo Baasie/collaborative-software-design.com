@@ -93,7 +93,11 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .card-media { aspect-ratio: 16 / 9; background: var(--tint-ink); overflow: hidden; }
 .card-media img { width: 100%; height: 100%; object-fit: cover; }
 .card-body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); flex: 1; }
-.card-body h3 { margin: 0; font-size: var(--text-lg); }
+/* Any heading level, not just h3. A card's title takes whatever level the
+   surrounding outline needs — h2 on an index where the card IS the section,
+   h3 inside one — and it must look the same either way. Targeting `h3` alone
+   is how the Dear CoMo index ended up with fifteen 2.75rem display headings. */
+.card-body :is(h2, h3, h4) { margin: 0; font-size: var(--text-lg); }
 /* The whole card is the link target, without nesting a second <a> inside the
    first: the title carries the real href and this stretches its hit area. */
 .card-link { color: var(--color-ink); }
