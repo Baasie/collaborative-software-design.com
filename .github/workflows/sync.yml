@@ -44,14 +44,37 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - name: Sync
+      # Skip cleanly when the token is not wired yet, rather than failing.
+      #
+      # This runs hourly. Hard-failing on a missing secret turns an unfinished
+      # setup step into a red cross every hour for ever, and a repository whose
+      # CI is always red is a repository where nobody looks at CI — which costs
+      # far more than the missing sync. Same bargain deploy.yml already makes
+      # for KUALO_HOST.
+      #
+      # A run somebody STARTED BY HAND is different: they asked for a sync, so
+      # not doing one is a failure they need to hear about.
+      - name: Is there anything to sync with?
+        id: gate
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: |
-          if [ -z "$NOTION_TOKEN" ]; then
+          if [ -n "$NOTION_TOKEN" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "::error::NOTION_TOKEN is not set. Add it as a repository secret."
             exit 1
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::NOTION_TOKEN is not set, so nothing was synced. Add it as a repository secret to start publishing from Notion."
+            echo "No NOTION_TOKEN secret, so nothing was synced." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Sync
+        if: steps.gate.outputs.go == 'true'
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
           FLAGS=""
           [ "${{ inputs.full }}" = "true" ] && FLAGS="--full"
           npx tsx scripts/sync-notion.ts content --write $FLAGS
@@ -61,10 +84,12 @@ jobs:
       # Regenerating here means the redirect ships in the same commit as the
       # rename — never a deploy later.
       - name: Regenerate redirects
+        if: steps.gate.outputs.go == 'true'
         run: npm run redirects
 
       - name: Commit
         id: commit
+        if: steps.gate.outputs.go == 'true'
         run: |
           git config user.name 'CoMo sync'
           git config user.email 'noreply@collaborative-software-design.com'
@@ -86,7 +111,7 @@ jobs:
       # What a person has to decide, that the sync cannot decide for them.
       # Surfaced in the run summary rather than left in a file nobody opens.
       - name: What needs a person
-        if: always()
+        if: always() && steps.gate.outputs.go == 'true'
         run: |
           [ -s data/sync-alerts.json ] || exit 0
           node -e '
