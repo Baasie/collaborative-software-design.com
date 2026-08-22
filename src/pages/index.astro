@@ -1,8 +1,52 @@
 ---
+/* The home page, migrated section for section off the live WordPress page.
+ *
+ * The live page is eight Divi sections, and each one is a band of its own
+ * colour. In order: orange hero, magenta "what's inside", white "the book",
+ * white "what you will learn", grey talk, pink bookings, blue authors, orange
+ * contact. The band pattern IS the design — a version of this page in one
+ * ground colour with cards on it is a different page, which is what the first
+ * rebuild was.
+ *
+ * Two things carry over from Divi that are worth naming, because they look like
+ * mistakes and are not:
+ *
+ *   - The book mockup belongs to the MAGENTA section, not the hero, and is
+ *     pulled upwards out of it so it straddles the boundary. `.et_pb_image_0`
+ *     is `margin-top:-514px` inside `.et_pb_section_1`. Putting it in the hero
+ *     instead and letting it overflow downwards looks the same at one width
+ *     and comes apart at every other, because then the overlap depends on the
+ *     hero's height rather than on the section it is anchored to.
+ *   - "WHAT'S INSIDE" is not text on the live page. It is a drawn graphic used
+ *     as a section background at `left 10% top 5%`. It stays a background here,
+ *     and the section gets a real heading for the outline that is visible only
+ *     to a screen reader — otherwise the page has a whole section with no name.
+ *
+ * ONE DELIBERATE DEVIATION, and it is the only one: on the magenta band the
+ * live page sets every heading and paragraph to BLACK (`body{color:#000000}`
+ * reaching into `et_pb_bg_layout_light`). Black on #9d0064 measures 2.62:1. The
+ * text here is white instead — 8.02:1, and the colour the brand already uses on
+ * magenta everywhere else, including its own buttons. See AGENTS.md, "the trap
+ * in this brand"; the blocking contrast test would fail on the faithful choice.
+ */
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { CHAPTERS } from '../lib/nav';
-import { BOOK_URL, AUTHORS, pageTitle, organisation, bookJsonLd } from '../lib/seo';
+import { AUTHORS, pageTitle, organisation, bookJsonLd } from '../lib/seo';
+
+import heroWoman from '../assets/home/hero-woman.png';
+import whatsInsideTitle from '../assets/home/whats-inside-title.png';
+import bookMockup from '../assets/home/book-mockup.png';
+import chapterPhoto from '../assets/home/chapter-01.png';
+import iconFacilitating from '../assets/home/icon-facilitating.png';
+import iconDecisions from '../assets/home/icon-decisions.png';
+import iconHeuristics from '../assets/home/icon-heuristics.png';
+import iconSocial from '../assets/home/icon-social-dynamics.png';
+import talkPoster from '../assets/home/talk-goto-2024.jpg';
+import evelyn from '../assets/home/evelyn.jpg';
+import kenny from '../assets/home/kenny.jpg';
+import gien from '../assets/home/gien.jpg';
 
 const description =
   'An inside track on how to facilitate domain modelling decisions. Pragmatic '
@@ -14,61 +58,94 @@ const jsonLd = {
   '@graph': [organisation(Astro.site), bookJsonLd(Astro.site)],
 };
 
-/** What the book teaches — the four items the live site sets under icons. */
+const [lead, ...pair] = CHAPTERS;
+
+/** The four icons under "What you will learn". The second line of a title is a
+ *  `<br />` on the live page, so it is a separate field rather than a newline
+ *  inside one string — a wrap that has to happen is not whitespace. */
 const LEARN = [
-  { title: 'Holding and facilitating collaborative modeling sessions' },
-  { title: 'How to make sustainable software design decisions' },
-  { title: 'Heuristics for software design', sub: 'through collaborative modeling' },
-  { title: 'How to deal with social dynamics', sub: 'when making design decisions' },
+  { icon: iconFacilitating, title: 'Holding and facilitating collaborative modeling sessions' },
+  { icon: iconDecisions, title: 'How to make sustainable software design decisions' },
+  { icon: iconHeuristics, title: 'Heuristics for software design', second: 'through collaborative modeling' },
+  { icon: iconSocial, title: 'How to deal with social dynamics', second: 'when making design decisions' },
 ];
+
+const PORTRAITS: Record<string, ImageMetadata> = {
+  'evelyn-van-kelle': evelyn,
+  'kenny-baas-schwegler': kenny,
+  'gien-verschatse': gien,
+};
+
+/** The GOTO 2024 talk the live page embeds. Held as an id rather than a URL so
+ *  the poster, the link and the player cannot drift apart. */
+const TALK = {
+  id: 'b8WI1QYP0Zk',
+  title: 'Collaborative Software Design • E. van Kelle, G. Verschatse, K. Baas-Schwegler & X. Yao • GOTO 2024',
+};
 ---
 <BaseLayout title={pageTitle('', { home: true })} description={description} jsonLd={jsonLd}>
-  <section class="hero">
+  <section class="hero" data-test="home-hero">
     <div class="wrap hero-inner">
-      <p class="eyebrow eyebrow--ink">A book about</p>
-      <h1>Collaborative<br />Software Design</h1>
-      <p class="hero-lede">
-        An inside track on how to facilitate domain modelling decisions. A layout of
-        pragmatic techniques for making collaborative design decisions, ensuring
-        you’re getting a group’s full participation and input to solve real business
-        problems.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a>
-        <a class="btn btn--outline" href="#whatsinside">What’s inside</a>
+      <div class="hero-copy">
+        <h1>A book about<br />Collaborative<br />Software Design</h1>
+        <p class="hero-lede">
+          An inside track on how to facilitate domain modeling decisions. Lay out of
+          pragmatic techniques for making collaborative design decisions, ensuring
+          you’re getting a group’s full participation and input to solve real business
+          problems.
+        </p>
       </div>
     </div>
+    {/* Decorative: the engraved figure the book cover is drawn from. `lighten`
+        is the live page's own `background-blend-mode`, which is what makes her
+        read as a tint of the orange rather than a photo stuck on top of it. */}
+    <Image class="hero-figure" src={heroWoman} alt="" widths={[280, 557]}
+           sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
 
-  <section class="section section--paper" id="whatsinside">
+  <section class="section whats-inside" id="whatsinside" data-test="whats-inside"
+           style={`--whats-inside-title: url(${whatsInsideTitle.src})`}>
     <div class="wrap">
-      <div class="section-head"><h2>What’s inside</h2></div>
-      <div class="grid grid--3">
-        {CHAPTERS.map((c) => (
-          <article class="card">
-            <div class="card-body">
-              <p class="eyebrow">Chapter #{c.number}</p>
-              <h3><a class="card-link" href={c.href}>{c.title}</a></h3>
-              <p class="card-excerpt">
-                {c.number === '01' && 'Great technical teams working closely with well-meaning business stakeholders can still deliver software that fails to meet an organization’s needs. We see it every day.'}
-                {c.number === '02' && 'A visualization technique to analyze complex and conflict-laden decision-making processes with all relevant stakeholders and decision-makers to create a shared understanding.'}
-                {c.number === '05' && 'Collaborative modeling tools alone do not guarantee effective collaboration; someone needs to guide people during collaboration: a facilitator.'}
-              </p>
-              <p class="card-meta">See this chapter →</p>
-            </div>
-          </article>
+      <h2 class="visually-hidden">What’s inside</h2>
+
+      <div class="wi-book">
+        <Image src={bookMockup} alt="Collaborative Software Design, published by Manning"
+               widths={[300, 525, 600]} sizes="(min-width: 900px) 525px, 60vw" loading="eager" />
+      </div>
+
+      <div class="chapter chapter--lead">
+        {/* Decorative: a photograph of a modelling session. The live page tilts
+            it 357deg and hides it below 980px, where it would be a 480px-tall
+            image between a reader and the words. */}
+        <Image class="chapter-figure" src={chapterPhoto} alt="" widths={[483]} sizes="483px" />
+        <div class="chapter-copy">
+          <p class="eyebrow">Chapter #{lead.number}</p>
+          <h3>{lead.heading}</h3>
+          <p>{lead.blurb}</p>
+          <p><a class="btn btn--ink" href={lead.href}>See this chapter</a></p>
+        </div>
+      </div>
+
+      <div class="chapter-pair">
+        {pair.map((c) => (
+          <div class="chapter chapter--centred">
+            <p class="eyebrow">Chapter #{c.number}</p>
+            <h3>{c.heading}</h3>
+            <p>{c.blurb}</p>
+            <p><a class="btn btn--ink" href={c.href}>See this chapter</a></p>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--paper" data-test="the-book">
     <div class="wrap book-grid">
       <div>
-        <p class="eyebrow eyebrow--ink">Discover</p>
+        <p class="eyebrow">Discover</p>
         <h2>The book</h2>
         <p>
-          Making domain modelling decisions can be hard. Great technical teams working
+          Making domain modeling decisions can be hard. Great technical teams working
           closely with well-meaning business stakeholders can still deliver software
           that fails to meet an organization’s needs.
         </p>
@@ -81,60 +158,74 @@ const LEARN = [
           techniques for making collaborative design decisions, ensuring you’re getting
           a group’s full participation and input to solve real business problems.
         </p>
-        <p><a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a></p>
       </div>
       <blockquote class="book-quote">
-        An indispensable guide to modern software development collaboration techniques,
+        “ An indispensable guide to modern software development collaboration techniques,
         with clear explanations of how to facilitate each of them. Grounded in research,
-        but born out of many years of practice!
+        but born out of many years of practice !”
       </blockquote>
     </div>
   </section>
 
-  <section class="section section--paper">
+  <section class="section section--paper" data-test="what-you-learn">
     <div class="wrap">
-      <div class="section-head"><h2>What you will learn</h2></div>
+      <h2 class="learn-head">What you will learn</h2>
       <div class="grid grid--4">
         {LEARN.map((l) => (
-          <article class="learn">
-            <h3>{l.title}</h3>
-            {l.sub && <p class="card-excerpt">{l.sub}</p>}
-          </article>
+          <div class="learn">
+            <Image class="learn-icon" src={l.icon} alt="" width={103} height={103} />
+            <h3>{l.title}{l.second && <><br />{l.second}</>}</h3>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section">
+  {/* The talk the live page embeds. It loads on a click rather than on page
+      load: an iframe from youtube.com contacts Google for every visitor who
+      never presses play, and this site's privacy policy says it sets nothing.
+      The player it swaps in is youtube-nocookie.com, and the caption is a plain
+      link, so the section still works with no JavaScript at all. */}
+  <section class="section section--grey" data-test="talk">
     <div class="wrap">
-      <div class="panel">
-        <p class="eyebrow">Bookings</p>
-        <h2>In need of consultancy or training around making sustainable domain modelling decisions?</h2>
-        <p>
-          We can train technical leaders in your company to facilitate collaborative
-          modelling sessions, coach current facilitators to become more effective, or
-          facilitate a session for you.
+      <div class="video" data-test="video">
+        <button class="js-video-play video-play" type="button"
+                data-video={TALK.id} aria-label={`Play: ${TALK.title}`}>
+          <Image src={talkPoster} alt="" widths={[640, 1080]} sizes="(min-width: 900px) 1080px, 100vw" />
+          <span class="video-icon" aria-hidden="true">▶</span>
+        </button>
+        <p class="video-caption">
+          <a href={`https://www.youtube.com/watch?v=${TALK.id}`} rel="noopener">{TALK.title}</a>
         </p>
-        <div class="hero-actions">
-          <a class="btn btn--primary" href="/training/">See the training</a>
-          <a class="btn btn--outline" href="/facilitation/">Consulting</a>
-        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section--paper" id="authors">
+  <section class="section section--pink bookings" data-test="bookings">
+    <div class="wrap">
+      <p class="eyebrow">Bookings</p>
+      <h2>In need of consultancy or training around making sustainable domain modeling decisions?</h2>
+      <p>
+        We can train technical leaders in your company to facilitate collaborative
+        modeling sessions, coach current facilitators to become more effective or
+        facilitate a session for you.
+      </p>
+      <p><a class="btn btn--ink" href="/#contact">Book a training or consulting</a></p>
+    </div>
+  </section>
+
+  <section class="section section--blue" id="authors" data-test="authors">
     <div class="wrap">
       <p class="eyebrow">About</p>
-      <div class="section-head"><h2>The authors</h2></div>
-      <div class="grid grid--3">
+      <h2>The authors</h2>
+      <div class="grid grid--3 authors">
         {AUTHORS.map((a) => (
-          <article class="card" id={a.slug}>
-            <div class="card-body">
-              <h3><a class="card-link" href={a.url} rel="noopener">{a.name}</a></h3>
-              <p class="card-excerpt">{a.bio}</p>
-            </div>
-          </article>
+          <div class="author" id={a.slug}>
+            <Image class="author-photo" src={PORTRAITS[a.slug]} alt={a.name}
+                   widths={[338, 676]} sizes="(min-width: 900px) 338px, 80vw" />
+            <h3><a href={a.url} rel="noopener">{a.name}</a></h3>
+            <p>{a.bio}</p>
+          </div>
         ))}
       </div>
     </div>
@@ -144,15 +235,128 @@ const LEARN = [
 </BaseLayout>
 
 <style>
-  .hero h1 { line-height: 0.95; }
-  .book-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
-  @media (min-width: 900px) { .book-grid { grid-template-columns: 1.4fr 1fr; gap: var(--space-16); } }
-  .book-quote {
-    background: var(--color-ink); color: var(--on-colour);
-    border-left-color: var(--color-brand); border-left-width: 8px;
-    font-family: var(--font-heading); font-size: var(--text-xl); line-height: 1.35;
-    text-transform: none; margin: 0; padding: var(--space-8);
+  /* --- hero --------------------------------------------------------------- */
+  /* `padding-top:0` and `padding-bottom:54px` are the live section's own. The
+     figure is absolutely placed against the section, anchored to its right edge
+     and its top, at natural size — `background-size:initial` on the original. */
+  .hero {
+    position: relative; overflow: hidden;
+    background: var(--color-ground); color: var(--on-ground);
+    padding-block: var(--space-12) var(--space-12);
   }
-  .learn { border-top: 8px solid var(--color-brand); padding-top: var(--space-4); }
-  .learn h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+  .hero-inner { position: relative; z-index: 1; max-width: var(--wide-width); }
+  .hero-copy { max-width: 39rem; }
+  /* 70px on the live page, and it has to bend on a phone: "Collaborative" set
+     condensed at a flat 70px overflows a 360px viewport. */
+  .hero h1 { margin: 0 0 var(--space-8); font-size: clamp(2.75rem, 8.5vw, 4.375rem); line-height: 1.1; letter-spacing: 1px; }
+  .hero-lede { font-size: var(--text-lg); margin: 0; max-width: 34rem; }
+
+  .hero-figure {
+    position: absolute; top: 0; right: 0; z-index: 0;
+    width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
+  }
+
+  /* --- what's inside ------------------------------------------------------ */
+  .whats-inside {
+    position: relative;
+    background-color: var(--color-brand);
+    background-image: var(--whats-inside-title);
+    background-repeat: no-repeat;
+    background-position: left 10% top 5%;
+    color: var(--on-brand);
+    padding-block: var(--space-12) var(--space-20);
+  }
+  /* See the deviation note at the head of this file: white, not the live
+     page's black, which is 2.4:1 on this ground. */
+  .whats-inside :is(h2, h3) { color: var(--on-brand); }
+  .whats-inside .eyebrow { color: var(--on-colour-muted); }
+  /* The live hover fills the button with the section's own magenta and keeps it
+     visible with a white border. Without the border it dissolves. */
+  .whats-inside .btn--ink:hover { border-color: var(--on-colour); }
+
+  /* The mockup straddles the section boundary: it is the first thing in this
+     section and is pulled up out of it. The lift shrinks with the viewport,
+     exactly as the live page's does (-514px / -300px / -150px). */
+  .wi-book { display: flex; justify-content: flex-end; margin-top: -150px; }
+  .wi-book img { width: min(60vw, 525px); height: auto; }
+
+  .chapter { margin-top: var(--space-16); }
+  .chapter-copy h3, .chapter--centred h3 { margin: 0 0 var(--space-5); font-size: var(--text-3xl); line-height: 1.15; letter-spacing: 2px; }
+  .chapter p { margin: 0 0 var(--space-6); }
+  .chapter--centred { text-align: center; }
+  .chapter-figure { display: none; }
+  .chapter-pair { display: grid; gap: var(--space-16); grid-template-columns: 1fr; }
+
+  /* --- the book ----------------------------------------------------------- */
+  .book-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  /* The pull quote is magenta on white — 8:1, and the one place on the page
+     where the accent is used as type rather than as a fill. */
+  .book-quote {
+    margin: 0; padding: 0; border: 0;
+    color: var(--color-brand); font-family: var(--font-body);
+    font-size: var(--text-xl); line-height: 1.6; text-transform: none;
+  }
+
+  /* --- what you will learn ------------------------------------------------ */
+  .learn-head { text-align: center; margin-top: 0; margin-bottom: var(--space-12); }
+  .learn { text-align: center; }
+  .learn-icon { width: 103px; height: 103px; margin: 0 auto var(--space-4); }
+  .learn h3 { margin: 0; font-size: var(--text-base); line-height: 1.5; }
+
+  /* --- the talk ----------------------------------------------------------- */
+  .video { max-width: 68rem; margin-inline: auto; }
+  .video-play {
+    position: relative; display: block; width: 100%; padding: 0;
+    background: none; border: 2px solid var(--color-ink); cursor: pointer;
+  }
+  .video-play img { display: block; width: 100%; height: auto; }
+  .video-icon {
+    position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: 84px; height: 84px; padding-left: 6px;
+    background: var(--scrim-strong); color: var(--on-colour); font-size: var(--text-2xl);
+  }
+  .video-play:hover .video-icon { background: var(--color-brand); }
+  .video :global(iframe) { display: block; width: 100%; aspect-ratio: 16 / 9; border: 2px solid var(--color-ink); }
+  .video-caption { margin: var(--space-4) 0 0; font-size: var(--text-sm); }
+
+  /* --- bookings ----------------------------------------------------------- */
+  .bookings { text-align: center; }
+  .bookings h2 { margin-top: 0; max-width: 40rem; margin-inline: auto; }
+  .bookings p { max-width: 46rem; margin-inline: auto; }
+
+  /* --- authors ------------------------------------------------------------ */
+  .authors { margin-top: var(--space-12); }
+  .author { text-align: center; }
+  .author-photo { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
+  .author h3 { margin: var(--space-6) 0 var(--space-4); font-size: var(--text-xl); }
+  /* Black, as the live page's author names are. They are plain text there;
+     here each one links to its author, which the underline on hover shows —
+     the magenta a link would otherwise take is not this band's colour. */
+  .author h3 a { color: var(--color-ink); }
+  .author p { margin: 0; font-size: var(--text-sm); line-height: 1.8; }
+
+  @media (min-width: 640px) {
+    .wi-book { margin-top: -300px; }
+    .chapter-pair { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (min-width: 900px) {
+    .hero { padding-block: 0 var(--space-12); }
+    .hero-inner { padding-top: var(--space-16); }
+    .hero-figure { width: 557px; }
+    /* Lifts the mockup 426px clear of the magenta, which is where the live
+       page puts it once its own section padding is accounted for. */
+    .wi-book { margin-top: -474px; }
+    .chapter--lead { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); align-items: center; }
+    /* The tilt is the live page's `rotateZ(357deg)`. It only appears at this
+       width, where there is room for a square image beside the words. */
+    .chapter-figure { display: block; width: 90%; height: auto; transform: rotate(-3deg); }
+    .book-grid { grid-template-columns: 1fr 1fr; gap: var(--space-16); }
+    .book-quote { font-size: var(--text-2xl); }
+  }
 </style>
+
+<script>
+  import { initVideo } from '../scripts/video';
+  initVideo();
+</script>

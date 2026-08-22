@@ -27,12 +27,19 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   line-height: 1.1;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  /* 2px at the live page's 46–51px display sizes. */
+  letter-spacing: 0.04em;
+  /* SENTENCE CASE, and this was wrong for a while. The rebuild set headings
+     uppercase because condensed display type usually is — but every heading on
+     the live site measures `text-transform:none`, from the 70px "A book about
+     Collaborative Software Design" down to a 20px card title. Only the buttons
+     and the wordmark shout, and the buttons do it because their copy is typed
+     in capitals, not because the CSS transforms it. */
+  text-transform: none;
   margin: 0 0 var(--space-4);
   /* Titles come from Notion, and a Dear CoMo title is a whole question. Set
-     condensed and uppercase, one long compound word can still beat the
-     narrowest phone; only ever breaks a word that cannot fit. */
+     condensed, one long compound word can still beat the narrowest phone;
+     only ever breaks a word that cannot fit. */
   overflow-wrap: break-word;
 }
 h1 { font-size: var(--text-4xl); }
@@ -104,6 +111,15 @@ th { background: var(--tint-ink); font-family: var(--font-heading); font-weight:
 }
 .skip-link:focus { top: var(--space-4); }
 main:focus { outline: none; }
+
+/* For a heading that exists in the outline but is drawn rather than typeset —
+   the home page's "What's inside", which is a graphic on the live site. Not
+   `display:none`, which would take it out of the accessibility tree too and
+   leave the section unnamed, which is the thing this is fixing. */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; margin: -1px; padding: 0; border: 0;
+}
 
 /* Motion is decoration here — never information — so it is safe to stop. */
 @media (prefers-reduced-motion: reduce) {

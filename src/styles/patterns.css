@@ -3,10 +3,15 @@
    on, so that swapping the brand stays a one-file change. */
 
 /* --- buttons -------------------------------------------------------------- */
+/* A button is set in the MONO, not in the condensed heading face: the live
+   site's are `IBM Plex Mono, 14px, letter-spacing:1px`. The uppercase stays a
+   transform rather than capitals typed into every label — it renders the same
+   as the live "SEE THIS CHAPTER" without shouting in the source, and it keeps
+   a label readable to a screen reader that spells out capitals. */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
-  font-family: var(--font-heading); font-weight: 700; font-size: var(--text-base);
-  text-transform: uppercase; letter-spacing: 0.06em;
+  font-family: var(--font-body); font-weight: 400; font-size: var(--text-button);
+  text-transform: uppercase; letter-spacing: 0.07em;
   padding: var(--space-3) var(--space-6);
   border: 2px solid transparent; cursor: pointer; text-align: center;
   min-height: 48px;   /* a real tap target */
@@ -48,15 +53,22 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
  * eyebrow is unreadable everywhere the page has not been given a plate, which
  * is most of it. A browser test caught exactly that on three pages.
  *
- * So the safe colour is the default and the brand colour is opted into by
- * CONTEXT rather than by a modifier class somebody has to remember: anywhere
- * there is a white plate underneath, the magenta comes back on its own. */
+ * The live site resolves this more bluntly than the rebuild first did: its
+ * eyebrow is INK on every ground it appears on, white plate or not, and it is
+ * not set in the heading face either — "Chapter #01", "Discover" and "About"
+ * all measure IBM Plex Mono 16px, no capitals, no tracking. So that is what
+ * this is now. The safe colour is the only colour, and the pairing that fails
+ * cannot be reached by forgetting a modifier.
+ *
+ * (The magenta-on-a-plate variant this used to have was legible — 8:1 — and
+ * some may prefer it. To bring it back, add `.section--paper .eyebrow,
+ * .card .eyebrow, .panel .eyebrow { color: var(--color-brand); }` and nothing
+ * else; the white-on-magenta rule below already covers the dangerous ground.) */
 .eyebrow {
-  font-family: var(--font-heading); font-size: var(--text-base); font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-ink);
+  font-family: var(--font-body); font-size: var(--text-base); font-weight: 400;
+  color: var(--color-ink);
   margin: 0 0 var(--space-3);
 }
-.section--paper .eyebrow, .card .eyebrow, .panel .eyebrow { color: var(--color-brand); }
 .eyebrow--ink { color: var(--color-ink); }
 .section--brand .eyebrow, .panel-brand .eyebrow, .eyebrow--on-colour { color: var(--on-colour-muted); }
 
@@ -77,6 +89,24 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .section--brand a:not(.btn) { color: var(--on-colour); }
 .section--brand a:not(.btn):hover { color: var(--color-ground); }
 .section--paper { background: var(--color-paper); }
+/* A section that sits directly on the page's ORANGE, with no plate of its own —
+   the contact band, and anything else added later that does the same. It needs
+   a modifier even though it paints nothing, because what it carries is a
+   constraint: a link in prose here must be INK. The site's link colour is the
+   magenta, and magenta on orange is 2.73:1. This is the fourth time that
+   pairing has been caught by the contrast test — eyebrows, prose links, the
+   current nav item, and then this — so it is named rather than fixed in place.
+   Hover moves the underline, not the colour, since there is no darker accent
+   that reads on this ground either. */
+.section--ground a:not(.btn) { color: var(--color-ink); }
+.section--ground a:not(.btn):hover { color: var(--color-ink); text-decoration-thickness: 3px; }
+/* The home page's tinted bands. All three are light enough to keep the ink
+   default, so unlike `.section--brand` they need no text rules at all — which
+   is the point of choosing them from the measured page rather than inventing
+   a darker tint that would then need its own set of overrides. */
+.section--pink { background: var(--color-ground-pink); }
+.section--blue { background: var(--color-ground-blue); }
+.section--grey { background: var(--color-ground-grey); }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-8); }
 .section-head h2 { margin: 0; }
 .section-head a { font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }

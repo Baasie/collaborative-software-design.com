@@ -80,15 +80,20 @@ measure **2.73:1**.
 
 So brand-coloured text must never sit directly on the page ground. It needs a
 white plate under it. This is not a style preference and it is not theoretical —
-it has already been caught three times by the browser test during this build:
-on the eyebrows, on prose links, and on the current item in the navigation.
+it has now been caught **four** times by the browser test during this build: on
+the eyebrows, on prose links, on the current item in the navigation, and on the
+contact section's "or write to `<address>`" line the day that band was moved
+from the magenta to the orange.
 
-Two consequences are baked into the CSS, and both are load-bearing:
+Three consequences are baked into the CSS, and all three are load-bearing:
 
-- **`.eyebrow` is ink by default**, and only becomes magenta inside
-  `.section--paper`, `.card` or `.panel` — i.e. where a white plate exists. The
-  safe colour is the default; the brand colour is opted into by *context*, not
-  by a modifier somebody has to remember.
+- **`.eyebrow` is ink, everywhere.** It is not the brand colour on any ground.
+  That is also what the live site does — "Chapter #01", "Discover" and "About"
+  all measure black there, in the mono, with no capitals — so the safe colour
+  and the faithful colour turn out to be the same one.
+- **A section sitting directly on the orange says so**, with `.section--ground`,
+  and that modifier makes its prose links ink. It paints nothing; what it
+  carries is the constraint. The contact band is the one that needs it today.
 - **Detail pages put their content on a paper plate.** That is also what the
   WordPress site does (`#main-content{background-color:#fff}`), so it is
   faithful as well as legible.

@@ -14,21 +14,25 @@
  */
 import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
 ---
-<section class="section section--brand" id="contact" data-test="contact">
+{/* ORANGE, not magenta. This band is the live site's footer template
+    (`.et_pb_section_0_tb_footer`), and it is `#e37b45` with black type on
+    every page — the same ground the page already sits on, so it needs no
+    background of its own. */}
+<section class="section section--ground" id="contact" data-test="contact">
   <div class="wrap contact-grid">
     <div>
-      <p class="eyebrow eyebrow--on-colour">Contact</p>
+      <p class="eyebrow">Contact</p>
       <h2>Get in touch</h2>
       <p>
         Any question about Collaborative Software Design, or want to book a
         training or consulting? We would love to hear from you.
       </p>
       <div class="hero-actions">
-        <a class="btn btn--inverse" href={mailto(
+        <a class="btn btn--ink" href={mailto(
           'Booking enquiry: training',
           'Hi,\n\nI would like to talk about a training.\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
         )}>Book a training</a>
-        <a class="btn btn--inverse" href={mailto(
+        <a class="btn btn--ink" href={mailto(
           'Booking enquiry: consulting',
           'Hi,\n\nI would like to talk about consulting / facilitation.\n\nWhat we are working on:\nRough timing:\n\nThanks,\n',
         )}>Book consulting</a>
@@ -55,8 +59,7 @@ import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
   .contact-socials li { margin-bottom: var(--space-3); }
   .contact-socials a {
     display: inline-flex; align-items: center; min-height: 24px;
-    font-family: var(--font-heading); font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.05em; color: var(--on-colour);
+    font-family: var(--font-body); color: var(--color-ink);
   }
-  .contact-socials a:hover { color: var(--color-ground); }
+  .contact-socials a:hover { color: var(--color-brand-deep); }
 </style>

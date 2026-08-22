@@ -28,6 +28,16 @@
   --color-border: rgba(0, 0, 0, 0.16);
   --color-border-strong: rgba(0, 0, 0, 0.42);
 
+  /* Section grounds. The home page is not orange-and-magenta alone: it runs a
+   * band of tints, one per section, and they are as much the brand as the two
+   * above. Measured off the live page as rendered, not read off a swatch —
+   * `.et_pb_section_5` is the pink, `_6` the blue, `_4` the grey behind the
+   * talk. All three take BLACK type (10.1:1, 12.3:1, 17.6:1), which is why they can
+   * be used flat where the magenta cannot. */
+  --color-ground-pink: #e69ec6;
+  --color-ground-blue: #aec9e9;
+  --color-ground-grey: #ebebeb;
+
   /* Text on a fill. Two tokens for two jobs, and conflating them is how white
    * ends up on a pale ground:
    *   --on-brand   text on the magenta. White: 8.02:1.
@@ -66,6 +76,7 @@
    * normal sans would at the same measure. The live display heading is 60px,
    * 700, `letter-spacing:1px`, `line-height:1.1em`. */
   --text-sm: 0.8125rem;
+  --text-button: 0.875rem;   /* 14px — every button on the live site, exactly */
   --text-base: 1rem;
   --text-lg: 1.1875rem;
   --text-xl: 1.5rem;
