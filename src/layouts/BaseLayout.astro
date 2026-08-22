@@ -16,8 +16,8 @@ import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/patterns.css';
 import Logo from '../components/Logo.astro';
-import { NAV, footerLinks } from '../lib/nav';
-import { SITE_NAME, SITE_TAGLINE, BOOK_URL, CONTACT_EMAIL, SOCIALS, abs } from '../lib/seo';
+import { NAV } from '../lib/nav';
+import { SITE_NAME, BOOK_URL, abs } from '../lib/seo';
 import { socialCard } from '../lib/social-card';
 
 interface Props {
@@ -116,8 +116,18 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
     <a class="skip-link" href="#main" data-test="skip-link">Skip to content</a>
 
     <header class="site-header" id="site-header" data-test="site-header">
-      <div class="wrap header-inner">
-        <a href="/" class="brand" aria-label={`${SITE_NAME} — home`}><Logo width={240} alt="" /></a>
+      {/* The header row is 90% of the viewport, not the 72rem the page content
+          uses — the live one is `width:90%; max-width:100%`, so the wordmark
+          and the BUY BOOK button sit further out than the text below them. */}
+      <div class="header-wrap header-inner">
+        {/* Both wordmarks ship and CSS picks. On the orange the outline of
+            DESIGN has to be white (`diap`); once the header turns white on
+            scroll that same outline vanishes, which is exactly what happens on
+            the live site. See Logo.astro. */}
+        <a href="/" class="brand" aria-label={`${SITE_NAME} — home`}>
+          <Logo width={320} alt="" variant="diap" class="brand-diap" />
+          <Logo width={320} alt="" variant="ink" class="brand-ink" />
+        </a>
 
         <button class="nav-toggle" data-test="nav-toggle" type="button"
                 aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">
@@ -161,7 +171,11 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
               </a>
             </li>
           </ul>
-          <a class="btn btn--primary btn--buy" href={BOOK_URL} rel="noopener" data-test="buy-book">Buy book</a>
+          {/* Outlined, not filled. The live button is transparent with a 1px
+              black rule and black type, and only fills — with the magenta —
+              on hover. A magenta fill at rest would also be the one thing this
+              header cannot carry: it sits on the orange. */}
+          <a class="btn btn--outline btn--buy" href={BOOK_URL} rel="noopener" data-test="buy-book">Buy book</a>
         </nav>
       </div>
     </header>
@@ -172,36 +186,23 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       <slot />
     </main>
 
+    {/* The whole footer, and this is not an abbreviation: the live site's
+        footer is one white bar with one line of 12px type in it. Everything a
+        richer footer would repeat is already on the page above — the contact
+        band carries the address and the social links, the menu carries the
+        pages, and `<link rel="alternate">` in the head carries the feed.
+
+        One addition: the privacy policy. The live site links it from the cookie
+        banner, and this site has no cookie banner to link it from, so without
+        this line the page would be reachable only by typing its address. */}
     <footer class="site-footer" data-test="site-footer">
-      <div class="wrap footer-grid">
-        <div class="footer-about">
-          <Logo width={220} />
-          <p>{SITE_TAGLINE}.</p>
-          <ul class="footer-socials">
-            {SOCIALS.map((s) => <li><a href={s.url} rel="noopener">{s.name}</a></li>)}
-            <li><a href={`mailto:${CONTACT_EMAIL}`}>Email</a></li>
-          </ul>
-        </div>
-        <div class="footer-explore">
-          <h2>Explore</h2>
-          <ul>
-            {footerLinks().map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-          </ul>
-        </div>
-        <div class="footer-explore">
-          <h2>The book</h2>
-          <ul>
-            <li><a href={BOOK_URL} rel="noopener">Buy it at Manning</a></li>
-            <li><a href="/faq/">Dear CoMo</a></li>
-            <li><a href="/search/">Search</a></li>
-            <li><a href="/rss.xml">RSS</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="wrap footer-bottom">
-        {/* The credit the live site carries. Keep it. */}
-        <p>© {year} {SITE_NAME} | Webdesign by <a href="https://artofdesign.nl/" rel="noopener">Art of Design</a></p>
-        <p class="footer-links"><a href="/privacy-policy/">Privacy</a></p>
+      <div class="footer-wrap">
+        <p>
+          © {year} {SITE_NAME} | Webdesign by
+          <a href="https://artofdesign.nl/" rel="noopener">Art of Design</a>
+          <span class="footer-sep" aria-hidden="true">|</span>
+          <a href="/privacy-policy/">Privacy</a>
+        </p>
       </div>
     </footer>
 
@@ -209,23 +210,37 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       /* The header is the ORANGE ground with black type, and turns white once
          you scroll — which is exactly what the live site does
          (`.et_pb_section_0_tb_header` is #E37B45, and #FFFFFF in its fixed
-         state). Both grounds are light, which is why the wordmark needs no
-         plate behind it: it was drawn for a light ground. */
+         state). No rule under it there, either; the bands below supply their
+         own edge.
+
+         Measured off the live header at 1440px: 161px tall at rest, 125px once
+         it sticks, a 320×52 wordmark, and the row at 90% of the viewport. */
       .site-header {
         position: sticky; top: 0; z-index: 30;
         background: var(--color-ground); color: var(--color-ink);
-        border-bottom: 3px solid var(--color-ink);
         transition: background 0.2s ease;
       }
       .site-header.scrolled { background: var(--color-paper); }
+      .header-wrap { width: 90%; margin-inline: auto; }
       .header-inner {
         position: relative; display: flex; align-items: center; justify-content: space-between;
-        gap: var(--space-6); padding-block: var(--space-4); transition: padding 0.2s ease;
+        gap: var(--space-6); padding-block: var(--space-10); transition: padding 0.2s ease;
       }
-      .site-header.scrolled .header-inner { padding-block: var(--space-2); }
+      .site-header.scrolled .header-inner { padding-block: var(--space-6); }
       .brand { display: inline-flex; }
+      /* One wordmark is shown at a time. `display` rather than opacity so the
+         hidden one is never announced or hit-tested. */
+      /* `:global`, because the class travels into Logo.astro and the <img> it
+         lands on carries Logo's scope attribute, not this one. Without it the
+         selector matches nothing and BOTH wordmarks render side by side. */
+      .site-header :global(.brand-ink) { display: none; }
+      .site-header.scrolled :global(.brand-diap) { display: none; }
+      .site-header.scrolled :global(.brand-ink) { display: inline-block; }
 
-      .site-nav { display: flex; align-items: center; gap: var(--space-6); }
+      /* The menu sits immediately after the wordmark and the BUY BOOK button
+         goes to the far right — Divi splits the header row 3/4 + 1/4 and this
+         is what that looks like without the grid. */
+      .site-nav { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: var(--space-6); }
       /* The live menu is the body face at its normal size and in sentence case
          — `IBM Plex Mono, 16px`, "What's inside" not "WHAT'S INSIDE". Only the
          BUY BOOK button beside it is set in capitals. */
@@ -238,7 +253,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       /* Black, as the live menu is (`color:#000000!important`). It has to read
          on the orange and on the white the header becomes, and the ink is the
          only colour that does both. */
-      .nav-list a, .nav-label { color: var(--color-ink); padding-block: var(--space-1); border-bottom: 3px solid transparent; display: inline-block; }
+      .nav-list a, .nav-label { color: var(--color-ink); padding-block: var(--space-1); border-bottom: 3px solid transparent; display: inline-block; white-space: nowrap; }
       /* The state is carried by the RULE under the word, not by its colour.
          Magenta type would be 2.74:1 against the orange header — the same trap
          the eyebrow fell into — and the header changes ground on scroll, so the
@@ -250,10 +265,13 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
       /* The submenu is in the DOM always, revealed on hover or keyboard focus.
          `:focus-within` is what makes it reachable by tab with no JavaScript. */
+      /* White plate, 240px, and its own smaller size — the live submenu's
+         `.sub-menu` measures exactly that. */
       .nav-sub {
-        list-style: none; margin: 0; padding: var(--space-3);
-        position: absolute; top: 100%; left: 0; min-width: 12rem;
+        list-style: none; margin: 0; padding: var(--space-4);
+        position: absolute; top: 100%; left: 0; min-width: 240px;
         background: var(--color-paper); border: 2px solid var(--color-ink);
+        font-size: var(--text-sm);
         display: none; z-index: 2;
       }
       .nav-sub li + li { margin-top: var(--space-2); }
@@ -261,8 +279,17 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
       .nav-search { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 24px; min-height: 24px; }
       .nav-search-label { display: none; }
-      /* Magenta on white text, as the live site's primary button is. */
-      .btn--buy { min-height: 40px; padding-inline: var(--space-5); }
+      /* `1px solid`, 20px type, 6px/20px padding — the live BUY BOOK exactly,
+         except that the tap target is held at 48px. Filling with the magenta
+         is the hover, and it is the only state in which this button is
+         allowed to be magenta: at rest it would be magenta on orange. */
+      .btn--buy {
+        border-width: 1px; font-size: var(--text-lg); letter-spacing: normal;
+        padding: var(--space-2) var(--space-5); min-height: 48px; white-space: nowrap;
+      }
+      .btn--buy:hover {
+        background: var(--color-brand); border-color: var(--color-brand); color: var(--on-brand);
+      }
 
       .nav-toggle {
         display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -273,6 +300,11 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
       @media (max-width: 799.98px) {
         .header-inner { flex-wrap: wrap; }
+        /* 320px of wordmark plus a 48px button does not fit a 390px phone, and
+           wrapping the button under the logo costs a whole row of height on
+           every page. Shrink the wordmark instead — it is a picture, so it
+           loses nothing. */
+        .brand :global(.logo) { width: 220px; }
         /* Without JavaScript the navigation is simply there, stacked under the
            brand, and the hamburger stays hidden — a button that cannot open
            anything is worse than no button. */
@@ -293,38 +325,18 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
       main { min-height: 60vh; }
 
-      .site-footer { margin-top: var(--space-20); background: var(--color-ink); color: var(--on-colour); }
-      .footer-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); padding-block: var(--space-16) var(--space-10); }
-      .footer-grid h2 {
-        font-size: var(--text-lg); text-transform: uppercase; letter-spacing: 0.08em;
-        margin: 0 0 var(--space-4); color: var(--color-ground);
+      /* WHITE, and one line of 12px type. The live footer bar is 53px tall with
+         its row at the same 1080px the page content uses. */
+      .site-footer { background: var(--color-paper); color: var(--color-ink); }
+      .footer-wrap {
+        width: 100%; max-width: var(--wide-width); margin-inline: auto;
+        padding: var(--space-5);
       }
-      /* The footer IS dark, and the wordmark is drawn for a light ground, so
-         here it does need a plate. */
-      .footer-about :global(img) { background: var(--color-paper); padding: var(--space-3) var(--space-4); }
-      .footer-about p { color: var(--on-colour-muted); font-size: var(--text-sm); margin-top: var(--space-5); max-width: 26rem; }
-      .footer-explore ul, .footer-socials { list-style: none; margin: 0; padding: 0; }
-      .footer-explore li, .footer-socials li { margin-bottom: var(--space-2); }
-      /* A 24px target: these are a list, not a sentence, so the inline
-         exception to WCAG 2.5.8 does not apply. */
-      .footer-explore a, .footer-socials a, .footer-links a {
-        display: inline-flex; align-items: center; min-height: 24px;
-        color: var(--on-colour-muted); font-size: var(--text-sm);
-      }
-      .footer-explore a:hover, .footer-socials a:hover, .footer-links a:hover { color: var(--color-ground); }
-      .footer-socials { display: flex; gap: var(--space-4); margin-top: var(--space-4); }
-      .footer-bottom {
-        display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);
-        padding-block: var(--space-6); border-top: 1px solid var(--scrim-weak);
-        font-size: var(--text-sm); color: var(--on-colour-muted);
-      }
-      .footer-bottom p { margin: 0; }
-      .footer-bottom a { color: var(--on-colour-muted); }
-      .footer-bottom a:hover { color: var(--color-ground); }
-
-      @media (min-width: 800px) {
-        .footer-grid { grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: var(--space-12); }
-      }
+      .site-footer p { margin: 0; font-size: var(--text-xs); }
+      /* A 24px target — the links sit in a sentence, but the sentence is the
+         whole footer, so there is nothing else to hit. */
+      .site-footer a { color: var(--color-brand); display: inline-block; min-height: 24px; }
+      .footer-sep { margin-inline: var(--space-2); }
     </style>
 
     <script>

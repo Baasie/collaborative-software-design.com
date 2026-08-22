@@ -99,15 +99,16 @@ Design` → https://artofdesign.nl/. **Keep that credit.**
 
 There are two variants, and the live site uses both:
 
-- `logo.png` — the full wordmark, with DESIGN as a black outline. Drawn for a
-  **light** ground. Yoast names this one as the organisation logo.
-- `logo-diap.png` — the same wordmark without the outline, for a **coloured**
-  ground. The live footer uses this one.
+- `logo.png` — DESIGN outlined in **black**. For white and near-white grounds.
+  Yoast names this one as the organisation logo.
+- `logo-diap.png` — the same wordmark with DESIGN outlined in **white**
+  ("diapositief", reversed). For a coloured ground.
 
-This rebuild uses `logo.png` throughout: on the orange header (light, so it
-works as drawn) and on a white plate in the dark footer. Swapping the footer to
-`logo-diap.png` is a one-line change in `src/components/Logo.astro` if you
-prefer it.
+The live header uses `logo-diap.png` at **320×52**, and keeps using it when the
+sticky header turns white — at which point the white outline of DESIGN sits on
+white and the word all but disappears. That is a bug rather than a decision, so
+this site ships both and swaps on scroll: `diap` on the orange, `logo.png` once
+the header goes white. `src/components/Logo.astro` takes a `variant` prop.
 
 ## What the header does
 
@@ -120,3 +121,24 @@ The rebuild does the same, and the current nav item is marked by a magenta rule
 **under** the word rather than by colouring it. That is not a style preference:
 magenta type on the orange header measures 2.74:1, and the header changes ground
 on scroll, so the ink is the only text colour that reads on both.
+
+Measured at 1440px, at rest: 161px tall, the row at `width:90%` (wider than the
+1080px the page content uses), the wordmark 320×52 at the left, the menu
+starting immediately after it, and BUY BOOK at the far right. Sticky: 125px.
+
+BUY BOOK is **outlined, not filled** — transparent with a `1px solid` black rule
+and 20px black type, filling with the magenta only on hover. A magenta fill at
+rest is the one thing this header cannot have; it sits on the orange.
+
+## What the footer does
+
+Almost nothing, and that is the design. The live footer is a single **white**
+bar, 53px tall, holding one line of 12px mono: "©2024 Collaborative Software
+Design | Webdesign by Art of Design". No navigation, no logo, no social links —
+the orange contact band directly above it carries the address and the two 50×50
+social icons, so the footer has nothing left to repeat.
+
+This rebuild adds exactly one thing to that line: a link to the privacy policy.
+The live site reaches that page from its cookie banner, and this site has no
+cookie banner, so without the link the page would be reachable only by typing
+its address.

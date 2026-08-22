@@ -6,12 +6,24 @@
  * The overlap is the idea, so it is a picture rather than type, and it is not
  * something CSS should try to reproduce.
  *
+ * TWO VARIANTS, and which one is right depends on what is behind it. They
+ * differ in one word: DESIGN is outlined in BLACK on `logo.png` and in WHITE on
+ * `logo-diap.png` (Art of Design's naming — "diapositief", reversed).
+ *
+ *   - `diap` for a coloured ground. The live header uses it on the orange.
+ *   - `ink` for white or near-white. The live header does NOT switch to it when
+ *     the sticky header turns white, and the result is that DESIGN all but
+ *     disappears up there. That is a bug rather than a style, so this site
+ *     switches; see the header in BaseLayout, which ships both and lets CSS
+ *     pick.
+ *
  * A raster PNG, 500×82, because that is the only original there is. It renders
  * at up to 320px wide, so a 500px source still has headroom on a 1× screen and
  * is soft on a 2× one — worth asking Art of Design for a vector.
  */
 import { Image } from 'astro:assets';
-import logo from '../assets/logo.png';
+import logoInk from '../assets/logo.png';
+import logoDiap from '../assets/logo-diap.png';
 import { SITE_NAME } from '../lib/seo';
 
 interface Props {
@@ -20,11 +32,14 @@ interface Props {
   /** Screen-reader name. Empty when the logo sits beside the site name in
    *  text, so it is not announced twice. */
   alt?: string;
+  /** Which outline DESIGN gets. `diap` is white, for a coloured ground. */
+  variant?: 'ink' | 'diap';
   class?: string;
 }
-const { width = 260, alt = SITE_NAME, class: cls } = Astro.props;
+const { width = 260, alt = SITE_NAME, variant = 'ink', class: cls } = Astro.props;
+const src = variant === 'diap' ? logoDiap : logoInk;
 ---
-<Image src={logo} alt={alt} width={width} height={Math.round((width / 500) * 82)}
+<Image src={src} alt={alt} width={width} height={Math.round((width / 500) * 82)}
        densities={[1, 2]} class:list={['logo', cls]} loading="eager" />
 
 <style>

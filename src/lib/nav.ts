@@ -74,13 +74,3 @@ export const CHAPTERS = [
       + 'someone needs to guide people during collaboration: a facilitator.',
   },
 ] as const;
-
-/** Everything the footer lists under "Explore" — the pages, flattened out of
- *  the dropdown, plus the chapters. One source, so the footer cannot drift
- *  from the header. */
-export function footerLinks() {
-  const fromNav = NAV.flatMap((n) =>
-    n.children ? n.children : n.href.startsWith('/') && n.href !== '/' && !n.href.includes('#') ? [n] : [],
-  );
-  return [...fromNav, ...CHAPTERS.map((c) => ({ href: c.href, label: c.title }))];
-}

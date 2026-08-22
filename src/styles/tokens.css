@@ -75,6 +75,7 @@
   /* Type scale. Headings are condensed, so they carry a larger size than a
    * normal sans would at the same measure. The live display heading is 60px,
    * 700, `letter-spacing:1px`, `line-height:1.1em`. */
+  --text-xs: 0.75rem;      /* 12px — the footer credit line */
   --text-sm: 0.8125rem;
   --text-button: 0.875rem;   /* 14px — every button on the live site, exactly */
   --text-base: 1rem;

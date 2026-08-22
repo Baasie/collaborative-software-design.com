@@ -12,7 +12,18 @@
  * client configured. If either becomes a problem the fix is a hosted form
  * endpoint, and this component is the only place that changes.
  */
+import { Image } from 'astro:assets';
 import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
+import iconLinkedin from '../assets/icon-linkedin.png';
+import iconBluesky from '../assets/icon-bluesky.png';
+
+/** The two 50×50 black squares the live footer draws under "Follow us",
+ *  matched to SOCIALS by name so neither list can gain an entry the other
+ *  does not have. */
+const ICONS: Record<string, ImageMetadata> = {
+  LinkedIn: iconLinkedin,
+  Bluesky: iconBluesky,
+};
 ---
 {/* ORANGE, not magenta. This band is the live site's footer template
     (`.et_pb_section_0_tb_footer`), and it is `#e37b45` with black type on
@@ -44,7 +55,13 @@ import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
     <div>
       <h3>Follow us</h3>
       <ul class="contact-socials">
-        {SOCIALS.map((s) => <li><a href={s.url} rel="noopener">{s.name}</a></li>)}
+        {SOCIALS.map((s) => (
+          <li>
+            <a href={s.url} rel="noopener" aria-label={s.name}>
+              <Image src={ICONS[s.name]} alt="" width={50} height={50} />
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   </div>
@@ -55,11 +72,8 @@ import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
   @media (min-width: 800px) { .contact-grid { grid-template-columns: 1.6fr 0.8fr; gap: var(--space-16); } }
   .contact-grid p { max-width: 34rem; }
   .contact-direct { margin-top: var(--space-6); font-size: var(--text-sm); }
-  .contact-socials { list-style: none; margin: 0; padding: 0; }
-  .contact-socials li { margin-bottom: var(--space-3); }
-  .contact-socials a {
-    display: inline-flex; align-items: center; min-height: 24px;
-    font-family: var(--font-body); color: var(--color-ink);
-  }
-  .contact-socials a:hover { color: var(--color-brand-deep); }
+  .contact-socials { list-style: none; display: flex; gap: var(--space-4); margin: 0; padding: 0; }
+  .contact-socials a { display: inline-flex; }
+  .contact-socials img { width: 50px; height: 50px; }
+  .contact-socials a:hover img { opacity: 0.75; }
 </style>

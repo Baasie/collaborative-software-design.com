@@ -161,10 +161,11 @@ test('every page renders through BaseLayout', () => {
 });
 
 test('the navigation is defined once', () => {
-  // The header and the footer both read src/lib/nav.ts. A second list is a
-  // second thing to keep in step, and it is always the footer that goes stale.
+  // The header reads src/lib/nav.ts. A second list is a second thing to keep
+  // in step — which is why the footer, now that it is the live site's single
+  // credit line, holds no navigation at all rather than a copy of the menu.
   const layout = read('src/layouts/BaseLayout.astro');
   assert.match(layout, /from '\.\.\/lib\/nav'/);
-  assert.ok(!/href="\/training\/"/.test(layout.split('<footer')[0].replace(/NAV|footerLinks/g, '')),
+  assert.ok(!/href="\/training\/"/.test(layout.split('<footer')[0].replace(/NAV/g, '')),
     'BaseLayout hard-codes a nav href instead of reading src/lib/nav.ts');
 });
