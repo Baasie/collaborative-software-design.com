@@ -3,6 +3,7 @@ title: "How can I get people to fully support design decisions and feel included
 section: "dear-como"
 status: "Published"
 publishDate: 2024-12-03
+featuredImage: "./_assets/getting-buy-in-for-design-decisions-featured.png"
 focusKeyphrase: "design decisions support"
 metaDescription: "Learn how to get buy-in for design decisions through clarity, inclusion, and transparent processes. Discover strategies to ensure everyone feels heard and respected."
 ---

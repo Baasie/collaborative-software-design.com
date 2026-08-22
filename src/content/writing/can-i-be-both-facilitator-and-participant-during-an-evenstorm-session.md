@@ -3,6 +3,7 @@ title: "Can I be both facilitator and participant during an EventStorming sessio
 section: "dear-como"
 status: "Published"
 publishDate: 2024-12-03
+featuredImage: "./_assets/can-i-be-both-facilitator-and-participant-during-an-evenstorm-session-featured.png"
 focusKeyphrase: "Facilitator and participant in EventStorming"
 metaDescription: "Wondering if you can be both a facilitator and a participant during an EventStorming session? Learn the challenges, tips, and best practices for balancing these roles effectively in high-stakes and large-group sessions."
 ---
@@ -17,7 +18,7 @@ For high-stakes sessions, it’s often better to let someone else facilitate. Wh
 
 When working with larger groups, like during a Big Picture EventStorming session, having a dedicated facilitator is essential. With so many stakeholders in the room, the dynamics can become overwhelming. A single facilitator might lose track of the bigger picture while focusing on smaller group interactions. This is why it’s common to have two facilitators—one to collaborate within the group and another to observe from a distance, switching from time to time ensuring all voices are heard and no important dynamics are overlooked.
 
-If you do decide to facilitate while participating, focus on expressing your own needs. For example, if you feel the session’s goal isn’t clear, you might say, “I feel the session’s goal isn’t entirely clear. Does anyone else feel the same?” If others agree, you can suggest a check-in.
+If you do decide to facilitate while participating, focus on expressing your own needs. For example, if you feel the session’s goal isn’t clear, you might say, “I feel the session’s goal isn’t entirely clear. Does anyone else feel the same?” If others agree, you can suggest a check-in. 
 
 In short, it’s possible to wear both hats, but it’s not without its challenges. The higher the stakes or the larger the group, the more beneficial it is to bring in a dedicated facilitator. Sometimes, the best way to support your team is to step back and let someone else guide the process.
 

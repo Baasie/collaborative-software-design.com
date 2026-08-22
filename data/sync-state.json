@@ -1,0 +1,106 @@
+{
+  "trainings": {
+    "2f8a485a-fafc-801d-9424-ed95b24eb462": {
+      "slug": "navigating-conflicts-in-software-architecture-decision-making-a-collaborative-and-democratic-approach",
+      "edited": "2026-01-30T14:15:00.000Z",
+      "digest": "112c6d21b0620032"
+    },
+    "2f8a485a-fafc-805a-b2d1-d7bffa9b7599": {
+      "slug": "navigating-power-dynamics-in-software-decision-making",
+      "edited": "2026-01-30T14:15:00.000Z",
+      "digest": "0b41082c965aa3b6"
+    },
+    "2f8a485a-fafc-80b5-9ead-f283e8b8b738": {
+      "slug": "technical-leadership-for-architectural-decision-making",
+      "edited": "2026-01-30T14:14:00.000Z",
+      "digest": "c437b7f673697a16"
+    },
+    "2f8a485a-fafc-80ba-a8ed-c6800acdf823": {
+      "slug": "systems-design-with-strategic-domain-driven-design-and-team-topologies",
+      "edited": "2026-01-30T14:14:00.000Z",
+      "digest": "f6ea4c43664c03c8"
+    },
+    "2fca485a-fafc-8029-8ddf-c5ac612be793": {
+      "slug": "collaborative-software-design-how-to-facilitate-domain-modelling-decisions",
+      "edited": "2026-02-03T09:37:00.000Z",
+      "digest": "3b6be37225d4602f"
+    }
+  },
+  "writing": {
+    "138a485a-fafc-804d-8795-ca21f77d5c9e": {
+      "slug": "dear-como-how-can-i-convince-my-company-or-colleagues-to-start-doing-collaborative-modelling",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "cf3cbf83d12416db"
+    },
+    "158a485a-fafc-80c2-8e31-e4b007aa5e08": {
+      "slug": "help-quiet-members-speak-up",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "f1df623e2ee8666a"
+    },
+    "191a485a-fafc-8087-a93e-c0b23154f3be": {
+      "slug": "how-to-stop-meeting-interruptions",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "c056fef89188fc2f"
+    },
+    "1b92c77b-5b1c-405a-a9ab-0c6b57f450b5": {
+      "slug": "getting-buy-in-for-design-decisions",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "370e47f5c38292ad"
+    },
+    "1c6a485a-fafc-80b2-9782-def87acaf526": {
+      "slug": "ambiguous-language-team-discussions",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "da9b025150e01daa"
+    },
+    "1cea485a-fafc-8042-ba99-c63aed2cbf66": {
+      "slug": "conflict-avoidant-colleague",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "2e61bd8890cb8c0a"
+    },
+    "1dca485a-fafc-8032-869c-cb4553d9bdea": {
+      "slug": "leave-the-judging-to-the-cats",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "01da78f135a6fc92"
+    },
+    "1fca485a-fafc-809a-9752-ee98d3739438": {
+      "slug": "team-clings-ideas-collaborative-modelling-endowment-effect",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "3367c54994c69e6d"
+    },
+    "20f1766a-90f8-42d4-bea5-0e2ebc5ef3c9": {
+      "slug": "secret-guerrilla-modelling",
+      "edited": "2026-02-04T06:55:00.000Z",
+      "digest": "1c51359b22a7c69a"
+    },
+    "279a485a-fafc-808b-bbdf-ce522aad013e": {
+      "slug": "collaborative-modeling-group-size",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "9a47a02fa076f73f"
+    },
+    "2c7a485a-fafc-80e6-af2c-e3120e4075e7": {
+      "slug": "facilitator-hat-switch-technical-decisions",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "c491bf5bd6d161dc"
+    },
+    "3cc4ac92-4eb4-48e5-a720-1e792e9dbeeb": {
+      "slug": "equal-contributions-in-meetings",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "3674503f8c2a274f"
+    },
+    "57d8b3d0-0e7a-4f78-b8d1-0617571eb239": {
+      "slug": "stop-chasing-shiny-objects",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "921e144f32e589cf"
+    },
+    "758c6e03-dd8e-4120-ad2d-da593f873375": {
+      "slug": "can-i-be-both-facilitator-and-participant-during-an-evenstorm-session",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "cb588abcb3acc0a1"
+    },
+    "b702ee5a-6f16-47ea-92b6-3707af0e1381": {
+      "slug": "i-have-this-colleague-whos-always-taking-over-meetings-and-hijacking-topics-what-can-i-do",
+      "edited": "2026-01-19T08:09:00.000Z",
+      "digest": "f5b5d951d5fe0fd5"
+    }
+  }
+}

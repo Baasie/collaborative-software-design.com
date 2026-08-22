@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2025-05-23
 tags: ["Cognitive Bias", "Behavioural Patterns"]
+featuredImage: "./_assets/team-clings-ideas-collaborative-modelling-endowment-effect-featured.webp"
 focusKeyphrase: "Team clings to ideas"
 metaDescription: "Is your team clinging to their own ideas in collaborative modelling sessions? Discover how the Endowment Effect impacts teamwork and learn strategies to encourage objective evaluation for better solutions."
 ---
@@ -14,8 +15,10 @@ You’re seeing a common human tendency play out. Behavioural scientists have ob
 
 So, how can we navigate this sticky situation and encourage the team to evaluate ideas on their merit, rather than their ownership?
 
-1. **Ground Decisions in Analysis:** When discussing different modelling approaches or proposed solutions, make it a practice to refer back to the problem that has to be solved. Ask: What do the requirements, the acceptance scenarios, or the results of critical evaluation tell us? This helps shift the focus from "my idea is best because I made it" to "which idea is best supported by the problem?"
+1. **Ground Decisions in Analysis:** When discussing different modelling approaches or proposed solutions, make it a practice to refer back to the problem that has to be solved. Ask: What do the requirements, the acceptance scenarios, or the results of critical evaluation tell us? This helps shift the focus from "my idea is best because I made it" to "which idea is best supported by the problem?" 
+
 2. **Seek Diverse Perspectives:** Remind the team that a good model often needs to capture different facets of reality. Does the proposed idea balance the measurable, quantitative requirements with the more qualitative aspects, like preferences or symbols of a culture? By ensuring decisions consider a range of inputs, you naturally dilute the singular focus on one person's cherished contribution and encourage a more holistic evaluation.
+
 3. **There is no best collaborative modelling tool:** Sometimes, attachment stems from comfort or familiarity with a particular way of working or presenting an idea. Educate the team on the benefits and limitations of the modelling tools and techniques you are using. Understanding that no tool is perfect, and each has its strengths and weaknesses, can foster humility and openness to alternative approaches, regardless of who proposed them.
 
 Ultimately, fostering a culture where ideas are hypotheses to be tested and refined, rather than personal treasures, is key. It takes conscious effort to detach from our creations, but by focusing on objective criteria and diverse inputs, you can help the team build the best model together.

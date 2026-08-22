@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2025-02-05
 tags: ["Crucial Conversations", "Deep Democracy", "Behavioural Patterns", "Active Listening"]
+featuredImage: "./_assets/how-to-stop-meeting-interruptions-featured.webp"
 focusKeyphrase: "meeting interruptions"
 metaDescription: "Are interruptions derailing your meetings? Learn how to address individual interrupters and systemic interruption patterns with proven strategies like crucial conversations and Deep Democracy. Get your team back on track!"
 ---

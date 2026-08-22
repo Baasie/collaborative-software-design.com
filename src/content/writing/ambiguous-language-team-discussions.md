@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2025-03-30
 tags: ["Ubiquitous Language"]
+featuredImage: "./_assets/ambiguous-language-team-discussions-featured.webp"
 focusKeyphrase: "Ambiguous Language in Team Discussions"
 metaDescription: "Ambiguous language in team discussions can impede collaboration. Learn effective strategies to foster a shared vocabulary and enhance communication among your team."
 ---

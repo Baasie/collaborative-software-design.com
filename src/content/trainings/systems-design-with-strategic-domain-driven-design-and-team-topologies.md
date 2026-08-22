@@ -22,10 +22,15 @@ Through hands-on collaborative modelling techniques—including Context Mapping,
 ## Key Takeaways
 
 - **Architecting for Flow-Enabled Teams:** You'll understand how to align teams, architecture, and value streams to significantly improve their delivery flow, resulting in faster feedback from stakeholders and decrease Time to Market.
+
 - **Sociotechnical System Design:** We'll explore the vital role of sociotechnical system design and organisational complexity, highlighting why it's essential to optimise teams, architecture, and value streams in harmony.
+
 - **Strategic Domain-Driven Design Patterns:** You'll learn to use context mapping and strategic patterns to assess your current sociotechnical landscape and understand organisational complexities.
+
 - **Collaborative Modelling Tools:** Get hands-on with diverse collaborative modelling tools, including Context Mapping, Domain Message Flow Modelling, Team Interaction Modelling, Bounded Context Canvas, Core Domain Charts, and User Needs Mapping. These tools help you involve stakeholders and teams throughout the design process.
+
 - **Fundamentals of Team Topologies:** You'll grasp the blockers to flow and team cognitive load, and learn to use Team Interaction Modelling to enable teams to self-organise around business needs.
+
 - **Facilitating Software Design:** We'll equip you to foster an environment where teams actively participate in and take ownership of their software's design and architecture, cultivating commitment and a sense of responsibility.
 
 ## Before the workshop
@@ -35,6 +40,7 @@ To make the most of this workshop, it's helpful to have a couple of years of exp
 If you'd like to further prepare in advance, we recommend checking out these resources:
 
 - "Domain-Driven Design: Tackling Complexity in the Heart of Software" by Eric Evans or for a less dense book on DDD you can read "Learning Domain-Driven Design" by Vladik Khononov
+
 - "Team Topologies: Organizing Business and Technology Teams for Fast Flow" by Matthew Skelton and Manuel Pais
 
 We'll also provide introductory materials on both Domain-Driven Design and Team Topologies before the workshop kicks off.
@@ -46,16 +52,23 @@ Our workshop is highly interactive, emphasising hands-on learning. For online se
 ### **Day 1**
 
 - The Importance of Sociotechnical System Design
+
 - Decomposing and Distilling Boundaries from a Big Picture EventStorming
+
 - Problem and Solution Space Modelling and Design
+
 - The Impact and Opportunities of Strategic Context Mapping Patterns
 
 ### **Day 2**
 
 - Connecting Bounded Contexts with Domain Message Flow Modelling
+
 - Strategising and Defining Bounded Contexts with the Core Domain Charts and Bounded Context Canvas
+
 - Categorising Teams Around Domains and Bounded Contexts
+
 - Mapping Stream-Aligned Teams with User Needs Mapping
+
 - Catalysing Decision-Making in an Organisation
 
 ## Audience
@@ -63,6 +76,9 @@ Our workshop is highly interactive, emphasising hands-on learning. For online se
 This workshop is specifically designed for technical leaders deeply involved in software design and architecture. While titles may vary, this includes:
 
 - Software Developers & Engineers with 5+ years of experience
+
 - Tech leads, Staff+ engineers, and Senior software engineers
+
 - Software, Solution, Domain & Enterprise Architects
+
 - CTOs, VPs of Engineering, and Engineering Managers

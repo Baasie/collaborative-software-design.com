@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2026-02-04
 tags: ["Collaborative modelling", "Power Dynamics", "Collaboration Styles"]
+featuredImage: "./_assets/secret-guerrilla-modelling-featured.webp"
 focusKeyphrase: "collaborative modelling techniques"
 metaDescription: "Job description blocking collaborative modelling? Learn Secret and Guerrilla Modelling to start collaborating visually, prove its value, and grow your influence."
 ---
@@ -23,4 +24,5 @@ Here's what you're really doing: you're not breaking your job description. You'r
 Keep modeling, keep asking those sharp questions, and watch your influence grow. Want to dig deeper? Chapter 4 of our book has all the details on Secret and Guerrilla Modelling!
 
 XoXo,
+
 CoMo

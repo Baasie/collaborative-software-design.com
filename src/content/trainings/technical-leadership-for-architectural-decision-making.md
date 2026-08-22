@@ -2,7 +2,7 @@
 title: "Technical Leadership for Architectural Decision Making"
 order: 3
 format: "2-day"
-teaser: "As a Tech Lead, are you finding it challenging to get your entire software team aligned on crucial architectural decisions? Does the team often fall into endless discussions when opinions differ? Do people make assumptions that are proven wrong when implementing? Do you have trouble getting everyone on board with the design?"
+teaser: "As a Tech Lead, are you finding it challenging to get your entire software team aligned on crucial architectural decisions? Does the team often fall into endless discussions when opinions differ? Do people make assumptions that are proven wrong when implementing? Do you have trouble getting everyone on board with the design? If you answered yes to some of these questions, this training is designed for you. Learn the facilitation skills needed to lead your team through complex architectural discussions. We will teach you how to overcome resistance, harness collective knowledge, and make decisions that everyone can stand behind. Transform your team's architectural decision-making process, fostering greater ownership, shared understanding, and ultimately, more resilient and sustainable software."
 ---
 
 2-day workshop
@@ -22,11 +22,17 @@ This immersive two-day workshop provides both the theory and hands-on practice y
 What You Will Learn:
 
 - **Facilitating Decision-Making:** Explore the Tech Lead's dual role in decision-making—both with and for the team. Investigate essential facilitation skills and techniques, and gain clarity on who is best suited to effectively lead these important discussions.
+
 - **The Influence of Ranking:** Understand how both conscious and unconscious rank within a group impact the decisions made, and learn practical techniques to identify these dynamics.
+
 - **Observing Behaviour:** Learn to understand what constitutes behaviour within a group, why observing it is crucial for effective facilitation, and practical methods to enhance group dynamics through mindful observation.
+
 - **Active listening skills:** Learn and practice various active listening techniques, including Socratic questioning and crucial conversations. Develop the ability to ask insightful questions that promote understanding and genuine collaboration, rather than leading the discussion.
+
 - **Check-ins/outs and sense-making:** Understand and experience the value of structured check-in and check-out activities. Learn practical techniques for sense-making to effectively restore flow and cohesion within the collaborative process when discussions become stalled or fragmented.
+
 - **Resistance and Conflict Resolution:** Develop skills to effectively address conflicts and overcome resistance that can hinder collaborative decision-making processes. Learn practical techniques to navigate disagreements and foster a productive environment for collective problem-solving.
+
 - **Making Sustainable Design Decisions:** Learn how optimal software designs leverage the collective knowledge of a group to collaboratively identify and choose the most effective solutions.
 
 ### Before the workshop
@@ -40,16 +46,23 @@ Our workshop is highly interactive, emphasizing hands-on learning. For online se
 **Day 1**
 
 - What is facilitation, and what is your role as teach lead in decision making
+
 - Techniques for facilitating decision-making
+
 - Understanding the influence of ranking
+
 - Observing behavior: Enhance your situational awareness
+
 - Active listening: Communication and conversation techniques
 
 **Day 2**
 
 - Address a design challenge using your preferred collaborative modeling tool
+
 - Implementing check-in/check-out and sense-making activities
+
 - Strategies for resistance and conflict resolution
+
 - Approaches to making sustainable design decisions
 
 ### Audience
@@ -57,5 +70,7 @@ Our workshop is highly interactive, emphasizing hands-on learning. For online se
 This two-day workshop empowers Tech leads or those wishing to become or make technical or architectural decisions to effectively facilitate collaborative domain modeling sessions for making robust software design decisions. It is ideal for:
 
 - Tech leads, Staff+ engineers, and Senior software engineers
+
 - Software & Solution Architects
+
 - Engineering managers & Team Leads

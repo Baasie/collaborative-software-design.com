@@ -2,7 +2,7 @@
 title: "Navigating Conflicts in Software Architecture Decision Making: A Collaborative and Democratic Approach"
 order: 4
 format: "1 day or less"
-teaser: "Are you struggling with complex architectural decisions in software design? Ever faced a standstill due to differing opinions on architecture choices? Want to make decisions that everyone on the team can support and that align with both the technical and human needs of your projects?"
+teaser: "Are you struggling with complex architectural decisions in software design? Ever faced a standstill due to differing opinions on architecture choices? Want to make decisions that everyone on the team can support and that align with both the technical and human needs of your projects? Join us in this 1-day expert deep dive workshop where you will learn to navigate conflicts in software architectural decision making."
 ---
 
 1 day workshop
@@ -20,9 +20,13 @@ Drawing from our co-authored book “Collaborative Software Design”, this conc
 ## What You Will Learn:
 
 - **The significance of collaborative modeling** in effective communication and decision-making for sustainable software architecture.
+
 - **Understanding the nature and impact of architectural decisions** on software development.
+
 - **Insights into the common sources of conflict** in software architecture decision-making and their implications for system design.
+
 - **An introduction to "role theory"** as advocated by Deep Democracy to foster inclusive and sustainable decision-making.
+
 - **Hands-on strategies for managing disagreements** and integrating minority opinions to achieve a comprehensive, unified approach to architecture design.
 
 ## Before the workshop
@@ -36,9 +40,15 @@ Our workshop is designed to be interactive, immersing you in hands-on learning. 
 This workshop is designed for anyone who is involved in creating and maintaining software:
 
 - Software Developers & Engineers
+
 - Software, Solution & Enterprise Architects
+
 - Product Managers & Owners
+
 - Business Analysts & Quality Assurance Roles
+
 - Engineering managers & Team Leads
+
 - Agile coaches & Scrum Masters
+
 - Anyone interested in learning how to facilitate better decisions to improve their software design process.

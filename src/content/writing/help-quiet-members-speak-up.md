@@ -3,6 +3,7 @@ title: "There are people in the group who stay quiet all the time. How do I ensu
 section: "dear-como"
 status: "Published"
 publishDate: 2024-12-11
+featuredImage: "./_assets/help-quiet-members-speak-up-featured.png"
 focusKeyphrase: "Ensuring quiet group members speak up"
 metaDescription: "Not everyone feels ready to speak up in group sessions. Learn practical strategies to create an inclusive environment that encourages everyone to share ideas, even the quieter voices."
 ---

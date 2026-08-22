@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2026-01-17
 tags: ["Facilitation", "Collaborative modelling", "Role Switching", "Cognitive Bias", "Software Architecture", "Power Dynamics"]
+featuredImage: "./_assets/facilitator-hat-switch-technical-decisions-featured.webp"
 focusKeyphrase: "Facilitator Hat Switch technique"
 metaDescription: "Struggling to stay neutral when the team is making a mistake? CoMo explains how to use the \"Hat Switch\" to share expertise without breaking facilitation."
 ---
@@ -23,10 +24,12 @@ However, neutrality does not mean you must pretend to be lobotomized. The goal o
 Here is how you handle the "Hat Switch" without losing your soul:
 
 - **Acknowledge the Shadow:** First, admit to yourself that you are no longer neutral. You have a stake in the outcome. That is okay, but you must make it visible.
+
 - **The Explicit Toggle:** You cannot be the Facilitator and the Architect at the exact same moment, but you *can* toggle between them if you announce it. Ask the group for permission to step out of your role.
+
 - **The Script:** Try saying this:
 
-> "Folks, I am going to take off my Facilitator Hat for a moment and put on my Architect Hat. I have some past experience with this tech, and I see a specific risk of high complexity that might hurt us later. \[State your advice briefly\]. Okay, I am taking that hat off and putting my Facilitator Hat back on. Given that perspective, how does the group want to proceed?"
+> "Folks, I am going to take off my Facilitator Hat for a moment and put on my Architect Hat. I have some past experience with this tech, and I see a specific risk of high complexity that might hurt us later. [State your advice briefly]. Okay, I am taking that hat off and putting my Facilitator Hat back on. Given that perspective, how does the group want to proceed?"
 
 By explicitly declaring your role change, you keep the boundaries clear. You provide the necessary data without using your power as the facilitator to force a decision. You are effectively saying, *"I am offering this information to the system, but the decision still belongs to you."*
 

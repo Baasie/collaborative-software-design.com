@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2025-04-22
 tags: ["Psychological Safety", "Conflict Management", "Team Dynamics"]
+featuredImage: "./_assets/conflict-avoidant-colleague-featured.webp"
 focusKeyphrase: "conflict avoidant colleague"
 metaDescription: "Wondering why a colleague never contradicts you? It might be conflict avoidance. Understand the roots of this behavior and learn how to create a safer space for disagreement."
 ---

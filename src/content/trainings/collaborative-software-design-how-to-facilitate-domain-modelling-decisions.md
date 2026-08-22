@@ -32,12 +32,19 @@ This workshop is designed to make these dynamics visible and navigable. You will
 ### What You Will Learn
 
 - **Why collaborative design fails — and what actually fixes it:** Involving stakeholders early isn't just "nice to have." We explore the concrete risks of siloed design, and why the gap between Business and IT widens when those risks go unaddressed.
+
 - **The facilitator's stance — holding the room without dominating it:** You don't have to be an extrovert to facilitate. Learn the difference between *participating* in a design and *guiding* it. This is a skill, not a personality trait — and it is the foundation everything else is built on.
+
 - **How ranking silences the people who know the most — and isolates the people at the top:** Power dynamics exist in every room — conscious and unconscious. Ranking doesn't just stop good ideas from being raised. It also stops the people with the authority to act on them from hearing honest feedback. You will learn to recognise how this plays out, and practice techniques so your decisions are built on what's actually true in the room — not just what feels safe to say.
+
 - **Reading what isn't being said:** Silence is information. Disengagement is data. Learn to observe the signals the room is already sending — and use them to steer the conversation before it goes off track.
+
 - **Surfacing knowledge that stakeholders struggle to articulate:** Move beyond standard questions. Practice Socratic questioning and "Crucial Conversations" techniques to uncover deep domain knowledge — especially the kind that stays hidden when ranking makes it feel unsafe to share.
+
 - **Keeping the group aligned when things get stuck:** Learn the practical utility of check-ins, check-outs, and structured pauses. More importantly, learn how to restore flow when discussions fragment — because they will.
+
 - **Using resistance instead of fighting it:** Resistance isn't always bad; often, it's the most important signal in the room. You will develop the confidence to address it head-on — using it to clarify constraints and reach shared understanding, rather than letting it become a blocker.
+
 - **Making decisions that actually stick:** The real test isn't what's decided in the session. It's whether it holds. Learn how to converge the group's collective knowledge into concrete decisions with genuine buy-in — and how to communicate them so the commitment survives the meeting.
 
 ## Prerequisites & Preparation
@@ -55,8 +62,11 @@ If you want to dive deeper beforehand, our book *Collaborative Software Design* 
 We start by diving straight into a large-group collaborative modeling session. This isn't a lecture — it is a safe space to practice facilitation in real-time, with coaching and feedback. We will focus on the "invisible" dynamics that govern the room:
 
 - **Facilitation Mechanics:** Practical techniques to guide the group without dictating the outcome. The difference between holding the space and filling it.
+
 - **Ranking Theory:** Recognising how power and hierarchy — both conscious and unconscious — influence who speaks, who stays silent, and whose ideas get adopted. And what to do about it.
+
 - **Observation:** Moving beyond "listening" to observing behavior, energy, and silence — and using what you see to assess the health of the group dynamic in real time.
+
 - **Active Listening:** Practicing communication techniques that lower defenses and surface the complex domain knowledge that people are hesitant to share.
 
 **Day 2: From Conflict to Decision**
@@ -64,7 +74,9 @@ We start by diving straight into a large-group collaborative modeling session. T
 On the second day, we tackle a specific design challenge using your preferred collaborative modeling tool. The focus shifts from reading the room to driving outcomes:
 
 - **Sense-Making:** How to use check-ins, check-outs, and structured pauses to keep the group aligned — and how to recover when the conversation loses its thread.
+
 - **Navigating Resistance:** Strategies to handle conflict constructively. Learn to view resistance not as a blocker, but as valuable data — and use it to surface constraints and build shared understanding.
+
 - **Sustainable Decisions:** How to close the loop. Moving from sticky notes and discussions to concrete, supported design decisions — and communicating them in ways that make the commitment stick beyond the meeting.
 
 ## Who is this for?
@@ -72,9 +84,13 @@ On the second day, we tackle a specific design challenge using your preferred co
 This workshop is designed for technical leaders who want to move beyond "running meetings" to effectively facilitating shared understanding. It is ideal for:
 
 - **Software, Solution, & Domain Architects**
+
 - **Tech Leads, Staff+ Engineers, and Senior Developers**
+
 - **Product Managers & Product Owners**
+
 - **Business Analysts & QA Professionals**
+
 - **Engineering Managers & Scrum Masters**
 
 If you are responsible for bridging the gap between business requirements and technical implementation, this workshop is for you.

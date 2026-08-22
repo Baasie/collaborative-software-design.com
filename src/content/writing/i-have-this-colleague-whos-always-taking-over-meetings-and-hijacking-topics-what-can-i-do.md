@@ -3,6 +3,7 @@ title: "I have this colleague who’s always taking over meetings and hijacking 
 section: "dear-como"
 status: "Published"
 publishDate: 2024-12-03
+featuredImage: "./_assets/i-have-this-colleague-whos-always-taking-over-meetings-and-hijacking-topics-what-can-i-do-featured.png"
 focusKeyphrase: "Understanding Hijacking Behavior in Meetings"
 metaDescription: "Discover insights into hijacking behavior in meetings. Learn to identify patterns, motivations, and how to influence positive change in group dynamics. Dive deeper with our book."
 ---
