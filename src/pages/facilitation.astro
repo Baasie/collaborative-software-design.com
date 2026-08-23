@@ -1,15 +1,37 @@
 ---
 /** The consulting page. `/facilitation/` because that is the live address —
- *  the menu calls it "Consulting" and the URL calls it facilitation, and the
- *  URL is the promise. */
+ *  the menu calls it "Consulting", the heading calls it "Software design
+ *  facilitation", the URL calls it facilitation, and the URL is the promise.
+ *
+ *  One PINK section, measured off the live page at 1440px:
+ *
+ *    ground   #e69ec6, the same pink as the home page's bookings band, with
+ *             `meap_woman.png` at `100% 0%` at natural size and blended with
+ *             `lighten` — the same treatment the home hero gives her, on a
+ *             different ground.
+ *    left     3/5 (624px): eyebrow, h1 at 56px, and one long lede at 20px.
+ *    right    2/5 (396px): a pull quote at 26px italic, then BOOK CONSULTING.
+ *
+ *  ONE DEVIATION. The live quote is WHITE on the pink: 2.09:1, which fails
+ *  even the 3:1 large text is allowed. It is `--color-brand-deep` here (5.2:1),
+ *  which keeps what the white was doing — marking the quote as not-the-body —
+ *  and is a colour this brand already owns. Black would have worked too, at
+ *  10:1, but then the quote and the lede would be the same colour and only the
+ *  size would separate them.
+ */
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
-import { pageTitle, organisation, mailto, AUTHORS } from '../lib/seo';
+import heroWoman from '../assets/home/hero-woman.png';
+import { pageTitle, organisation } from '../lib/seo';
 
+/* Yoast leaves this page with no description at all. This one is written
+   rather than copied, because "no description" is not something to be
+   faithful to — Google writes its own from the page, badly. */
 const description =
-  'Hire us to facilitate your software design. If you already know the power of '
-  + 'EventStorming, Example Mapping, Wardley Mapping and the rest but need somebody '
-  + 'to hold the room, that is what this is.';
+  'Hire us to facilitate your software design. If your team already knows the '
+  + 'power of EventStorming, Example Mapping, Wardley Mapping and the rest but '
+  + 'needs somebody to hold the room, that is what this is.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -21,47 +43,81 @@ const jsonLd = {
   areaServed: 'Worldwide',
 };
 ---
-<BaseLayout title={pageTitle('Software design facilitation')} description={description} jsonLd={jsonLd}>
-  <section class="hero">
-    <div class="wrap hero-inner">
-      <p class="eyebrow eyebrow--ink">You can hire us!</p>
-      <h1>Software design facilitation</h1>
-      <p class="hero-lede">
-        Struggling as a software team to collaborate effectively with stakeholders and
-        fully grasp the intricate context of your software system?
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn--primary" href={mailto(
-          'Booking enquiry: consulting',
-          'Hi,\n\nI would like to talk about consulting / facilitation.\n\nWhat we are working on:\nRough timing:\n\nThanks,\n',
-        )}>Book consulting</a>
-        <a class="btn btn--outline" href="/training/">Or see the training</a>
+<BaseLayout title={pageTitle('Consulting')} description={description} jsonLd={jsonLd}>
+  <section class="hire" data-test="hire">
+    <div class="wrap hire-grid">
+      <div class="hire-copy">
+        <p class="eyebrow">You can hire us!</p>
+        <h1>Software design facilitation</h1>
+        <p class="hire-lede">
+          Struggling as a software team to collaborate effectively with stakeholders and
+          fully grasp the intricate context of your software system? Interested in
+          exploring collaborative software design to boost stakeholder engagement and
+          make well-informed design decisions that bridge the gap between stakeholders
+          and development teams? Or perhaps you already recognize the power of
+          collaborative modeling tools like EventStorming, Example Mapping, Business
+          Model Canvas, User Story Mapping, Impact Mapping, Wardley Mapping, and more,
+          and need someone to facilitate?
+        </p>
+      </div>
+
+      <div class="hire-aside">
+        <blockquote class="hire-quote">
+          <p>
+            <em>“You can hire us for all your software design facilitation needs if you
+            lack that expertise in-house (yet).”</em>
+          </p>
+        </blockquote>
+        {/* The live button points at the home page's `#contact`. This one
+            points at the contact band on THIS page, which is the same section
+            — it is in the footer template, so every page carries it — and
+            saves a page load to reach it. */}
+        <p><a class="btn btn--ink" href="#contact">Book consulting</a></p>
       </div>
     </div>
-  </section>
 
-  <div class="section section--paper">
-    <div class="wrap prose">
-      <p>
-        Interested in exploring collaborative software design to boost stakeholder
-        engagement and make well-informed design decisions that bridge the gap between
-        stakeholders and development teams? Or perhaps you already recognize the power
-        of collaborative modeling tools like EventStorming, Example Mapping, Business
-        Model Canvas, User Story Mapping, Impact Mapping, Wardley Mapping and more, and
-        need someone to facilitate?
-      </p>
-      <blockquote>
-        You can hire us for all your software design facilitation needs if you lack
-        that expertise in-house (yet).
-      </blockquote>
-      <p>
-        We work with {AUTHORS.map((a) => a.name).join(', ')} — the authors of
-        <em> Collaborative Software Design</em>. If what you need is for your own people
-        to learn to do this, the <a href="/training/">workshops</a> are the other half
-        of the same answer.
-      </p>
-    </div>
-  </div>
+    {/* Decorative: the engraved figure from the book cover, blended into the
+        pink exactly as the home hero blends her into the orange. */}
+    <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
+           sizes="(min-width: 900px) 557px, 280px" loading="eager" />
+  </section>
 
   <ContactSection />
 </BaseLayout>
+
+<style>
+  .hire {
+    position: relative; overflow: hidden;
+    background: var(--color-ground-pink); color: var(--color-ink);
+    padding-block: var(--space-12);
+  }
+  .hire-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  /* 56px on the live page, and it has to bend on a phone the way every other
+     display heading here does. */
+  .hire h1 { font-size: clamp(2.25rem, 5.5vw, 3.5rem); line-height: 1.1; margin: 0 0 var(--space-8); }
+  .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
+
+  .hire-quote { margin: 0 0 var(--space-10); padding: 0; border: 0; background: none; }
+  .hire-quote p {
+    margin: 0;
+    /* 26px italic. `--color-brand-deep` rather than the live page's white —
+       see the note at the head of this file. */
+    color: var(--color-brand-deep);
+    font-family: var(--font-body); font-size: var(--text-xl); line-height: 1.45;
+  }
+
+  .hire-figure {
+    position: absolute; top: 0; right: 0; z-index: 0;
+    width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
+  }
+
+  @media (min-width: 900px) {
+    /* 624 / 396 of a 1080 row with a 60px gutter. */
+    .hire-grid { grid-template-columns: 1.58fr 1fr; gap: var(--space-16); }
+    .hire-figure { width: 557px; }
+    /* The right column starts level with the lede rather than with the
+       eyebrow, which is where the live page puts it: past the eyebrow (32px)
+       and the heading (72px). */
+    .hire-aside { padding-top: 6.5rem; }
+  }
+</style>

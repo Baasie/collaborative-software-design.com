@@ -90,6 +90,21 @@ Both are raster PNGs. If a vector original exists, it is worth asking Art of
 Design for it — the header renders the wordmark at 500px wide and it will
 soften on a high-DPI screen.
 
+## /facilitation/ — the consulting page
+
+One **pink** (`#e69ec6`) section, the same pink as the home page's bookings
+band, with `meap_woman.png` at `100% 0%` at natural size and
+`background-blend-mode: lighten` — the same treatment the home hero gives her,
+on a different ground. 54px of padding. The row splits 3/5 (624px: eyebrow, an
+`h1` at 56px, one long lede at 20px) and 2/5 (396px: a pull quote at 26px
+italic, then BOOK CONSULTING in black).
+
+The live pull quote is **white on the pink: 2.09:1**, which fails even the 3:1
+that large text is allowed. It is `--color-brand-deep` here — 5.2:1, and still
+visibly not the body copy.
+
+Yoast gives this page no meta description at all; this rebuild writes one.
+
 ## The chapter pages
 
 All three (`/the-need-for-collaborative-design/`,
