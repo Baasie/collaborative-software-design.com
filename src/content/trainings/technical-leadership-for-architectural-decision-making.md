@@ -2,12 +2,10 @@
 title: "Technical Leadership for Architectural Decision Making"
 order: 3
 format: "2-day"
-teaser: "As a Tech Lead, are you finding it challenging to get your entire software team aligned on crucial architectural decisions? Does the team often fall into endless discussions when opinions differ? Do people make assumptions that are proven wrong when implementing? Do you have trouble getting everyone on board with the design? If you answered yes to some of these questions, this training is designed for you. Learn the facilitation skills needed to lead your team through complex architectural discussions. We will teach you how to overcome resistance, harness collective knowledge, and make decisions that everyone can stand behind. Transform your team's architectural decision-making process, fostering greater ownership, shared understanding, and ultimately, more resilient and sustainable software."
+teaser: "As a Tech Lead, are you finding it challenging to get your entire software team aligned on crucial architectural decisions? Does the team often fall into endless discussions when opinions differ? Do people make assumptions that are proven wrong when implementing? Do you have trouble getting everyone on board with the design?"
 ---
 
-2-day workshop
-
-### About the Workshop:
+## About the workshop
 
 For Tech Leads, making sound architectural decisions that are supported by the whole team, is paramount to successful software delivery. However, navigating diverse technical perspectives, uncovering hidden assumptions, and fostering genuine consensus can be a significant hurdle. This workshop dives deep into the art of facilitating collaborative architectural decision-making within your software team.
 
@@ -15,7 +13,7 @@ We'll equip you with proven techniques to guide your team through complex design
 
 This immersive two-day workshop provides both the theory and hands-on practice you need to master leading collaborative modeling and architectural design sessions. You'll leave with a practical toolkit of strategies and facilitation techniques specifically tailored for Tech Leads to foster inclusive decision-making, manage differing viewpoints constructively, proactively address and mitigate resistance, and ultimately guide your team in building high-quality, sustainable software that everyone is proud to own. Stop facing resistance to your decisions and start facilitating true team ownership of your architecture.
 
-What You Will Learn:
+## What you will learn
 
 - **Facilitating Decision-Making:** Explore the Tech Lead's dual role in decision-making—both with and for the team. Investigate essential facilitation skills and techniques, and gain clarity on who is best suited to effectively lead these important discussions.
 
@@ -31,13 +29,13 @@ What You Will Learn:
 
 - **Making Sustainable Design Decisions:** Learn how optimal software designs leverage the collective knowledge of a group to collaboratively identify and choose the most effective solutions.
 
-### Before the workshop
+## Before the workshop
 
 To get the most out of this workshop, prior experience with collaborative modelling is beneficial. If you're looking to prepare further, consider reading our book on[ Collaborative Software Design](https://www.manning.com/books/collaborative-software-design/). We will also provide introductory materials on collaborative modelling before the workshop begins.
 
 Our workshop is highly interactive, emphasizing hands-on learning. For online sessions, we use Miro, a digital whiteboard platform, for collaborative exercises. If you are new to Miro, we suggest taking the self-paced Miro Academy:[ Miro Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding). This brief course will equip you with the necessary skills to actively participate in the workshop.
 
-## **Agenda**
+## Agenda
 
 **Day 1**
 
@@ -61,7 +59,7 @@ Our workshop is highly interactive, emphasizing hands-on learning. For online se
 
 - Approaches to making sustainable design decisions
 
-### Audience
+## Audience
 
 This two-day workshop empowers Tech leads or those wishing to become or make technical or architectural decisions to effectively facilitate collaborative domain modeling sessions for making robust software design decisions. It is ideal for:
 

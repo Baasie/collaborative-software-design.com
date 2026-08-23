@@ -5,15 +5,13 @@ format: "2-day"
 teaser: "Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?"
 ---
 
-2-day workshop
-
 ## About the workshop
 
 This two-day workshop focuses on collaboratively designing value streams, software systems, and teams. You'll leave ready to start designing sustainable and adaptable software products. We'll explore the core principles of Strategic Domain-Driven Design and Team Topologies, immediately applying them to a practical case study. Starting from an outcome of a Big Picture EventStorming session, we’ll context map to distil subdomains, design emergent bounded contexts, and eventually organise teams around those boundaries.
 
 Through hands-on collaborative modelling techniques—including Context Mapping, Domain Message Flow Modelling, Team Interaction Modelling, Bounded Context Canvas, Core Domain Charts, and User Needs Mapping—you'll gain valuable insights and practical experience. This workshop highlights a crucial point: Domain-Driven Design is not solely about technical ability. It's about enabling software builders to actively influence team structures and architectural decisions. We'll also examine how technical leaders can effectively catalyse teams and facilitate organisational alignment. Our comprehensive approach integrates social dynamics with technical details, fostering an environment where teams can truly take ownership of their system's design and architecture.
 
-## Key Takeaways
+## What you will learn
 
 - **Architecting for Flow-Enabled Teams:** You'll understand how to align teams, architecture, and value streams to significantly improve their delivery flow, resulting in faster feedback from stakeholders and decrease Time to Market.
 
@@ -43,7 +41,7 @@ Our workshop is highly interactive, emphasising hands-on learning. For online se
 
 ## Agenda
 
-### **Day 1**
+**Day 1**
 
 - The Importance of Sociotechnical System Design
 
@@ -53,7 +51,7 @@ Our workshop is highly interactive, emphasising hands-on learning. For online se
 
 - The Impact and Opportunities of Strategic Context Mapping Patterns
 
-### **Day 2**
+**Day 2**
 
 - Connecting Bounded Contexts with Domain Message Flow Modelling
 

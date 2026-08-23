@@ -5,13 +5,11 @@ format: "1 day or less"
 teaser: "Are your collaborative modeling sessions often dominated by a few voices? Do you notice that some individuals are consistently believed more than others, or that decisions face unspoken resistance later on? This 3-hour online class dives into the heart of these group interactions by exploring power dynamics, including the powerful, and often unconscious, influence of ranking."
 ---
 
-3 hour workshop
-
-## About the Workshop:
+## About the workshop
 
 Strong collaboration and the integration of all available knowledge are essential for effective software design and decision-making. However, subtle social and power dynamics can significantly affect group interactions, the flow of ideas, and ultimately, the success of the software product. Understanding how power dynamics, including both conscious and unconscious rank, shape participation and determine whose contributions are valued and heard, is crucial for anyone involved in group decision-making processes. This workshop provides a fundamental understanding of theories that explain these power dynamics, such as ranking theory, offering a fresh perspective for observing and interpreting team interactions. By acknowledging these influences and acquiring tactics to navigate and lessen their negative impact, you can cultivate more balanced, inclusive, and ultimately more successful collaborative design processes.
 
-What You Will Learn:
+## What you will learn
 
 - **Understanding Social & Power Dynamics:** Explore the role of power dynamics, and theories like ranking, in group decision-making.
 

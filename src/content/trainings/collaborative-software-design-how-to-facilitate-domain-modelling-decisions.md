@@ -5,7 +5,7 @@ format: "2-day"
 teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
 ---
 
-## About the Workshop
+## About the workshop
 
 Effective software design hinges on strong collaboration. But let's be honest: collaboration is messy. Misunderstandings, hidden assumptions, and social dynamics often undermine even the best technical plans. **Collaboration is not innate; it is a discipline.**
 
@@ -21,7 +21,7 @@ This workshop is designed to make these dynamics visible and navigable. You will
 
 *This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
 
-### What You Will Learn
+## What you will learn
 
 - **Why collaborative design fails — and what actually fixes it:** Involving stakeholders early isn't just "nice to have." We explore the concrete risks of siloed design, and why the gap between Business and IT widens when those risks go unaddressed.
 
@@ -39,7 +39,7 @@ This workshop is designed to make these dynamics visible and navigable. You will
 
 - **Making decisions that actually stick:** The real test isn't what's decided in the session. It's whether it holds. Learn how to converge the group's collective knowledge into concrete decisions with genuine buy-in — and how to communicate them so the commitment survives the meeting.
 
-## Prerequisites & Preparation
+## Before the workshop
 
 To get the most value from these two days, some prior exposure to collaborative modeling (like EventStorming or Domain Storytelling) is helpful, though not strictly required. We will provide introductory materials before the workshop begins to ensure everyone starts on the same page.
 
@@ -71,7 +71,7 @@ On the second day, we tackle a specific design challenge using your preferred co
 
 - **Sustainable Decisions:** How to close the loop. Moving from sticky notes and discussions to concrete, supported design decisions — and communicating them in ways that make the commitment stick beyond the meeting.
 
-## Who is this for?
+## Audience
 
 This workshop is designed for technical leaders who want to move beyond "running meetings" to effectively facilitating shared understanding. It is ideal for:
 
