@@ -221,7 +221,9 @@ const TALK = {
       <div class="grid grid--3 authors">
         {AUTHORS.map((a) => (
           <div class="author" id={a.slug}>
-            <Image class="author-photo" src={PORTRAITS[a.slug]} alt={a.name}
+            {/* `js-reveal`: the live page zooms each portrait in from half
+                size as it scrolls into view. See src/scripts/reveal.ts. */}
+            <Image class="author-photo js-reveal" src={PORTRAITS[a.slug]} alt={a.name}
                    widths={[338, 676]} sizes="(min-width: 900px) 338px, 80vw" />
             <h3><a href={a.url} rel="noopener">{a.name}</a></h3>
             <p>{a.bio}</p>

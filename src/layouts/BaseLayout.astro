@@ -352,9 +352,11 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       // and reasoned about on its own. See src/scripts/.
       import { initHeader } from '../scripts/header';
       import { initCardFilter } from '../scripts/card-filter';
+      import { initReveal } from '../scripts/reveal';
 
       initHeader();
       initCardFilter();
+      initReveal();
     </script>
   </body>
 </html>

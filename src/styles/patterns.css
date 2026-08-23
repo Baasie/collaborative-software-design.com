@@ -157,6 +157,18 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .panel-brand p { color: var(--on-colour-muted); }
 .panel-brand a:not(.btn) { color: var(--on-colour); }
 
+/* --- reveal on scroll ----------------------------------------------------- */
+/* The entrance the live site gives its author portraits: in at half size and
+   transparent, out to full size over a second. See src/scripts/reveal.ts for
+   the measurements and for why the starting state is behind `html.js`.
+
+   Only under `html.js`. A visitor with no JavaScript has nothing to add
+   `.is-revealed`, so without that guard they would get an element that is
+   permanently invisible — strictly worse than no animation at all. */
+html.js .js-reveal { opacity: 0; transform: scale(0.5); }
+html.js .js-reveal.is-revealed { animation: reveal-zoom 1s linear forwards; }
+@keyframes reveal-zoom { to { opacity: 1; transform: scale(1); } }
+
 /* --- prose (a rendered Notion body) --------------------------------------- */
 .prose > :first-child { margin-top: 0; }
 .prose img { margin-block: var(--space-8); border: 2px solid var(--color-ink); }

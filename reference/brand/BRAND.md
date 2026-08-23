@@ -90,6 +90,23 @@ Both are raster PNGs. If a vector original exists, it is worth asking Art of
 Design for it — the header renders the wordmark at 500px wide and it will
 soften on a high-DPI screen.
 
+## Motion
+
+The live site animates on scroll, through Divi's waypoints, and one of them is
+worth keeping: the three **author portraits** come in at `scale(0.5)` and
+`opacity: 0` and zoom to full size over **1s, linear**, once, when they enter
+the viewport. Measured, not guessed — `.et_pb_image_6` reports
+`matrix3d(0.5 … )` at the start of its run and `none` at the end.
+
+Reproduced by `src/scripts/reveal.ts` plus the `.js-reveal` pattern in
+`patterns.css`. The starting state is behind `html.js`, because the failure
+mode is not "no animation", it is "three permanently invisible portraits";
+`browser.test.mjs` checks both halves of that.
+
+Two other animations on the live page are NOT reproduced, and could be:
+`.et_pb_image_1` (the chapter photograph) slides in from the left, and the
+whole thing is decorative.
+
 ## The icon
 
 `reference/brand/favicon-source.jpg` — `cropped-favicon_csd.jpg` off the live

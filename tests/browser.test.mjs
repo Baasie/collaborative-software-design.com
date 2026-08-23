@@ -158,6 +158,40 @@ test('the navigation works without JavaScript, and the dropdown is reachable', a
   await ctx.close();
 });
 
+test('a portrait that zooms in on scroll is still there when it cannot', async () => {
+  // The live site's author portraits start at scale(0.5) and opacity 0 and zoom
+  // to full size when they scroll into view. The starting state is the whole
+  // risk: anything that stops the class from ever landing leaves three
+  // PERMANENTLY INVISIBLE images, which is far worse than no animation. So the
+  // hidden state is behind `html.js` and this checks both halves of that.
+  const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  const plain = await noJs.newPage();
+  await plain.goto(base + '/', { waitUntil: 'load' });
+  const still = await plain.evaluate(() => {
+    const e = document.querySelector('.js-reveal');
+    if (!e) return null;
+    const c = getComputedStyle(e);
+    return { opacity: Number(c.opacity), transform: c.transform };
+  });
+  assert.ok(still, 'no .js-reveal element on the home page');
+  assert.equal(still.opacity, 1, 'a revealed-on-scroll element is invisible without JavaScript');
+  assert.equal(still.transform, 'none', 'and it is still scaled down');
+  await noJs.close();
+
+  // And with scripting it does animate, ending at full size rather than
+  // stopping wherever the keyframes left it.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/', { waitUntil: 'load' });
+  const start = await page.evaluate(() => Number(getComputedStyle(document.querySelector('.js-reveal')).opacity));
+  assert.equal(start, 0, 'it should start hidden when it can animate');
+  await page.evaluate(() => document.querySelector('.js-reveal').scrollIntoView({ block: 'center' }));
+  await page.waitForFunction(
+    () => getComputedStyle(document.querySelector('.js-reveal')).transform === 'matrix(1, 0, 0, 1, 0, 0)',
+    null, { timeout: 5000 });
+  await ctx.close();
+});
+
 test('the tag filter narrows the index, and a /tag/ redirect lands filtered', async () => {
   const page = await browser.newPage();
   await page.goto(base + '/faq/', { waitUntil: 'load' });
