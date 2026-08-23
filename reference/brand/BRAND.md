@@ -155,3 +155,10 @@ This rebuild adds exactly one thing to that line: a link to the privacy policy.
 The live site reaches that page from its cookie banner, and this site has no
 cookie banner, so without the link the page would be reachable only by typing
 its address.
+
+The site's own links live one band higher, under **Explore** in the orange
+contact section — the shape virtualddd.com uses. That band was half-empty
+before: the copy stops at 34rem and everything right of it was air. The list is
+generated from `NAV` and `CHAPTERS`, so it cannot point at a page that no longer
+exists, and it is the only place the three chapters are listed at all; the menu
+never names them.

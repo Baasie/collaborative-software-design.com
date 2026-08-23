@@ -198,19 +198,16 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
         band carries the address and the social links, the menu carries the
         pages, and `<link rel="alternate">` in the head carries the feed.
 
-        Two additions, and both are there because a link has to live somewhere:
-        the privacy policy, which the live site reaches from its cookie banner
-        and this site has no banner to reach it from; and the sitemap, which is
-        where a footer link to one conventionally goes. The menu has five items
-        and the site has thirty-odd pages, so there is a real gap for it to
-        fill. */}
+        One addition: the privacy policy, which the live site reaches from its
+        cookie banner and this site has no banner to reach it from. The pages
+        themselves are listed under "Explore" in the contact band above, which
+        is where they belong — a visitor looking for a link looks at the block
+        with the headings in it, not at the credit line. */}
     <footer class="site-footer" data-test="site-footer">
       <div class="footer-wrap">
         <p>
           © {year} {SITE_NAME} | Webdesign by
           <a href="https://artofdesign.nl/" rel="noopener">Art of Design</a>
-          <span class="footer-sep" aria-hidden="true">|</span>
-          <a href="/sitemap/">Sitemap</a>
           <span class="footer-sep" aria-hidden="true">|</span>
           <a href="/privacy-policy/">Privacy</a>
         </p>

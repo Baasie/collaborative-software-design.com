@@ -14,8 +14,34 @@
  */
 import { Image } from 'astro:assets';
 import { mailto, CONTACT_EMAIL, SOCIALS } from '../lib/seo';
+import { NAV, CHAPTERS } from '../lib/nav';
 import iconLinkedin from '../assets/icon-linkedin.png';
 import iconBluesky from '../assets/icon-bluesky.png';
+
+/** "Explore": every page on the site, in the one place a visitor looks for a
+ *  link the five-item menu does not carry — the chapters especially, which the
+ *  menu never lists at all.
+ *
+ *  BUILT FROM `NAV` AND `CHAPTERS`, not typed out. A hand-kept list of links is
+ *  the thing that goes stale first and the reason so many footers point at
+ *  pages that no longer exist. The anchors ("What's inside", "Contact") and
+ *  Home are dropped: an anchor is a place on a page rather than a page, and
+ *  Home is the wordmark.
+ *
+ *  The labels are the MENU's words, including "FAQ" for a page whose own
+ *  heading says "Dear CoMo". That mismatch is deliberate and it is the live
+ *  site's — `/faq/` is the address WordPress gave the column, and somebody
+ *  hunting for the word they saw in the menu should find it here too.
+ *
+ *  A chapter goes in under its plain title, without the "#01" the home page
+ *  gives it: a column of links reads better ragged-free, and the number means
+ *  something in the book rather than here. */
+const EXPLORE = [
+  ...NAV.flatMap((n) => (n.children ? n.children : [n]))
+    .filter((n) => n.href.startsWith('/') && !n.href.includes('#') && n.href !== '/'),
+  ...CHAPTERS.map((c) => ({ href: c.href, label: c.title })),
+  { href: '/search/', label: 'Search' },
+];
 
 /** The two 50×50 black squares the live footer draws under "Follow us",
  *  matched to SOCIALS by name so neither list can gain an entry the other
@@ -52,6 +78,13 @@ const ICONS: Record<string, ImageMetadata> = {
         Or write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
     </div>
+    <nav class="contact-explore" aria-label="Site">
+      <h3>Explore</h3>
+      <ul>
+        {EXPLORE.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
     <div>
       <h3>Follow us</h3>
       <ul class="contact-socials">
@@ -69,8 +102,21 @@ const ICONS: Record<string, ImageMetadata> = {
 
 <style>
   .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); }
-  @media (min-width: 800px) { .contact-grid { grid-template-columns: 1.6fr 0.8fr; gap: var(--space-16); } }
+  @media (min-width: 800px) { .contact-grid { grid-template-columns: 1.2fr 1fr; gap: var(--space-12); } }
+  /* Three columns once there is room — the shape virtualddd.com's footer uses,
+     and the reason this band looked half-empty before: the copy stops at 34rem
+     and everything to the right of it was air. */
+  @media (min-width: 1100px) { .contact-grid { grid-template-columns: 1.3fr 1fr 0.5fr; gap: var(--space-12); } }
   .contact-grid p { max-width: 34rem; }
+  .contact-grid h3 { margin-top: 0; font-size: var(--text-lg); }
+
+  .contact-explore ul { list-style: none; margin: 0; padding: 0; }
+  .contact-explore li { margin-bottom: var(--space-2); }
+  /* A 24px target: a column of links is a list, not a sentence, so the inline
+     exception to WCAG 2.5.8 does not apply. They keep the underline `li a`
+     gives them — on this band they are ink rather than magenta, so the rule
+     under the word is the only thing marking them as links at all. */
+  .contact-explore a { display: inline-block; min-height: 24px; font-size: var(--text-sm); }
   .contact-direct { margin-top: var(--space-6); font-size: var(--text-sm); }
   .contact-socials { list-style: none; display: flex; gap: var(--space-4); margin: 0; padding: 0; }
   .contact-socials a { display: inline-flex; }
