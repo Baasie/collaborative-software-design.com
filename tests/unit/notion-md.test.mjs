@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  kebab, richText, teaserOf, imageExt, isAssetFor, createBlocksToMd,
+  kebab, richText, teaserOf, withoutTeaser, imageExt, isAssetFor, createBlocksToMd,
 } from '../../scripts/lib/notion-md.ts';
 
 const md = () => createBlocksToMd({ childrenOf: async () => [], downloadImage: async () => null });
@@ -27,6 +27,26 @@ test('a Notion page mention does not become a dead link to a page id', () => {
   assert.equal(
     richText([{ plain_text: 'Some page', annotations: {}, href: '/e342ff0d1c2b4a5f8e9d0c1b2a3f4e5d' }]),
     'Some page',
+  );
+});
+
+test('withoutTeaser removes the section the frontmatter already carries', () => {
+  const body = '## Teaser\n\nThe pitch.\n\n## About the Workshop\n\nThe rest.';
+  assert.equal(withoutTeaser(body), '## About the Workshop\n\nThe rest.');
+  // The teaser is still extractable from the ORIGINAL, which is the order the
+  // sync uses: read it out, then take it away.
+  assert.equal(teaserOf(body), 'The pitch.');
+});
+
+test('withoutTeaser leaves a body that has no Teaser section alone', () => {
+  const body = '## Agenda\n\nDay one.';
+  assert.equal(withoutTeaser(body), body);
+});
+
+test('withoutTeaser stops at the next heading of any depth', () => {
+  assert.equal(
+    withoutTeaser('## Teaser\n\nPitch.\n\n### Deeper\n\nKept.'),
+    '### Deeper\n\nKept.',
   );
 });
 

@@ -1,9 +1,28 @@
 ---
+/** A workshop page.
+ *
+ * Shaped after the live `/training/` page, which is not an index at all — it is
+ * ONE workshop, the two-day Collaborative Software Design one, written straight
+ * into WordPress. There are five now, so that page becomes the index and this
+ * template carries its look:
+ *
+ *   pink   #e69ec6 with the engraved woman at the right edge, blended with
+ *          `lighten`. Left: the format as an eyebrow, the title at 56px, the
+ *          teaser at 20px. Right: the booking buttons and, when there is one,
+ *          the workshop's picture on a white plate.
+ *   white  the body out of Notion.
+ *   blue   #aec9e9, where the live page puts "Before the workshop" and
+ *          "Audience" — here the other workshops and the book.
+ *
+ * The picture comes from the Notion page's COVER, which the sync downloads as
+ * `featuredImage`. Anything inside the body comes with the body. Neither needs
+ * anything doing here; see docs/content-model.md.
+ */
 import { render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PrevNext from '../../components/PrevNext.astro';
-import ContactSection from '../../components/ContactSection.astro';
 import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import heroWoman from '../../assets/home/hero-woman.png';
 import { trainings } from '../../lib/collections';
 import { courseJsonLd, pageTitle, BOOK_URL, mailto } from '../../lib/seo';
 import { socialCard } from '../../lib/social-card';
@@ -11,23 +30,24 @@ import { excerpt } from '../../lib/excerpt';
 
 export async function getStaticPaths() {
   const items = await trainings();
-  return items.map((entry, i) => ({
+  return items.map((entry) => ({
     params: { slug: entry.id },
-    props: {
-      entry,
-      prev: items[i - 1] ? { href: `/training/${items[i - 1].id}/`, title: items[i - 1].data.title } : undefined,
-      next: items[i + 1] ? { href: `/training/${items[i + 1].id}/`, title: items[i + 1].data.title } : undefined,
-    },
+    props: { entry, others: items.filter((o) => o.id !== entry.id) },
   }));
 }
 
-const { entry, prev, next } = Astro.props;
+const { entry, others } = Astro.props;
 const { Content } = await render(entry);
 const description = entry.data.seoMetadescription
   ?? entry.data.teaser
   ?? excerpt(entry.body ?? '', entry.data.title);
 const url = new URL(`/training/${entry.id}/`, Astro.site).toString();
 const image = entry.data.featuredImage ? await socialCard(Astro.site, entry.data.featuredImage) : undefined;
+
+const enquiry = mailto(
+  `Booking enquiry: ${entry.data.title}`,
+  `Hi,\n\nI would like to talk about running "${entry.data.title}".\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n`,
+);
 
 const jsonLd = courseJsonLd({
   site: Astro.site, url, title: entry.data.title, description, image, format: entry.data.format,
@@ -41,57 +61,123 @@ const jsonLd = courseJsonLd({
   ogType="article"
   markdown
 >
-  <div class="section--paper">
-  <article class="wrap training">
-    <p class="detail-back"><a href="/training/">← All workshops</a></p>
-    <header class="detail-head">
-      {entry.data.format && <p class="eyebrow">{entry.data.format} workshop</p>}
-      <h1>{entry.data.title}</h1>
-      <p class="training-actions">
-        <a class="btn btn--primary" href={mailto(
-          `Booking enquiry: ${entry.data.title}`,
-          `Hi,\n\nI would like to talk about running "${entry.data.title}".\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n`,
-        )}>Ask about a date</a>
-      </p>
-    </header>
-
-    {entry.data.featuredImage && (
-      <figure class="detail-figure prose">
-        <Image src={entry.data.featuredImage} alt="" width={1200} height={630} />
-      </figure>
-    )}
-
-    <div class="prose"><Content /></div>
-
-    <div class="prose">
-      <div class="panel-brand">
-        <h2>Bring this to your team</h2>
-        <p>
-          Every workshop runs online or in person, in-house for one organisation or as
-          an open enrolment. Tell us the group, the format and roughly when, and we
-          will come back with a date.
-        </p>
-        <p>
-          <a class="btn btn--inverse" href={mailto(
-            `Booking enquiry: ${entry.data.title}`,
-            `Hi,\n\nI would like to talk about running "${entry.data.title}".\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n`,
-          )}>Get in touch</a>
-        </p>
+  <section class="hire" data-test="workshop-hero">
+    <div class="wrap hire-grid">
+      <div>
+        <p class="detail-back"><a href="/training/">← All workshops</a></p>
+        {entry.data.format && <p class="eyebrow">{entry.data.format} workshop</p>}
+        <h1>{entry.data.title}</h1>
+        {entry.data.teaser && <p class="hire-lede">{entry.data.teaser}</p>}
       </div>
-      <p>
-        The material comes from <em>Collaborative Software Design</em>.
-        <a href={BOOK_URL} rel="noopener">Buy the book</a> if you want the long version
-        first.
-      </p>
-      <PrevNext prev={prev} next={next} label="More workshops" />
+
+      <div class="hire-aside">
+        <p class="hire-actions">
+          <a class="btn btn--ink" href={enquiry}>Ask about a date</a>
+        </p>
+        {entry.data.featuredImage && (
+          /* On a white plate, as the live page frames its illustration. The
+             alt is empty because the picture illustrates the workshop rather
+             than saying anything the page does not. */
+          <figure class="hire-figure-plate">
+            <Image src={entry.data.featuredImage} alt="" widths={[396, 792]}
+                   sizes="(min-width: 900px) 396px, 90vw" />
+          </figure>
+        )}
+      </div>
     </div>
-  </article>
+
+    <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
+           sizes="(min-width: 900px) 557px, 280px" loading="eager" />
+  </section>
+
+  <div class="section section--paper">
+    <article class="wrap prose workshop-body"><Content /></article>
   </div>
+
+  <section class="section section--blue" data-test="more-workshops">
+    <div class="wrap more-grid">
+      <div>
+        <p class="eyebrow">Bring this to your team</p>
+        <h2>Online or in person, in-house or open enrolment</h2>
+        <p>
+          Tell us the group, the format and roughly when, and we will come back with a
+          date. The material comes from <em>Collaborative Software Design</em> —
+          <a href={BOOK_URL} rel="noopener">buy the book</a> if you want the long
+          version first.
+        </p>
+        <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
+      </div>
+
+      {others.length > 0 && (
+        <nav class="more-list" aria-label="Other workshops">
+          <h3>Other workshops</h3>
+          <ul>
+            {others.map((o) => (
+              <li>
+                <a href={`/training/${o.id}/`}>{o.data.title}</a>
+                {o.data.format && <span class="more-format">{o.data.format}</span>}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </div>
+  </section>
 
   <ContactSection />
 </BaseLayout>
 
 <style>
-  .training { padding-block: var(--space-12); }
-  .training-actions { margin-top: var(--space-6); }
+  .hire {
+    position: relative; overflow: hidden;
+    background: var(--color-ground-pink); color: var(--color-ink);
+    padding-block: var(--space-12);
+  }
+  .hire-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  .hire h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.1; margin: 0 0 var(--space-8); }
+  .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
+  .hire-actions { margin: 0 0 var(--space-8); }
+  .detail-back { margin: 0 0 var(--space-6); font-size: var(--text-sm); }
+
+  /* The white plate the live page frames its illustration with. */
+  .hire-figure-plate { margin: 0; padding: var(--space-4); background: var(--color-paper); }
+  .hire-figure-plate :global(img) { width: 100%; height: auto; }
+
+  .hire-figure {
+    position: absolute; top: 0; right: 0; z-index: 0;
+    width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
+  }
+
+  /* A readable measure. The live page runs its body in two 510px columns,
+     which this template cannot do — the body is one markdown document out of
+     Notion and there is no honest place to cut it. One column at a sane width
+     beats a full-width 1100px line of monospace, which is what it was. */
+  .workshop-body { max-width: 46rem; }
+
+  /* The live page marks every "What You Will Learn" item with a magenta check.
+     Every workshop body out of Notion is built the same way — a list of
+     `**lead:** explanation` — so the marker belongs to the list rather than to
+     one section, and applying it here is what carries the look across all five
+     without the template having to know what the headings say. */
+  .workshop-body :global(ul) { list-style: none; padding-left: 0; }
+  .workshop-body :global(ul > li) { position: relative; padding-left: var(--space-8); }
+  .workshop-body :global(ul > li)::before {
+    content: '✓'; position: absolute; left: 0; top: 0;
+    color: var(--color-brand); font-weight: 700;
+  }
+
+  .more-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  .more-grid h2 { margin-top: 0; font-size: var(--text-2xl); }
+  .more-list h3 { margin-top: 0; font-size: var(--text-lg); }
+  .more-list ul { list-style: none; margin: 0; padding: 0; }
+  .more-list li { margin-bottom: var(--space-4); }
+  /* A 24px target: a column of links is a list, not a sentence. */
+  .more-list a { display: inline-block; min-height: 24px; color: var(--color-ink); }
+  .more-format { display: block; font-size: var(--text-sm); color: var(--color-ink-muted); }
+
+  @media (min-width: 900px) {
+    .hire-grid { grid-template-columns: 1.58fr 1fr; gap: var(--space-16); }
+    .hire-figure { width: 557px; }
+    .more-grid { grid-template-columns: 1.4fr 1fr; gap: var(--space-16); }
+  }
 </style>

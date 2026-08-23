@@ -1,9 +1,26 @@
 ---
+/** The workshop index.
+ *
+ * The live site has no such page: `/training/` IS the two-day Collaborative
+ * Software Design workshop, written straight into WordPress, because for a
+ * long time there was only one. There are five now, so this address becomes
+ * the list and each workshop gets its own page.
+ *
+ * That makes this the one page on the site with nothing to be faithful TO, so
+ * it is built out of the brand's own vocabulary instead: the band rhythm the
+ * home page establishes, and the pink the live training page already used.
+ *
+ *   pink   the same #e69ec6 the workshop pages open with, so arriving at one
+ *          from here is a continuation rather than a jump.
+ *   white  the workshops, grouped by the heading they sit under in Notion.
+ *   blue   the other half of the answer — hire us to facilitate instead.
+ */
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import TrainingCard from '../../components/TrainingCard.astro';
 import ContactSection from '../../components/ContactSection.astro';
+import heroWoman from '../../assets/home/hero-woman.png';
 import { trainingsByFormat, trainings } from '../../lib/collections';
-import { pageTitle, organisation, mailto, AUTHORS, BOOK_URL } from '../../lib/seo';
+import { pageTitle, organisation, mailto, AUTHORS } from '../../lib/seo';
 
 const groups = await trainingsByFormat();
 const all = await trainings();
@@ -12,6 +29,11 @@ const description =
   'Hands-on workshops in the facilitation discipline behind good domain modelling '
   + 'decisions: reading the room, working with ranking and resistance, and closing '
   + 'on decisions that hold. Two-day deep dives and shorter formats.';
+
+const enquiry = mailto(
+  'Booking enquiry: training',
+  'Hi,\n\nI would like to talk about a training.\n\nWhich workshop:\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
+);
 
 // An `ItemList` rather than one Course node: this page is the list, and each
 // workshop has a page of its own carrying its own Course.
@@ -30,23 +52,29 @@ const jsonLd = {
 };
 ---
 <BaseLayout title={pageTitle('Training')} description={description} jsonLd={jsonLd}>
-  <section class="hero">
-    <div class="wrap hero-inner">
-      <p class="eyebrow eyebrow--ink">Bookings</p>
-      <h1>Practise the moments that break a design session</h1>
-      <p class="hero-lede">
-        You will not sit and listen to theory. Every workshop puts you in the room —
-        facilitating, getting it wrong, getting feedback, and going again — because
-        facilitation is a skill, and skills are not acquired from slides. All formats
-        run online or in person, in-house or open enrolment.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn--primary" href={mailto(
-          'Booking enquiry: training',
-          'Hi,\n\nI would like to talk about a training.\n\nWhich workshop:\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
-        )}>Ask about a date</a>
+  <section class="hire" data-test="training-hero">
+    <div class="wrap hire-grid">
+      <div>
+        <p class="eyebrow">Bookings</p>
+        <h1>Practise the moments that break a design session</h1>
+        <p class="hire-lede">
+          You will not sit and listen to theory. Every workshop puts you in the room —
+          facilitating, getting it wrong, getting feedback, and going again — because
+          facilitation is a skill, and skills are not acquired from slides. All formats
+          run online or in person, in-house or open enrolment.
+        </p>
+      </div>
+      <div class="hire-aside">
+        <p class="hire-count">
+          {all.length} workshops, run by {AUTHORS.map((a) => a.name).join(', ')} — the
+          authors of the book.
+        </p>
+        <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
       </div>
     </div>
+
+    <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
+           sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
 
   <div class="section section--paper">
@@ -54,31 +82,39 @@ const jsonLd = {
       {all.length > 0 ? (
         [...groups].map(([format, items]) => (
           <section class="format-group">
-            <div class="section-head"><h2>{format}</h2></div>
-            <div class="grid grid--3">
-              {items.map((t) => <TrainingCard entry={t} />)}
-            </div>
+            <h2>{format}</h2>
+            <ul class="workshop-list">
+              {items.map((t) => (
+                <li class="workshop">
+                  <h3><a class="workshop-link" href={`/training/${t.id}/`}>{t.data.title}</a></h3>
+                  {t.data.teaser && <p class="workshop-teaser">{t.data.teaser}</p>}
+                  <p class="workshop-more" aria-hidden="true">See this workshop →</p>
+                </li>
+              ))}
+            </ul>
           </section>
         ))
       ) : (
-        <p class="empty">The workshop list is being updated.</p>
+        /* Not "no workshops": the sync raises an alert when a page disappears
+           from Notion, and an empty list here means the sync has not run, not
+           that the business has stopped selling training. */
+        <p>The workshop list is being updated.</p>
       )}
     </div>
   </div>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="panel">
-        <p class="eyebrow">Who runs these</p>
-        <h2>The authors of the book</h2>
+  <section class="section section--blue">
+    <div class="wrap more-grid">
+      <div>
+        <p class="eyebrow">The other half of the answer</p>
+        <h2>Or have us facilitate the session ourselves</h2>
         <p>
-          {AUTHORS.map((a) => a.name).join(', ')} — the workshops are where the book’s
-          material is practised rather than read.
+          A workshop teaches your own people to hold the room. If what you need is
+          somebody to hold it for you — for a particular decision, with a particular
+          group — that is <a href="/facilitation/">consulting</a>, and it is the same
+          material from the other side.
         </p>
-        <div class="hero-actions">
-          <a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a>
-          <a class="btn btn--outline" href="/facilitation/">Or hire us to facilitate</a>
-        </div>
+        <p><a class="btn btn--ink" href="/facilitation/">See consulting</a></p>
       </div>
     </div>
   </section>
@@ -87,5 +123,51 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
+  .hire {
+    position: relative; overflow: hidden;
+    background: var(--color-ground-pink); color: var(--color-ink);
+    padding-block: var(--space-12);
+  }
+  .hire-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  .hire h1 { font-size: clamp(2.25rem, 5.5vw, 3.5rem); line-height: 1.1; margin: 0 0 var(--space-8); }
+  .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
+  .hire-count { margin: 0 0 var(--space-6); font-size: var(--text-sm); }
+  .hire-figure {
+    position: absolute; top: 0; right: 0; z-index: 0;
+    width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
+  }
+
   .format-group + .format-group { margin-top: var(--space-16); }
+  .format-group h2 { margin-top: 0; }
+  .workshop-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--space-8); }
+  /* A rule above each one rather than a box around it: the brand is
+     square-cornered and heavy-ruled, and five long teasers in five bordered
+     cards is a wall. */
+  .workshop { position: relative; border-top: 4px solid var(--color-ink); padding-top: var(--space-5); }
+  .workshop h3 { margin: 0 0 var(--space-3); font-size: var(--text-xl); }
+  .workshop-link { color: var(--color-ink); }
+  /* The whole block is the target, without nesting a second link inside the
+     first — the title carries the href and this stretches its hit area. */
+  .workshop-link::after { content: ''; position: absolute; inset: 0; }
+  .workshop:hover .workshop-link { color: var(--color-brand); }
+  /* Clamped, because the teasers are not the same length: four of the five
+     Notion pages have a `Teaser` section and one does not, so the sync falls
+     back to that one's opening paragraph and it runs three times as long as
+     the rest. Clamping keeps the grid readable; the real fix is a `Teaser`
+     section on the workshop that lacks one, which is a change in Notion. */
+  .workshop-teaser {
+    margin: 0 0 var(--space-4); color: var(--color-ink-muted);
+    font-size: var(--text-sm); line-height: 1.8;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden;
+  }
+  .workshop-more { margin: 0; font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-brand); }
+
+  .more-grid h2 { margin-top: 0; font-size: var(--text-2xl); }
+  .more-grid p { max-width: 42rem; }
+
+  @media (min-width: 900px) {
+    .hire-grid { grid-template-columns: 1.58fr 1fr; gap: var(--space-16); }
+    .hire-figure { width: 557px; }
+    .workshop-list { grid-template-columns: 1fr 1fr; gap: var(--space-10) var(--space-12); }
+  }
 </style>

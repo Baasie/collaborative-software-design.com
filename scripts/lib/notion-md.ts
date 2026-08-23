@@ -233,6 +233,24 @@ export function createBlocksToMd(deps: MdDeps) {
  *
  *  Prefers an explicit `Teaser` section; falls back to the first paragraph of
  *  prose, which is what a page that has not been given one still has. */
+/** The body with its `Teaser` section removed.
+ *
+ * The teaser is lifted into the frontmatter by `teaserOf`, and the page prints
+ * it as the lede above everything else — which is what the live training page
+ * does with it too. Leaving the section in the body as well means every
+ * workshop page opens by saying the same thing twice.
+ *
+ * Only the FIRST heading called Teaser, and only its own section: the next
+ * heading of any depth ends it. A workshop with no such section is returned
+ * unchanged, which is most of them.
+ */
+export function withoutTeaser(body: string): string {
+  return body
+    .replace(/^#{2,6}\s*Teaser\s*$[\s\S]*?(?=^#{2,6}\s|\Z)/m, '')
+    .replace(/^\n+/, '')
+    .trimEnd();
+}
+
 export function teaserOf(body: string): string | undefined {
   const section = body.match(/^#{2,6}\s*Teaser\s*$([\s\S]*?)(?=^#{2,6}\s|\Z)/m);
   const scope = section ? section[1] : body;

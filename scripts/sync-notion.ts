@@ -18,7 +18,7 @@ import sharp from 'sharp';
 import { normaliseTags } from '../src/lib/tags';
 import {
   createBlocksToMd, assetRefs, fileUrl, imageExt, isAssetFor, kebab, plainTitle,
-  statusOf, teaserOf, yamlList, yamlStr,
+  statusOf, teaserOf, withoutTeaser, yamlList, yamlStr,
   type AssetCtx, type StatusKind,
 } from './lib/notion-md';
 // Whether Notion is still shaped the way the readers below assume. Every typed
@@ -293,13 +293,16 @@ const { blocksToMd, seenUnhandled } = createBlocksToMd({ childrenOf, downloadIma
 
 /** The featured image and body of an entry already on disk, so an unchanged
  *  body need not be re-fetched from Notion. */
-function readExisting(path: string): { featured?: string; body: string } | null {
+function readExisting(path: string): { featured?: string; teaser?: string; body: string } | null {
   try {
     const raw = readFileSync(path, 'utf8');
     const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
     if (!m) return null;
     const featured = m[1].match(/^featuredImage:\s*"(.+)"$/m)?.[1];
-    return { featured, body: m[2].replace(/^\n+/, '') };
+    // The teaser has to come back off the FRONTMATTER on the unchanged path,
+    // because the body it was extracted from no longer contains it.
+    const teaser = m[1].match(/^teaser:\s*"([\s\S]*?)"$/m)?.[1];
+    return { featured, teaser, body: m[2].replace(/^\n+/, '') };
   } catch { return null; }
 }
 
@@ -586,11 +589,18 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
     const ctx: AssetCtx = { dir: outDir, slug, count: 0 };
     let body: string;
     let featured: string | null | undefined;
+    let teaser: string | undefined;
     if (unchanged) {
       body = existing!.body;
       featured = existing!.featured;
+      teaser = existing!.teaser;
     } else {
-      body = await blocksToMd(await childrenOf(block.id), ctx);
+      const full = await blocksToMd(await childrenOf(block.id), ctx);
+      // Extract first, then strip: the teaser goes in the frontmatter, and the
+      // page prints it as the lede, so leaving the section in the body as well
+      // would make every workshop open by saying the same thing twice.
+      teaser = teaserOf(full);
+      body = withoutTeaser(full);
       const cover = page.cover ? fileUrl(page.cover) : '';
       featured = cover ? await downloadImage(cover, ctx, 'featured') : null;
       process.stdout.write('.');
@@ -598,7 +608,6 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
 
     const fm = [`title: ${yamlStr(title)}`, `order: ${order}`];
     if (format) fm.push(`format: ${yamlStr(format)}`);
-    const teaser = teaserOf(body);
     if (teaser) fm.push(`teaser: ${yamlStr(teaser)}`);
     if (featured) fm.push(`featuredImage: ${yamlStr(featured)}`);
 
