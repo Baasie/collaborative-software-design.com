@@ -7,10 +7,6 @@ teaser: "Are you struggling with complex architectural decisions in software des
 
 1 day workshop
 
-## Teaser
-
-Are you struggling with complex architectural decisions in software design? Ever faced a standstill due to differing opinions on architecture choices? Want to make decisions that everyone on the team can support and that align with both the technical and human needs of your projects? Join us in this 1-day expert deep dive workshop where you will learn to navigate conflicts in software architectural decision making.
-
 ## About the Workshop:
 
 Software architecture forms the backbone to building successful software systems, but the decision-making process can be a hassle to navigate due to complexity and conflicts. These conflicts can originate from a lack of complete information to emotionally charged personal preferences, leading to decisions that may not fully align with the system's overall objectives. This misalignment can result in a less than ideal software architecture for the business and it also can leave the team members unhappy and resist the decision. Our goal should be to ensure decisions are sustainable – benefiting both the technical needs and the human needs involved.

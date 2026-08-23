@@ -7,12 +7,6 @@ teaser: "Are software teams constantly hitting roadblocks, architecture decision
 
 2-day workshop
 
-## Teaser
-
-Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?
-
-Uncover the power of sociotechnical system design, a holistic approach that optimises teams, architecture, and value streams in harmony. This workshop seamlessly integrates Strategic Domain-Driven Design (DDD) to design resilient, adaptable software architectures with Team Topologies, enabling teams to self-organise for fast flow and embrace full ownership of the software they create. Learn to collaboratively design systems that not only survive but thrive on change, bridging the gap between business needs, software design, and team flow.
-
 ## About the workshop
 
 This two-day workshop focuses on collaboratively designing value streams, software systems, and teams. You'll leave ready to start designing sustainable and adaptable software products. We'll explore the core principles of Strategic Domain-Driven Design and Team Topologies, immediately applying them to a practical case study. Starting from an outcome of a Big Picture EventStorming session, we’ll context map to distil subdomains, design emergent bounded contexts, and eventually organise teams around those boundaries.

@@ -5,14 +5,6 @@ format: "2-day"
 teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
 ---
 
-## Teaser
-
-Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart.
-
-This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping — they all do their job. The problem is what happens between the people holding the markers.
-
-This training tackles that. Based on the book *Collaborative Software Design* by Kenny Baas-Schwegler, Evelyn van Kelle, and Gien Verschatse, it teaches you the facilitation discipline to make the invisible dynamics in the room visible — and to turn them into better decisions.
-
 ## About the Workshop
 
 Effective software design hinges on strong collaboration. But let's be honest: collaboration is messy. Misunderstandings, hidden assumptions, and social dynamics often undermine even the best technical plans. **Collaboration is not innate; it is a discipline.**
