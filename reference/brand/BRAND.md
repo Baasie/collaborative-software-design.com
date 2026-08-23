@@ -90,6 +90,19 @@ Both are raster PNGs. If a vector original exists, it is worth asking Art of
 Design for it — the header renders the wordmark at 500px wide and it will
 soften on a high-DPI screen.
 
+## The icon
+
+`reference/brand/favicon-source.jpg` — `cropped-favicon_csd.jpg` off the live
+site at its full 512×512. It is the woman from the book cover, cropped to her
+head, on white. A photograph, which is why there is no SVG icon on this site;
+the placeholder it replaced was a drawing of coloured bars that looked nothing
+like anything else here.
+
+The live site serves it at 32, 180 (apple-touch), 192 and 270 (Windows tile), as
+JPEG. This one does the same, plus a `favicon.ico` for anything that still asks
+for `/favicon.ico` by habit. Regenerate the lot with
+`node scripts/make-icons.mjs`.
+
 ## Credit
 
 The footer reads: `©2024 Collaborative Software Design | Webdesign by Art of

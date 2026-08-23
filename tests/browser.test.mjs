@@ -55,8 +55,14 @@ after(async () => {
 
 /** One page of each shape. Checking all thirty-one would be slower and would
  *  not find anything the templates do not already share. */
+// One page of every KIND, because a kind is what shares a template. A new page
+// that reuses an existing template is covered by the one already listed; a new
+// template is not, and adding it here is part of building it. /sitemap/ earned
+// its place the hard way — it shipped a magenta link on the orange, the same
+// 2.74:1 pairing this file has now caught five times, and no test saw it
+// because the page was not in this list.
 const PAGES = [
-  '/', '/faq/', '/training/', '/facilitation/',
+  '/', '/faq/', '/training/', '/facilitation/', '/sitemap/',
   '/dear-como/help-quiet-members-speak-up/',
   '/training/navigating-power-dynamics-in-software-decision-making/',
   '/the-need-for-collaborative-design/',

@@ -74,9 +74,15 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
     <script is:inline>document.documentElement.classList.add('js');</script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* The live site's own icon: the woman from the book cover, cropped to her
+        head. Same four sizes it serves, and no SVG — she is a photograph, so
+        there is no vector of her to serve. Regenerate with
+        `node scripts/make-icons.mjs`. */}
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/jpeg" href="/favicon-192.jpg" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
+    <meta name="msapplication-TileImage" content="/mstile-270.jpg" />
     <meta name="theme-color" content="#e37b45" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
@@ -192,14 +198,19 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
         band carries the address and the social links, the menu carries the
         pages, and `<link rel="alternate">` in the head carries the feed.
 
-        One addition: the privacy policy. The live site links it from the cookie
-        banner, and this site has no cookie banner to link it from, so without
-        this line the page would be reachable only by typing its address. */}
+        Two additions, and both are there because a link has to live somewhere:
+        the privacy policy, which the live site reaches from its cookie banner
+        and this site has no banner to reach it from; and the sitemap, which is
+        where a footer link to one conventionally goes. The menu has five items
+        and the site has thirty-odd pages, so there is a real gap for it to
+        fill. */}
     <footer class="site-footer" data-test="site-footer">
       <div class="footer-wrap">
         <p>
           © {year} {SITE_NAME} | Webdesign by
           <a href="https://artofdesign.nl/" rel="noopener">Art of Design</a>
+          <span class="footer-sep" aria-hidden="true">|</span>
+          <a href="/sitemap/">Sitemap</a>
           <span class="footer-sep" aria-hidden="true">|</span>
           <a href="/privacy-policy/">Privacy</a>
         </p>
