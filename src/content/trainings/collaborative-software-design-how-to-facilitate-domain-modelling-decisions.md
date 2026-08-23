@@ -45,7 +45,7 @@ To get the most value from these two days, some prior exposure to collaborative 
 
 If you want to dive deeper beforehand, our book *Collaborative Software Design* is the perfect companion, but it is not a prerequisite to attend.
 
-**Tech Stack (Online Editions)** This workshop is highly interactive. We use **Miro** as our digital canvas. If you are new to Miro, we strongly recommend spending 15 minutes on the [Miro Academy: Participant Onboarding Course](https://academy.miro.com/) prior to the session. Familiarity with the tool will allow you to focus entirely on the facilitation dynamics rather than the interface.
+**Tech Stack (Online Editions)** This workshop is highly interactive. We use **Miro** as our digital canvas. If you are new to Miro, we strongly recommend spending 15 minutes on the [Miro Academy: Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding) prior to the session. Familiarity with the tool will allow you to focus entirely on the facilitation dynamics rather than the interface.
 
 ## Agenda
 

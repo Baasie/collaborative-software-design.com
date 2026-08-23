@@ -31,7 +31,7 @@ This immersive two-day workshop provides both the theory and hands-on practice y
 
 ## Before the workshop
 
-To get the most out of this workshop, prior experience with collaborative modelling is beneficial. If you're looking to prepare further, consider reading our book on[ Collaborative Software Design](https://www.manning.com/books/collaborative-software-design/). We will also provide introductory materials on collaborative modelling before the workshop begins.
+To get the most out of this workshop, prior experience with collaborative modelling is beneficial. If you're looking to prepare further, consider reading our book on[ Collaborative Software Design](https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d). We will also provide introductory materials on collaborative modelling before the workshop begins.
 
 Our workshop is highly interactive, emphasizing hands-on learning. For online sessions, we use Miro, a digital whiteboard platform, for collaborative exercises. If you are new to Miro, we suggest taking the self-paced Miro Academy:[ Miro Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding). This brief course will equip you with the necessary skills to actively participate in the workshop.
 
