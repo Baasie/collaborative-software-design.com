@@ -140,18 +140,33 @@ test('rule 3: text on a brand fill meets contrast as rendered', async () => {
   assert.deepEqual([...new Set(bad)], [], `contrast failures:\n${[...new Set(bad)].join('\n')}`);
 });
 
-test('the navigation works without JavaScript, and the dropdown is reachable', async () => {
-  // Half this site's menu is an anchor and one item is a dropdown whose parent
-  // goes nowhere. Without scripting the links must simply be there: a hamburger
-  // that cannot open anything is worse than no hamburger.
+test('the navigation works without JavaScript, and nothing in it hides', async () => {
+  // Half this site's menu is an anchor into the home page. Without scripting
+  // the links must simply be there: a hamburger that cannot open anything is
+  // worse than no hamburger.
+  //
+  // Training and Consulting are checked by name because they are the two that
+  // used to live inside a hover dropdown. They are top-level items now — see
+  // src/lib/nav.ts — and this is what would notice if they went back to being
+  // reachable only on hover.
   const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 800 } });
   const plain = await noJs.newPage();
   await plain.goto(base + '/', { waitUntil: 'load' });
   assert.ok(await plain.locator('[data-test="nav"] a').first().isVisible(), 'nav links hidden without JS');
-  // The submenu's two real pages must be reachable too.
   assert.ok(await plain.locator('[data-test="nav"] a[href="/training/"]').isVisible());
   assert.ok(await plain.locator('[data-test="nav"] a[href="/facilitation/"]').isVisible());
   await noJs.close();
+
+  // And on a desktop width they are visible with no interaction at all: no
+  // hover, no click, nothing to discover.
+  const wide = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desk = await wide.newPage();
+  await desk.goto(base + '/', { waitUntil: 'load' });
+  for (const href of ['/training/', '/facilitation/']) {
+    assert.ok(await desk.locator(`[data-test="nav"] a[href="${href}"]`).isVisible(),
+      `${href} is not visible in the menu without interacting with it`);
+  }
+  await wide.close();
 
   const ctx = await browser.newContext({ viewport: { width: 390, height: 800 } });
   const page = await ctx.newPage();

@@ -26,7 +26,8 @@ import iconBluesky from '../assets/icon-bluesky.png';
  *  the thing that goes stale first and the reason so many footers point at
  *  pages that no longer exist. The anchors ("What's inside", "Contact") and
  *  Home are dropped: an anchor is a place on a page rather than a page, and
- *  Home is the wordmark.
+ *  Home is the wordmark. It used to flatten a dropdown out of `NAV` as well;
+ *  the menu is flat now, so that step is gone.
  *
  *  The labels are the MENU's words, including "FAQ" for a page whose own
  *  heading says "Dear CoMo". That mismatch is deliberate and it is the live
@@ -37,8 +38,7 @@ import iconBluesky from '../assets/icon-bluesky.png';
  *  gives it: a column of links reads better ragged-free, and the number means
  *  something in the book rather than here. */
 const EXPLORE = [
-  ...NAV.flatMap((n) => (n.children ? n.children : [n]))
-    .filter((n) => n.href.startsWith('/') && !n.href.includes('#') && n.href !== '/'),
+  ...NAV.filter((n) => n.href.startsWith('/') && !n.href.includes('#') && n.href !== '/'),
   ...CHAPTERS.map((c) => ({ href: c.href, label: c.title })),
   { href: '/search/', label: 'Search' },
 ];

@@ -115,11 +115,17 @@
    * somebody will otherwise "fix" it to 1.6. */
   --leading-body: 1.85;
 
-  /* Breakpoints — three, and only three.
-   *   640px  stop stacking; two columns
-   *   800px  the main layout switch (header, nav, sidebars)
-   *   900px  wide two-column layouts
+  /* Breakpoints — few, and each one earned.
+   *   640px   stop stacking; two columns
+   *   800px   the main layout switch (sidebars, the contact band)
+   *   900px   wide two-column layouts
+   *   1100px  the HEADER only, and this one is measured rather than chosen:
+   *           the flat menu needs 570px on a row, the wordmark 240px and BUY
+   *           BOOK 130px, which is 988px of content and so a 1098px viewport.
+   *           Below it the menu wrapped to two rows and made the sticky header
+   *           177px tall. See the header comment in BaseLayout.astro.
+   *   1400px  the header again: the wordmark goes back to its full 320px.
    * CSS cannot use a custom property inside a media query, so these are
-   * recorded here and written literally. max-width companions are 639.98px and
-   * 799.98px so a range never overlaps its partner. */
+   * recorded here and written literally. max-width companions are 639.98px,
+   * 799.98px, 1099.98px and 1399.98px so a range never overlaps its partner. */
 }

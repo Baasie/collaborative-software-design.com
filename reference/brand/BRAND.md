@@ -177,6 +177,12 @@ Measured at 1440px, at rest: 161px tall, the row at `width:90%` (wider than the
 1080px the page content uses), the wordmark 320×52 at the left, the menu
 starting immediately after it, and BUY BOOK at the far right. Sticky: 125px.
 
+The menu itself is **flat**: Home, What's inside, Training, Consulting, FAQ,
+Contact. The live site hides Training and Consulting inside a "Bookings"
+dropdown whose parent links to `#`. See `src/lib/nav.ts` for why they came out.
+Six items need a 1100px viewport to sit on one row, which is where the header
+switches to the hamburger.
+
 BUY BOOK is **outlined, not filled** — transparent with a `1px solid` black rule
 and 20px black type, filling with the magenta only on hover. A magenta fill at
 rest is the one thing this header cannot have; it sits on the orange.
