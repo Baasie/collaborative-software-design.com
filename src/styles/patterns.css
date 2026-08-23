@@ -100,6 +100,12 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
    that reads on this ground either. */
 .section--ground a:not(.btn) { color: var(--color-ink); }
 .section--ground a:not(.btn):hover { color: var(--color-ink); text-decoration-thickness: 3px; }
+/* The PINK is the orange's twin and needs the same rule: the accent on it is
+   3.85:1, under the 4.5:1 normal text needs. (On the blue it is 4.71:1 and on
+   the grey 6.73:1, so those two are fine as they are — which is why this is
+   one rule rather than a blanket one.) */
+.section--pink a:not(.btn) { color: var(--color-ink); }
+.section--pink a:not(.btn):hover { color: var(--color-ink); text-decoration-thickness: 3px; }
 /* The home page's tinted bands. All three are light enough to keep the ink
    default, so unlike `.section--brand` they need no text rules at all — which
    is the point of choosing them from the measured page rather than inventing

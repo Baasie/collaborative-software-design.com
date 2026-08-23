@@ -73,7 +73,31 @@ structure:
 | *the filename* | `kebab()` of the title. |
 | `format` | The nearest heading above it — "2-day", "1 day or less". |
 | `order` | Its position on the Workshops page. **Dragging in Notion re-orders the site.** |
-| `teaser` | The `Teaser` section of the body, or the first paragraph of prose if there is none. |
+| `teaser` | The `Teaser` section of the body, or the first paragraph of prose if there is none. **The section is then removed from the body**, because the page prints the teaser as its lede and would otherwise open by saying the same thing twice. |
+| `featuredImage` | The Notion page's **cover**. |
+
+### Pictures on a workshop page
+
+There is nothing to build and nothing to put in the repository. Both routes
+already work:
+
+- **The page cover** becomes `featuredImage`, and the workshop page frames it on
+  a white plate beside the booking button — which is where the live WordPress
+  page puts its illustration. One picture per workshop, and it doubles as the
+  social card.
+- **Any image in the body** is downloaded next to the entry into
+  `src/content/trainings/_assets/` and rendered where it sits, at whatever
+  width the prose column gives it.
+
+Both are pulled by the sync, committed, and optimised at build time, so the
+deploy never reaches out to Notion's expiring file URLs. Add the picture in
+Notion and it appears; that is the whole procedure. What does NOT work is
+putting it in `src/assets/` and referencing it by slug — the content is
+Notion's, and a picture inside a description is content.
+
+One thing to get right in Notion: a cover is cropped to a wide banner by
+Notion's own UI but downloaded whole, so give it a picture that reads at
+396px wide.
 
 Two of these pages hold an older draft of themselves as a *nested* page. The
 converter skips `child_page` blocks, so the draft is not published underneath

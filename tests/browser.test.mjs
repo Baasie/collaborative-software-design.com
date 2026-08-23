@@ -117,7 +117,11 @@ test('rule 3: text on a brand fill meets contrast as rendered', async () => {
       // INCOMPLETE, not as a violation, whenever the element sits over a
       // background image, and that band has one. So this measures them
       // directly, which is the whole point of measuring as rendered.
-      for (const el of document.querySelectorAll('h1, h2, h3, .btn, .chip, .eyebrow, .panel-brand, .card-excerpt, .hero-lede, .site-nav a, .contact-explore a')) {
+      // `p a` is in here for the same reason the headings are. The site's link
+      // colour is the accent, and the accent is legible on some of these
+      // grounds and not others — 4.71:1 on the blue, 3.85:1 on the pink,
+      // 2.74:1 on the orange. Measuring the fills alone caught none of that.
+      for (const el of document.querySelectorAll('h1, h2, h3, p a, li a, .btn, .chip, .eyebrow, .panel-brand, .card-excerpt, .hero-lede, .site-nav a, .contact-explore a')) {
         if (!el.textContent.trim()) continue;
         const cs = getComputedStyle(el);
         const size = parseFloat(cs.fontSize);
