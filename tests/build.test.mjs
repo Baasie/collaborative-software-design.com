@@ -69,6 +69,20 @@ test('the Manning link keeps its affiliate parameters', () => {
       assert.match(read(f), /a_aid=baas/, `${urlOf(f)} has a Buy book button with no affiliate id`);
     }
   }
+
+  // EVERY Manning link, not just the button. Two workshop pages linked to the
+  // book from their Notion bodies with a bare URL, which loses the credit on
+  // every sale they send, and the check above could not see it: those pages
+  // also carry the header's button, so `a_aid=baas` appeared somewhere in the
+  // file and the page passed. A link written in Notion is still a link.
+  const bare = [];
+  for (const f of pages) {
+    for (const [, url] of read(f).matchAll(/href="(https:\/\/[^"]*manning\.com\/books\/collaborative-software-design[^"]*)"/g)) {
+      if (!url.includes('a_aid=baas')) bare.push(`${urlOf(f)}: ${url}`);
+    }
+  }
+  assert.deepEqual([...new Set(bare)], [],
+    `Manning links with no affiliate id:\n${[...new Set(bare)].join('\n')}`);
 });
 
 test('the sitemap, robots and /search/ agree about what is indexable', () => {
