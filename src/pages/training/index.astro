@@ -58,16 +58,16 @@ const jsonLd = {
         <p class="eyebrow">Bookings</p>
         <h1>Practise the moments that break a design session</h1>
         <p class="hire-lede">
-          You will not sit and listen to theory. Every workshop puts you in the room —
-          facilitating, getting it wrong, getting feedback, and going again — because
-          facilitation is a skill, and skills are not acquired from slides. All formats
-          run online or in person, in-house or open enrolment.
+          You will not sit and listen to theory. Every workshop puts you in the room,
+          facilitating, getting it wrong, getting feedback, and going again. Facilitation
+          is a skill, and skills are not acquired from slides. All formats run online or
+          in person, in-house or open enrolment.
         </p>
       </div>
       <div class="hire-aside">
         <p class="hire-count">
-          {all.length} workshops, run by {AUTHORS.map((a) => a.name).join(', ')} — the
-          authors of the book.
+          {all.length} workshops, run by the authors of the book:
+          {AUTHORS.map((a) => a.name).join(', ')}.
         </p>
         <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
       </div>
@@ -110,9 +110,8 @@ const jsonLd = {
         <h2>Or have us facilitate the session ourselves</h2>
         <p>
           A workshop teaches your own people to hold the room. If what you need is
-          somebody to hold it for you — for a particular decision, with a particular
-          group — that is <a href="/facilitation/">consulting</a>, and it is the same
-          material from the other side.
+          somebody to hold it for you, for a particular decision with a particular group,
+          that is <a href="/facilitation/">consulting</a>. Same material, other side.
         </p>
         <p><a class="btn btn--ink" href="/facilitation/">See consulting</a></p>
       </div>
@@ -150,11 +149,11 @@ const jsonLd = {
      first — the title carries the href and this stretches its hit area. */
   .workshop-link::after { content: ''; position: absolute; inset: 0; }
   .workshop:hover .workshop-link { color: var(--color-brand); }
-  /* Clamped, because the teasers are not the same length: four of the five
-     Notion pages have a `Teaser` section and one does not, so the sync falls
-     back to that one's opening paragraph and it runs three times as long as
-     the rest. Clamping keeps the grid readable; the real fix is a `Teaser`
-     section on the workshop that lacks one, which is a change in Notion. */
+  /* Clamped. All five Notion pages carry a `Teaser` section and the lengths
+     now sit between 175 and 420 characters, but that is still a factor of two,
+     and an unclamped grid tracks the longest one. Five lines is enough for the
+     shortest to fill and the longest to be cut somewhere sensible; the whole
+     teaser is one click away on the workshop's own page. */
   .workshop-teaser {
     margin: 0 0 var(--space-4); color: var(--color-ink-muted);
     font-size: var(--text-sm); line-height: 1.8;

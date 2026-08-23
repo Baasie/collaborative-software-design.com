@@ -65,7 +65,11 @@ const jsonLd = courseJsonLd({
     <div class="wrap hire-grid">
       <div>
         <p class="detail-back"><a href="/training/">← All workshops</a></p>
-        {entry.data.format && <p class="eyebrow">{entry.data.format} workshop</p>}
+        {/* The format alone, not "{format} workshop". One group in Notion is
+            called "1 day or less", which reads badly with "workshop" bolted
+            on, and every one of these pages says what it is in its own first
+            paragraph anyway. */}
+        {entry.data.format && <p class="eyebrow">{entry.data.format}</p>}
         <h1>{entry.data.title}</h1>
         {entry.data.teaser && <p class="hire-lede">{entry.data.teaser}</p>}
       </div>
@@ -101,7 +105,7 @@ const jsonLd = courseJsonLd({
         <h2>Online or in person, in-house or open enrolment</h2>
         <p>
           Tell us the group, the format and roughly when, and we will come back with a
-          date. The material comes from <em>Collaborative Software Design</em> —
+          date. The material comes from <em>Collaborative Software Design</em>, so
           <a href={BOOK_URL} rel="noopener">buy the book</a> if you want the long
           version first.
         </p>
