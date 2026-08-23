@@ -111,7 +111,13 @@ test('rule 3: text on a brand fill meets contrast as rendered', async () => {
         return [255, 255, 255];
       };
       const out = [];
-      for (const el of document.querySelectorAll('.btn, .chip, .eyebrow, .panel-brand, .card-excerpt, .hero-lede, .site-nav a, .footer-explore a')) {
+      // Headings are in this list because leaving them out hid a real failure:
+      // a 60px h1 sat at 2.62:1 on the magenta band and nothing complained.
+      // axe did not catch it either — it reports `color-contrast` as
+      // INCOMPLETE, not as a violation, whenever the element sits over a
+      // background image, and that band has one. So this measures them
+      // directly, which is the whole point of measuring as rendered.
+      for (const el of document.querySelectorAll('h1, h2, h3, .btn, .chip, .eyebrow, .panel-brand, .card-excerpt, .hero-lede, .site-nav a, .contact-explore a')) {
         if (!el.textContent.trim()) continue;
         const cs = getComputedStyle(el);
         const size = parseFloat(cs.fontSize);

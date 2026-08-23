@@ -1,17 +1,29 @@
 ---
 import ChapterLayout from '../layouts/ChapterLayout.astro';
+import figure from '../assets/chapters/collaborative-modeling-domain.png';
+
 const description =
-  'Collaborative modeling is a visualization technique to analyze complex and '
-  + 'conflict-laden decision-making processes with all relevant stakeholders to '
-  + 'create a shared understanding. Chapter 2 of Collaborative Software Design.';
+  'Learn about collaborative modeling, a visualization technique for analyzing '
+  + 'complex decision-making processes with stakeholders. Understand how to use '
+  + 'domain modeling to create shared understanding in software development. '
+  + 'Explore more in Chapter 2 of our book.';
+
+/* The live page gives this figure an empty alt. It is a diagram of the six
+   stages, which is an idea rather than a decoration, so it gets a real one. */
+const figureAlt =
+  'The six stages of collaborative modeling: prep, then a session that runs '
+  + 'check-in, modeling with tools — diverging then converging — check-out and '
+  + 'a retrospective, ending in communicating and documentation.';
 ---
-<ChapterLayout number="02" title="What is collaborative modeling?" description={description}>
-  <p>
+<ChapterLayout number="02" title="What is collaborative modeling?" description={description}
+               figure={figure} figureAlt={figureAlt} figurePlacement="full">
+  <p slot="lede">
     Collaborative modeling is “a visualization technique to analyze complex and
     conflict-laden decision-making processes with all relevant stakeholders and
     decision-makers to create a shared understanding.” It is not innate to software
     development and is sometimes referred to as participatory modeling.
   </p>
+
   <p>
     When exploring business problems through collaborative modeling, it is important
     that the focus is on discovering the domain, not the specific collaborative

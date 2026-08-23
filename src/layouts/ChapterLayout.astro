@@ -1,22 +1,55 @@
 ---
 /** A chapter teaser page.
  *
- * Three of these exist (#01, #02, #05) and they differ only in their words, so
- * one layout carries the shape: the chapter switcher every one of them shows,
- * the body, and the call to action. A second copy would drift the first time
- * the switcher gained a fourth chapter.
+ * Three of these exist (#01, #02, #05) and they differ only in their words and
+ * their picture, so one layout carries the shape. Measured off the live pages
+ * at 1440px, where all three are identical to the pixel:
+ *
+ *   section  magenta #9d0064, the drawn "WHAT'S INSIDE" graphic as a background
+ *            at `10% 0%` at natural size — the same one the home page's second
+ *            band uses — 62px of padding above and 54px below.
+ *   row 0    full width: the chapter switcher (mono 16px), then the h1 at
+ *            60px/66px in PT Sans Narrow.
+ *   row 1    two equal columns, 510px each with a 60px gutter.
+ *            left  — the lede, mono 20px, line-height 32px.
+ *            right — the body, mono 16px, line-height 32px, then BUY BOOK.
+ *
+ * The picture is where they differ, and there are exactly two treatments:
+ *
+ *   inset  (#01) a 320px square photograph, rotated 5°, hard against the right
+ *          edge and pulled UP out of its column so it sits beside the heading.
+ *   full   (#02, #05) a figure from the book, spanning all 1080px, below the
+ *          two columns.
+ *
+ * THE ONE DEVIATION is the same one the home page's magenta band makes, for
+ * the same reason. The live page sets the h1 and the body copy to BLACK on the
+ * magenta, which is 2.62:1. Everything here is white instead.
+ *
+ * I first kept the heading black on the grounds that 60px bold is large-scale
+ * text and so only needs 3:1 — which is true, and 2.62 is still under it. It
+ * also slipped past both tests: axe reports `color-contrast` as INCOMPLETE
+ * rather than as a violation whenever the element sits over a background
+ * image, and this band has one. The contrast test now measures headings too,
+ * which is what would have caught it.
  */
+import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { CHAPTERS } from '../lib/nav';
+import whatsInsideTitle from '../assets/home/whats-inside-title.png';
 import { pageTitle, organisation, BOOK_URL_PLAIN, BOOK_URL, SITE_NAME } from '../lib/seo';
 
 interface Props {
   number: string;
   title: string;
   description: string;
+  figure: ImageMetadata;
+  /** Describes the picture. A photograph gets `''`; a diagram carrying an idea
+   *  does not, whatever the live page's empty alt says. */
+  figureAlt: string;
+  figurePlacement: 'inset' | 'full';
 }
-const { number, title, description } = Astro.props;
+const { number, title, description, figure, figureAlt, figurePlacement } = Astro.props;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -32,43 +65,113 @@ const jsonLd = {
 };
 ---
 <BaseLayout title={pageTitle(title)} description={description} jsonLd={jsonLd}>
-  <div class="section--paper">
-  <div class="wrap chapter">
-    {/* The switcher the live site puts at the top of every chapter. The
-        current one is plain text rather than a link to itself — a link that
-        goes where you already are is noise for everyone and a trap for a
-        screen-reader user. */}
-    <nav class="chapter-nav" aria-label="Chapters" data-test="chapter-nav">
-      {CHAPTERS.map((c) => (
-        c.number === number
-          ? <span class="current" aria-current="page">Chapter #{c.number}</span>
-          : <a href={c.href}>Chapter #{c.number}</a>
-      ))}
-    </nav>
+  <section class="chapter" style={`--whats-inside-title: url(${whatsInsideTitle.src})`}>
+    <div class="wrap">
+      {/* The switcher the live site puts at the top of every chapter. The
+          current one is plain text rather than a link to itself — a link that
+          goes where you already are is noise for everyone and a trap for a
+          screen-reader user. The separators live outside the anchors; on the
+          live page they are inside them, so "| Chapter #05" is the link text
+          a screen reader reads out. */}
+      <nav class="chapter-nav" aria-label="Chapters" data-test="chapter-nav">
+        {CHAPTERS.map((c, i) => (
+          <>
+            {i > 0 && <span class="chapter-sep" aria-hidden="true">|</span>}
+            {c.number === number
+              ? <span class="current" aria-current="page">Chapter #{c.number}</span>
+              : <a href={c.href}>Chapter #{c.number}</a>}
+          </>
+        ))}
+      </nav>
 
-    <header class="detail-head">
-      <p class="eyebrow">Chapter #{number}</p>
       <h1>{title}</h1>
-    </header>
 
-    <div class="prose"><slot /></div>
+      <div class="chapter-cols">
+        <div class="chapter-lede"><slot name="lede" /></div>
 
-    <p class="chapter-cta"><a class="btn btn--primary" href={BOOK_URL} rel="noopener">Buy the book</a></p>
-  </div>
-  </div>
+        <div class="chapter-body">
+          {figurePlacement === 'inset' && (
+            <Image class="chapter-inset" src={figure} alt={figureAlt}
+                   widths={[320, 640]} sizes="320px" />
+          )}
+          <slot />
+          <p class="chapter-cta">
+            <a class="btn btn--ink" href={BOOK_URL} rel="noopener">Buy book</a>
+          </p>
+        </div>
+      </div>
+
+      {figurePlacement === 'full' && (
+        <figure class="chapter-figure">
+          <Image src={figure} alt={figureAlt} widths={[640, 980, figure.width]}
+                 sizes="(min-width: 1200px) 1080px, 100vw" />
+        </figure>
+      )}
+    </div>
+  </section>
 
   <ContactSection />
 </BaseLayout>
 
 <style>
-  .chapter { padding-block: var(--space-16); }
-  .chapter-nav {
-    display: flex; flex-wrap: wrap; gap: var(--space-5); margin-bottom: var(--space-10);
-    font-family: var(--font-heading); font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .chapter {
+    background-color: var(--color-brand);
+    background-image: var(--whats-inside-title);
+    background-repeat: no-repeat;
+    background-position: 10% 0%;
+    color: var(--on-brand);
+    padding-block: var(--space-16) var(--space-12);
   }
-  .chapter-nav a { color: var(--color-ink); border-bottom: 3px solid transparent; }
-  .chapter-nav a:hover { border-bottom-color: var(--color-ink); text-decoration: none; }
-  .chapter-nav .current { color: var(--color-brand); border-bottom: 3px solid var(--color-brand); }
-  .chapter-cta { margin-top: var(--space-10); }
+  .chapter h1 {
+    /* 60px and left, where the switcher is. White, not the live page's black:
+       black on this magenta is 2.62:1, under even the 3:1 that large-scale
+       text is allowed. The home page's magenta band already reads white for
+       the same reason, so this is also the consistent choice. */
+    color: var(--on-brand);
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    line-height: 1.1;
+    margin: 0 0 var(--space-12);
+  }
+
+  .chapter-nav {
+    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+    align-items: baseline; margin-bottom: var(--space-2);
+    font-family: var(--font-body); font-size: var(--text-base);
+  }
+  /* White, not the live page's black — this band is 2.62:1 against black. The
+     current chapter is the one WITHOUT an underline, so the state does not
+     depend on colour alone. */
+  .chapter-nav a, .chapter-nav .current { color: var(--on-brand); min-height: 24px; display: inline-block; }
+  .chapter-nav a { text-decoration: underline; text-underline-offset: 0.18em; }
+  .chapter-nav a:hover { text-decoration-thickness: 3px; }
+  .chapter-sep { color: var(--on-colour-muted); }
+
+  .chapter-cols { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
+  /* The lede is the big one: 20px against the body's 16px, both at a 32px
+     line. The size carries the hierarchy here, because the live page's way of
+     carrying it — white lede, black body — is not available on this ground. */
+  .chapter-lede :global(p) { font-size: var(--text-lg); line-height: 1.6; margin: 0 0 var(--space-6); }
+  .chapter-lede :global(p:last-child) { margin-bottom: 0; }
+  .chapter-body { color: var(--on-colour-muted); }
+  .chapter-body :global(p) { margin: 0 0 var(--space-6); }
+  .chapter-cta { margin: var(--space-8) 0 0; }
+
+  /* Rotated 5°, hard right, and lifted so it sits beside the heading rather
+     than under it — `matrix(0.996195, 0.0871557, …)` on the live module. */
+  .chapter-inset {
+    width: 320px; max-width: 100%; height: auto;
+    margin: 0 0 var(--space-8) auto;
+    transform: rotate(5deg);
+  }
+
+  .chapter-figure { margin: var(--space-16) 0 0; }
+  .chapter-figure :global(img) { width: 100%; height: auto; }
+
+  @media (min-width: 900px) {
+    .chapter { padding-block: var(--space-16) var(--space-12); }
+    .chapter-cols { grid-template-columns: 1fr 1fr; gap: var(--space-16); }
+    /* Up and out of the column, to where the live page puts it: its top edge
+       lands level with the switcher, beside the heading. */
+    .chapter-inset { margin-top: -11rem; margin-right: -0.75rem; }
+  }
 </style>

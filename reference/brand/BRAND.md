@@ -90,6 +90,27 @@ Both are raster PNGs. If a vector original exists, it is worth asking Art of
 Design for it — the header renders the wordmark at 500px wide and it will
 soften on a high-DPI screen.
 
+## The chapter pages
+
+All three (`/the-need-for-collaborative-design/`,
+`/what-is-collaborative-modeling/`, `/facilitating-collaborative-modeling/`)
+are one shape, measured at 1440px:
+
+- One magenta section with the drawn "WHAT'S INSIDE" graphic as a background at
+  `10% 0%`, natural size — the same file the home page's second band uses.
+  62px of padding above, 54px below (73px on #02).
+- A full-width row: the chapter switcher in mono 16px, then the `h1` at
+  60px/66px.
+- Then two equal columns, 510px each with a 60px gutter. Left is the lede at
+  20px; right is the body at 16px and then BUY BOOK, black on white.
+- The picture differs. #01 has a 320px square photograph rotated **5°**, hard
+  against the right edge and pulled up beside the heading. #02 and #05 have a
+  figure from the book spanning the full 1080px, below the columns.
+
+The live pages set both the `h1` and the body copy to **black** on the magenta:
+2.62:1, under even the 3:1 that large-scale text is allowed. Both are white
+here.
+
 ## Motion
 
 The live site animates on scroll, through Divi's waypoints, and one of them is

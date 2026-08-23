@@ -1,18 +1,30 @@
 ---
 import ChapterLayout from '../layouts/ChapterLayout.astro';
+import figure from '../assets/chapters/facilitation-model.png';
+
 const description =
-  'Collaborative modeling tools alone do not guarantee effective collaboration; '
-  + 'someone needs to guide people during collaboration: a facilitator. '
-  + 'Chapter 5 of Collaborative Software Design.';
+  'Discover the importance of facilitation in collaborative modeling for '
+  + 'effective software design. Learn techniques for guiding teams, encouraging '
+  + 'ownership, and balancing technical and business perspectives. Explore how '
+  + 'social dynamics impact design decisions in our book.';
+
+const figureAlt =
+  'A facilitator stands outside a modeling space where a group works at a wall '
+  + 'of sticky notes, saying things like “those are not the right boundaries at '
+  + 'all”. Below them, in grey, are the thoughts nobody says out loud — “why is '
+  + 'nobody listening?”, “how is my cat doing?” — labelled the shadows, the '
+  + 'unconsciousness of the group.';
 ---
-<ChapterLayout number="05" title="Facilitating collaborative modeling" description={description}>
-  <p>
+<ChapterLayout number="05" title="Facilitating collaborative modeling" description={description}
+               figure={figure} figureAlt={figureAlt} figurePlacement="full">
+  <p slot="lede">
     Collaborative modeling tools alone do not guarantee effective collaboration;
     someone needs to guide people during collaboration: a facilitator. Fortunately,
     there are techniques and practices you can use to facilitate effective
     collaborative design, whether you’re a project leader, a business stakeholder, or
     an individual technical contributor.
   </p>
+
   <p>
     We see it as vital for teams to take ownership of their collaborative design
     decisions, a lesson learned from less-than-ideal experiences. We experienced
