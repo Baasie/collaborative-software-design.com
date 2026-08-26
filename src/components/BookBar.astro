@@ -1,0 +1,79 @@
+---
+/** A booking bar that follows the reader down a long workshop page.
+ *
+ * WHY THIS AND NOT A SECOND BUTTON AT THE FOOT. The workshop page is 7.7
+ * screens on a desktop and 13.5 on a phone. `Book a place` sits at 0.2 screens
+ * and the next call to action is at 6.6. Repeating the block at the foot of the
+ * body moves that second one to 5.9, which is not a fix: somebody convinced at
+ * screen three still has nothing to press, and scrolling back up a page this
+ * long is where people leave instead.
+ *
+ * So it is a slim bar at the bottom of the viewport, and it earns its place by
+ * being absent most of the time:
+ *
+ *   - hidden until the hero has scrolled away, because up there the real block
+ *     is on screen and two of them would be noise;
+ *   - hidden again once the contact band arrives, so it never covers the
+ *     footer and never competes with the CTA that is already there;
+ *   - hidden entirely without JavaScript, which is correct: it is an
+ *     enhancement, and the page carries a call to action at the top and at the
+ *     bottom without it.
+ *
+ * Last in the DOM, so it comes last in the tab order too. A control that
+ * floats over the page should not jump the queue.
+ */
+import { dateRange, where, type Session } from '../lib/sessions';
+
+interface Props {
+  /** The soonest run, when there is one. */
+  run?: Session;
+  /** Where to send somebody when there is no date, or no ticket link. */
+  enquiry: string;
+  /** What is being booked, for a screen reader that meets the bar out of context. */
+  title: string;
+}
+const { run, enquiry, title } = Astro.props;
+
+const href = run?.tickets ?? enquiry;
+const label = run
+  ? (run.status === 'Sold out' ? 'Ask about the next one' : 'Book a place')
+  : 'Ask about a date';
+---
+<div class="book-bar js-book-bar" data-test="book-bar" hidden>
+  <div class="book-bar-inner">
+    <p class="book-bar-what">
+      {run
+        ? <><span class="book-bar-when">{dateRange(run)}</span>{where(run) && <span class="book-bar-where">{where(run)}</span>}</>
+        : <span class="book-bar-when">{title}</span>}
+    </p>
+    <a class="btn btn--ink" href={href} rel="noopener">{label}</a>
+  </div>
+</div>
+
+<style>
+  .book-bar {
+    position: fixed; inset: auto 0 0 0; z-index: 20;
+    background: var(--color-paper);
+    border-top: 3px solid var(--color-ink);
+  }
+  .book-bar-inner {
+    width: 100%; max-width: var(--wide-width); margin-inline: auto;
+    padding: var(--space-3) var(--space-5);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+  }
+  .book-bar-what { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); }
+  .book-bar-when {
+    font-family: var(--font-heading); font-weight: 700; font-size: var(--text-lg);
+    line-height: 1.1; font-variant-numeric: tabular-nums;
+  }
+  .book-bar-where { font-size: var(--text-sm); color: var(--color-ink-muted); }
+  .book-bar .btn { min-height: 44px; padding-block: var(--space-2); }
+
+  @media (max-width: 639.98px) {
+    /* On a phone the date is the thing worth the width; the button keeps its
+       full tap target on the row below. */
+    .book-bar-inner { flex-direction: column; align-items: stretch; gap: var(--space-2); }
+    .book-bar .btn { width: 100%; }
+  }
+</style>

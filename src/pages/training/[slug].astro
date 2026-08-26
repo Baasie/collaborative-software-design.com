@@ -22,6 +22,7 @@ import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactSection from '../../components/ContactSection.astro';
+import BookBar from '../../components/BookBar.astro';
 import heroWoman from '../../assets/home/hero-woman.png';
 import { sessions, trainings } from '../../lib/collections';
 import { dateRange, todayISO, upcomingFor, where } from '../../lib/sessions';
@@ -46,7 +47,10 @@ export async function getStaticPaths() {
 }
 
 const { entry, others, runs } = Astro.props;
-const { Content } = await render(entry);
+// `headings` is Astro's own reading of the rendered markdown, so the contents
+// list below cannot disagree with the page: it IS the page's headings.
+const { Content, headings } = await render(entry);
+const contents = headings.filter((h) => h.depth === 2);
 const description = entry.data.seoMetadescription
   ?? entry.data.teaser
   ?? excerpt(entry.body ?? '', entry.data.title);
@@ -81,6 +85,17 @@ const jsonLd = courseJsonLd({
         {entry.data.format && <p class="eyebrow">{entry.data.format}</p>}
         <h1>{entry.data.title}</h1>
         {entry.data.teaser && <p class="hire-lede">{entry.data.teaser}</p>}
+
+        {/* What is on this page, and how much of it there is. Seven screens
+            with no contents is a page you scroll rather than read. Built from
+            the body's own h2s, so it cannot drift from what follows. */}
+        {contents.length > 1 && (
+          <nav class="toc" aria-label="On this page">
+            <ul>
+              {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            </ul>
+          </nav>
+        )}
       </div>
 
       <div class="hire-aside">
@@ -168,7 +183,16 @@ const jsonLd = courseJsonLd({
   </section>
 
   <ContactSection />
+
+  {/* Last in the DOM so it is last in the tab order. See BookBar.astro for why
+      this is a following bar rather than a second button at the foot. */}
+  <BookBar run={runs[0]} enquiry={enquiry} title={entry.data.title} />
 </BaseLayout>
+
+<script>
+  import { initBookBar } from '../../scripts/book-bar';
+  initBookBar();
+</script>
 
 <style>
   .hire {
@@ -181,6 +205,19 @@ const jsonLd = courseJsonLd({
   .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
   .hire-actions { margin: 0 0 var(--space-8); }
   .detail-back { margin: 0 0 var(--space-6); font-size: var(--text-sm); }
+
+  /* Chips rather than a list: it is a map of the page, and a map should take
+     one glance rather than a column. Ink on the pink, because the accent is
+     3.85:1 on this ground. */
+  .toc { margin-top: var(--space-8); }
+  .toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+  .toc a {
+    display: inline-flex; align-items: center; min-height: 32px;
+    padding: var(--space-1) var(--space-4);
+    background: var(--overlay-white-strong); color: var(--color-ink);
+    font-size: var(--text-sm); text-decoration: none;
+  }
+  .toc a:hover { background: var(--color-ink); color: var(--on-colour); }
 
   /* The scheduled runs. A white plate, like the illustration below it, because
      this is the one block on the page somebody is looking FOR. */
@@ -211,17 +248,25 @@ const jsonLd = courseJsonLd({
      beats a full-width 1100px line of monospace, which is what it was. */
   .workshop-body { max-width: 46rem; }
 
-  /* The live page marks every "What You Will Learn" item with a magenta check.
-     Every workshop body out of Notion is built the same way, as a list of
-     `**lead:** explanation`, so the marker belongs to the list rather than to
-     one section, and applying it here is what carries the look across all five
-     without the template having to know what the headings say. */
-  .workshop-body :global(ul) { list-style: none; padding-left: 0; }
-  .workshop-body :global(ul > li) { position: relative; padding-left: var(--space-8); }
-  .workshop-body :global(ul > li)::before {
+  /* The magenta tick, scoped to the ONE list it came from.
+     It was on every `ul` in the body, which put twenty of them on this page:
+     the eight things you will learn, then the agenda, then the audience. A
+     tick means "you get this", so ticking "Business Analysts & QA
+     Professionals" reads oddly, and twenty in a row stops reading as
+     anything.
+     Keyed on the heading's slug, which Astro generates from the heading text.
+     Rename that heading in Notion and the ticks quietly become plain bullets,
+     which is the safe direction for a decoration to fail in. All five
+     workshops use "What you will learn", so all five get them. */
+  .workshop-body :global(#what-you-will-learn + ul) { list-style: none; padding-left: 0; }
+  .workshop-body :global(#what-you-will-learn + ul > li) { position: relative; padding-left: var(--space-8); }
+  .workshop-body :global(#what-you-will-learn + ul > li)::before {
     content: '✓'; position: absolute; left: 0; top: 0;
     color: var(--color-brand); font-weight: 700;
   }
+  /* Every other list keeps a marker, in the brand rather than in black, so it
+     still belongs to the page. */
+  .workshop-body :global(li)::marker { color: var(--color-brand); }
 
   .more-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
   .more-grid h2 { margin-top: 0; font-size: var(--text-2xl); }

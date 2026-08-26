@@ -165,6 +165,40 @@ test('a public training date that has passed is not on the site', () => {
   }
 });
 
+test('a long workshop page carries its contents and a following booking bar', () => {
+  // The workshop page is 7.7 screens on a desktop and 13.5 on a phone. Three
+  // things keep that navigable, and all three are easy to lose in a restyle.
+  const workshops = pages.filter((f) => /\/training\/[^/]+\/index\.html$/.test(f)
+    && !f.endsWith('/training/index.html'));
+  assert.ok(workshops.length >= 5, `only ${workshops.length} workshop pages`);
+
+  for (const f of workshops) {
+    const html = read(f);
+
+    // 1. Every link in the contents points at a heading that is really there.
+    //    Astro generates both from the same markdown, so a mismatch means the
+    //    list was hand-written after all.
+    // No trailing `>` in the pattern: Astro appends its scope attribute, so
+    // the tag does not end where the href does.
+    const slugs = [...html.matchAll(/<a href="#([^"]+)"/g)].map((m) => m[1]);
+    const toc = slugs.filter((sl) => html.includes(`<h2 id="${sl}"`));
+    assert.ok(toc.length >= 3, `${urlOf(f)} has a contents list of ${toc.length}`);
+    for (const sl of slugs.filter((x) => x !== 'contact')) {
+      assert.ok(html.includes(`id="${sl}"`), `${urlOf(f)} links to #${sl}, which is not on the page`);
+    }
+
+    // 2. The booking bar ships hidden, so a visitor with no JavaScript never
+    //    meets a bar that nothing can move.
+    assert.match(html, /class="book-bar js-book-bar"[^>]*\shidden/,
+      `${urlOf(f)} ships its booking bar visible`);
+
+    // 3. And it is last, so it is last in the tab order too.
+    const barAt = html.indexOf('js-book-bar');
+    const contactAt = html.indexOf('data-test="contact"');
+    assert.ok(barAt > contactAt, `${urlOf(f)} puts the booking bar before the contact section`);
+  }
+});
+
 test('dist stays under its size ceiling', () => {
   // A silent prune-dist failure shows up here rather than as a slow rsync.
   const mb = dirSize(DIST) / 1e6;
