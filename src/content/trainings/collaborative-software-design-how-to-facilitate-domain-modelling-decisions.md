@@ -3,7 +3,7 @@ title: "Collaborative Software Design: How to facilitate domain modelling decisi
 order: 1
 format: "2-day"
 teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
-featuredImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-featured.png"
+featuredImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-featured.jpg"
 ---
 
 <div class="cols" style="--tracks: 50fr 50fr">
@@ -40,6 +40,22 @@ The dynamics that get in the way are more predictable than you might think. The 
 
 <div class="col">
 
+![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-1.png)
+
+</div>
+
+</div>
+
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
+
+> *This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
+
+</div>
+
+<div class="col">
+
 **Cognitive bias** shapes what the room considers. Anchoring locks the conversation to the first idea raised. Confirmation bias fills the session with evidence that supports what people already believe. Functional fixedness stops the group from seeing beyond how things currently work. None of this is deliberate. All of it affects the architecture.
 
 **Resistance** gets treated as a problem to overcome — when it's actually the most valuable signal in the room. When someone says "that won't work," they're surfacing a constraint, a risk, or a piece of context that no one else has. Dismissing it doesn't make it disappear. It just moves it to a Slack message two weeks later.
@@ -49,8 +65,6 @@ This workshop is designed to make these dynamics visible and navigable. You will
 </div>
 
 </div>
-
-*This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
 
 ---
 
@@ -83,6 +97,10 @@ This workshop is designed to make these dynamics visible and navigable. You will
 </div>
 
 </div>
+
+---
+
+![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-2.png)
 
 ---
 
@@ -126,7 +144,11 @@ If you are responsible for bridging the gap between business requirements and te
 
 ## Agenda
 
-**Day 1: The Human Side of Modeling**
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
+
+### **Day 1: The Human Side of Modeling**
 
 We start by diving straight into a large-group collaborative modeling session. This isn't a lecture — it is a safe space to practice facilitation in real-time, with coaching and feedback. We will focus on the "invisible" dynamics that govern the room:
 
@@ -138,7 +160,11 @@ We start by diving straight into a large-group collaborative modeling session. T
 
 - **Active Listening:** Practicing communication techniques that lower defenses and surface the complex domain knowledge that people are hesitant to share.
 
-**Day 2: From Conflict to Decision**
+</div>
+
+<div class="col">
+
+### **Day 2: From Conflict to Decision**
 
 On the second day, we tackle a specific design challenge using your preferred collaborative modeling tool. The focus shifts from reading the room to driving outcomes:
 
@@ -147,3 +173,7 @@ On the second day, we tackle a specific design challenge using your preferred co
 - **Navigating Resistance:** Strategies to handle conflict constructively. Learn to view resistance not as a blocker, but as valuable data — and use it to surface constraints and build shared understanding.
 
 - **Sustainable Decisions:** How to close the loop. Moving from sticky notes and discussions to concrete, supported design decisions — and communicating them in ways that make the commitment stick beyond the meeting.
+
+</div>
+
+</div>

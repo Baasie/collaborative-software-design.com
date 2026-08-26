@@ -3,6 +3,7 @@ title: "Systems Design with Strategic Domain-Driven Design and Team Topologies"
 order: 2
 format: "2-day"
 teaser: "Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?"
+featuredImage: "./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-featured.png"
 ---
 
 Uncover the power of sociotechnical system design, a holistic approach that optimises teams, architecture, and value streams in harmony. This workshop seamlessly integrates Strategic Domain-Driven Design (DDD) to design resilient, adaptable software architectures with Team Topologies, enabling teams to self-organise for fast flow and embrace full ownership of the software they create. Learn to collaboratively design systems that not only survive but thrive on change, bridging the gap between business needs, software design, and team flow.
