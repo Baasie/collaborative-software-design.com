@@ -250,6 +250,53 @@ test('one page has one left edge', async () => {
   await ctx.close();
 });
 
+test('no two bands meet in the same colour', async () => {
+  // The body paints a band per divider, cycling white, blue, grey, and the
+  // section under it is a band too. It was hard-coded blue, so the day the
+  // Collaborative Software Design page grew a sixth band the Agenda ran
+  // straight into "Bring this to your team": same blue, no edge, one long
+  // block. Adding a divider in Notion must not be able to do that.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  const bad = [];
+
+  for (const slug of ['collaborative-software-design-how-to-facilitate-domain-modelling-decisions',
+                      'navigating-power-dynamics-in-software-decision-making',
+                      'systems-design-with-strategic-domain-driven-design-and-team-topologies']) {
+    await page.goto(`${base}/training/${slug}/`, { waitUntil: 'load' });
+    const runs = await page.evaluate(() => {
+      // The body's bands, collapsed to one entry per run of colour, THEN the
+      // sections under it kept whatever colour they are.
+      //
+      // The collapsing must not reach across the boundary. A first version
+      // pushed the sections through the same de-duplicating helper, so a
+      // closing band the same colour as the body's last one was folded into
+      // it and the check saw nothing to complain about: the test hid exactly
+      // the collision it was written for.
+      const body = [];
+      for (const el of document.querySelectorAll('.workshop-body > *')) {
+        const bg = getComputedStyle(el).backgroundColor;
+        if (!body.length || body[body.length - 1].bg !== bg) body.push({ bg, what: 'a body band' });
+      }
+      const after = [];
+      for (const sel of ['[data-test="more-workshops"]', '[data-test="contact"]']) {
+        const el = document.querySelector(sel);
+        if (el) after.push({ bg: getComputedStyle(el).backgroundColor, what: sel });
+      }
+      return [...body, ...after];
+    });
+
+    for (let i = 1; i < runs.length; i += 1) {
+      if (runs[i].bg === runs[i - 1].bg) {
+        bad.push(`/training/${slug}/: ${runs[i - 1].what} and ${runs[i].what} are both ${runs[i].bg}`);
+      }
+    }
+  }
+
+  await ctx.close();
+  assert.deepEqual(bad, []);
+});
+
 test('the tag filter narrows the index, and a /tag/ redirect lands filtered', async () => {
   const page = await browser.newPage();
   await page.goto(base + '/faq/', { waitUntil: 'load' });

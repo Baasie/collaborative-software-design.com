@@ -47,6 +47,19 @@ export async function getStaticPaths() {
 }
 
 const { entry, others, runs } = Astro.props;
+
+/* The body paints a band per divider, cycling white, blue, grey. The section
+   below the body is a band too, and it was hard-coded blue, so the day the
+   workshop grew a sixth band the Agenda ran straight into "Bring this to your
+   team" with no seam between them: same colour, no edge, one long blue block.
+   Adding a divider must not be able to do that, so the closing band is chosen
+   against whatever the body ends on. */
+// The order the stylesheet paints after each divider: 1st white, 2nd blue,
+// 3rd grey, then round again. Keep this in step with the `--band` rules below.
+const CYCLE = ['paper', 'blue', 'grey'] as const;
+const seams = (entry.body ?? '').split('\n').filter((l) => l.trim() === '---').length;
+const lastBodyBand = seams === 0 ? 'pink' : CYCLE[(seams - 1) % 3];
+const closingBand = lastBodyBand === 'blue' ? 'grey' : 'blue';
 // `headings` is Astro's own reading of the rendered markdown, so the contents
 // list below cannot disagree with the page: it IS the page's headings.
 const { Content, headings } = await render(entry);
@@ -152,7 +165,7 @@ const jsonLd = courseJsonLd({
       measure as padding. See the band rules in the stylesheet below. */}
   <article class="prose workshop-body"><Content /></article>
 
-  <section class="section section--blue" data-test="more-workshops">
+  <section class:list={['section', `section--${closingBand}`]} data-test="more-workshops">
     <div class="wrap more-grid">
       <div>
         <p class="eyebrow">Bring this to your team</p>
@@ -330,6 +343,13 @@ const jsonLd = courseJsonLd({
 
      One column below 900px. Two columns of monospace on a phone is about 20
      characters a line, which is not reading, it is a word ladder. */
+  /* An image on its own takes the row too. Markdown wraps a lone image in a
+     `<p>`, so it was inheriting the 46rem text measure and sitting 736px wide,
+     hard left, in a 1440px band. That reads as dropped in rather than placed.
+     At the row width it lines up with the columns above and below it. */
+  .workshop-body :global(> p:has(> img)) { padding-right: var(--edge); }
+  .workshop-body :global(> p > img) { width: 100%; height: auto; }
+
   /* A pair of columns takes the whole row rather than the reading measure.
      Half of 46rem is about 30 characters of monospace, which is not a column,
      it is a gutter. The live page runs its two at 510px inside a 1080 row, and
