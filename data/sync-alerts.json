@@ -1,1 +1,10 @@
-{}
+{
+  "trainings": [
+    {
+      "kind": "divider-not-a-seam",
+      "title": "Collaborative Software Design: How to facilitate domain modelling decisions",
+      "url": "https://www.notion.so/2fca485afafc80298ddfc5ac612be793",
+      "detail": "A divider sits above \"<!-- unhandled Notion block: column_list -->\" rather than above a heading, so it draws nothing. Move it directly above the heading that starts the next section, or take it out."
+    }
+  ]
+}

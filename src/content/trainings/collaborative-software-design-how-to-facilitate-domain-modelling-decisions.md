@@ -8,17 +8,7 @@ featuredImage: "./_assets/collaborative-software-design-how-to-facilitate-domain
 
 ## About the workshop
 
-Effective software design hinges on strong collaboration. But let's be honest: collaboration is messy. Misunderstandings, hidden assumptions, and social dynamics often undermine even the best technical plans. **Collaboration is not innate; it is a discipline.**
-
-The dynamics that get in the way are more predictable than you might think. The book identifies three forces that quietly shape every design session:
-
-**Ranking** shapes who speaks and who doesn't. It's not always about job titles — it's about who spoke first, who has the most visible expertise, who the room has learned to defer to. Most of it is unconscious. If you're the quieter voice in the room, ranking is probably why your ideas stay unspoken. If you're the louder one, ranking is probably why you stopped hearing the pushback you need.
-
-**Cognitive bias** shapes what the room considers. Anchoring locks the conversation to the first idea raised. Confirmation bias fills the session with evidence that supports what people already believe. Functional fixedness stops the group from seeing beyond how things currently work. None of this is deliberate. All of it affects the architecture.
-
-**Resistance** gets treated as a problem to overcome — when it's actually the most valuable signal in the room. When someone says "that won't work," they're surfacing a constraint, a risk, or a piece of context that no one else has. Dismissing it doesn't make it disappear. It just moves it to a Slack message two weeks later.
-
-This workshop is designed to make these dynamics visible and navigable. You will learn to read what's actually happening in the room — and to use it, rather than fight it.
+<!-- unhandled Notion block: column_list -->
 
 *This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
 
@@ -26,23 +16,11 @@ This workshop is designed to make these dynamics visible and navigable. You will
 
 ## What you will learn
 
-- **Why collaborative design fails — and what actually fixes it:** Involving stakeholders early isn't just "nice to have." We explore the concrete risks of siloed design, and why the gap between Business and IT widens when those risks go unaddressed.
-
-- **The facilitator's stance — holding the room without dominating it:** You don't have to be an extrovert to facilitate. Learn the difference between *participating* in a design and *guiding* it. This is a skill, not a personality trait — and it is the foundation everything else is built on.
-
-- **How ranking silences the people who know the most — and isolates the people at the top:** Power dynamics exist in every room — conscious and unconscious. Ranking doesn't just stop good ideas from being raised. It also stops the people with the authority to act on them from hearing honest feedback. You will learn to recognise how this plays out, and practice techniques so your decisions are built on what's actually true in the room — not just what feels safe to say.
-
-- **Reading what isn't being said:** Silence is information. Disengagement is data. Learn to observe the signals the room is already sending — and use them to steer the conversation before it goes off track.
-
-- **Surfacing knowledge that stakeholders struggle to articulate:** Move beyond standard questions. Practice Socratic questioning and "Crucial Conversations" techniques to uncover deep domain knowledge — especially the kind that stays hidden when ranking makes it feel unsafe to share.
-
-- **Keeping the group aligned when things get stuck:** Learn the practical utility of check-ins, check-outs, and structured pauses. More importantly, learn how to restore flow when discussions fragment — because they will.
-
-- **Using resistance instead of fighting it:** Resistance isn't always bad; often, it's the most important signal in the room. You will develop the confidence to address it head-on — using it to clarify constraints and reach shared understanding, rather than letting it become a blocker.
-
-- **Making decisions that actually stick:** The real test isn't what's decided in the session. It's whether it holds. Learn how to converge the group's collective knowledge into concrete decisions with genuine buy-in — and how to communicate them so the commitment survives the meeting.
+<!-- unhandled Notion block: column_list -->
 
 ---
+
+<!-- unhandled Notion block: column_list -->
 
 ## Before the workshop
 
@@ -93,5 +71,3 @@ On the second day, we tackle a specific design challenge using your preferred co
 - **Navigating Resistance:** Strategies to handle conflict constructively. Learn to view resistance not as a blocker, but as valuable data — and use it to surface constraints and build shared understanding.
 
 - **Sustainable Decisions:** How to close the loop. Moving from sticky notes and discussions to concrete, supported design decisions — and communicating them in ways that make the commitment stick beyond the meeting.
-
----
