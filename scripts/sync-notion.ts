@@ -19,7 +19,7 @@ import sharp from 'sharp';
 import { normaliseTags } from '../src/lib/tags';
 import {
   createBlocksToMd, assetRefs, fileUrl, imageExt, isAssetFor, kebab, plainTitle,
-  statusOf, teaserOf, tidyDividers, withoutTeaser, yamlList, yamlStr,
+  statusOf, teaserOf, tidyDividers, withoutLede, yamlList, yamlStr,
   type AssetCtx, type StatusKind,
 } from './lib/notion-md';
 // Whether Notion is still shaped the way the readers below assume. Every typed
@@ -606,11 +606,12 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
       teaser = existing!.teaser;
     } else {
       const full = await blocksToMd(await childrenOf(block.id), ctx);
-      // Extract first, then strip: the teaser goes in the frontmatter, and the
-      // page prints it as the lede, so leaving the section in the body as well
-      // would make every workshop open by saying the same thing twice.
+      // Extract first, then take that ONE paragraph out. It goes in the
+      // frontmatter and the page prints it as the lede, so leaving it in the
+      // body too would make every workshop open by saying the same thing
+      // twice. The rest of the Teaser section stays where the author put it.
       teaser = teaserOf(full);
-      body = tidyDividers(withoutTeaser(full));
+      body = tidyDividers(withoutLede(full));
       const cover = page.cover ? fileUrl(page.cover) : '';
       featured = cover ? await downloadImage(cover, ctx, 'featured') : null;
       process.stdout.write('.');
