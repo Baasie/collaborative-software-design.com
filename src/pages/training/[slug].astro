@@ -267,13 +267,21 @@ const jsonLd = courseJsonLd({
    * declared wins. Which means these rules must stay in order, and a fifth
    * divider needs a fifth rule. */
   .workshop-body {
-    /* `50vw` can exceed the page width when a scrollbar is out. */
     overflow-x: clip;
-    --measure: 23rem;
+    /* The SAME left edge every other block on this page uses: `.wrap` centres
+       a 72rem box and pads it, which puts its content at 164px on a 1440
+       screen. The first version centred a 46rem column in the viewport
+       instead, which put the body at 352px while the hero above and the blue
+       band below stayed at 164. A 188px jog in the middle of one page.
+       `100%` and not `100vw`: the container is a child of `<main>`, so its
+       width already excludes the scrollbar, which `100vw` does not. */
+    --edge: max(var(--space-5), calc((100% - var(--wide-width)) / 2 + var(--space-5)));
   }
   .workshop-body :global(> *) {
-    /* The text keeps its 46rem measure; the background reaches the edges. */
-    padding-inline: max(var(--space-5), calc(50vw - var(--measure)));
+    /* Text left-aligned at the page's edge and 46rem wide; the background
+       still runs the full width of the band. */
+    padding-left: var(--edge);
+    padding-right: max(var(--space-5), calc(100% - var(--edge) - 46rem));
     /* Margins would leave the grounds showing through between blocks, so the
        rhythm is padding here. */
     margin-block: 0;
@@ -320,7 +328,11 @@ const jsonLd = courseJsonLd({
      Rename that heading in Notion and the ticks quietly become plain bullets,
      which is the safe direction for a decoration to fail in. All five
      workshops use "What you will learn", so all five get them. */
-  .workshop-body :global(#what-you-will-learn + ul) { list-style: none; padding-left: 0; }
+  /* `list-style` only. This rule carries an ID, so it outranks the band
+     padding on `> *`, and setting `padding-left: 0` here pulled the whole list
+     to the left edge of the screen while every paragraph around it stayed in
+     the column. The indent for the tick belongs to the item, not to the list. */
+  .workshop-body :global(#what-you-will-learn + ul) { list-style: none; }
   .workshop-body :global(#what-you-will-learn + ul > li) { position: relative; padding-left: var(--space-8); }
   .workshop-body :global(#what-you-will-learn + ul > li)::before {
     content: '✓'; position: absolute; left: 0; top: 0;

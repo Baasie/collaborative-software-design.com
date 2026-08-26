@@ -217,6 +217,39 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test('one page has one left edge', async () => {
+  // The workshop body draws full-width bands, so its text is positioned with
+  // padding rather than by a wrapper. The first version centred a 46rem column
+  // in the viewport, which put the body at 352px while the hero above and the
+  // blue band below stayed at 164. A 188px jog down the middle of one page,
+  // and nothing failed: every unit test passed, contrast passed, axe passed.
+  //
+  // A second one hid inside it. The rule that puts the magenta tick on "What
+  // you will learn" carries an ID, so it outranked the band padding and pulled
+  // that whole list to x=0, the very edge of the screen.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/training/collaborative-software-design-how-to-facilitate-domain-modelling-decisions/',
+    { waitUntil: 'load' });
+
+  const edges = await page.evaluate(() => {
+    const textLeft = (el) => Math.round(el.getBoundingClientRect().x + parseFloat(getComputedStyle(el).paddingLeft));
+    const out = { hero: textLeft(document.querySelector('.hire h1')) };
+    for (const el of document.querySelectorAll('.workshop-body > *')) {
+      if (el.tagName === 'HR' || !el.textContent.trim()) continue;
+      const x = textLeft(el);
+      out[el.tagName.toLowerCase()] = Math.min(out[el.tagName.toLowerCase()] ?? Infinity, x);
+    }
+    return out;
+  });
+
+  const { hero, ...body } = edges;
+  for (const [tag, x] of Object.entries(body)) {
+    assert.equal(x, hero, `a <${tag}> in the workshop body starts at ${x}px, the hero starts at ${hero}px`);
+  }
+  await ctx.close();
+});
+
 test('the tag filter narrows the index, and a /tag/ redirect lands filtered', async () => {
   const page = await browser.newPage();
   await page.goto(base + '/faq/', { waitUntil: 'load' });
