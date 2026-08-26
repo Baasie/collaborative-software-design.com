@@ -30,6 +30,18 @@ const all = await trainings();
 const today = todayISO();
 const runs = await sessions();
 const nextFor = (slug: string) => upcomingFor(runs, slug, today)[0];
+
+/** The next date as one string.
+ *
+ *  Built here rather than in the markup because JSX keeps the newlines an
+ *  indented template introduces, and the first version rendered as
+ *  "2026 , Amsterdam": a space before the comma and none after it. */
+function nextLine(slug: string): string | undefined {
+  const run = nextFor(slug);
+  if (!run) return undefined;
+  const place = where(run);
+  return `Next: ${dateRange(run)}${place ? `, ${place}` : ''}`;
+}
 const anyUpcoming = upcoming(runs, today).length;
 
 const description =
@@ -101,12 +113,7 @@ const jsonLd = {
               {items.map((t) => (
                 <li class="workshop">
                   <h3><a class="workshop-link" href={`/training/${t.id}/`}>{t.data.title}</a></h3>
-                  {nextFor(t.id) && (
-                    <p class="workshop-next">
-                      Next: {dateRange(nextFor(t.id)!)}
-                      {where(nextFor(t.id)!) && <span>, {where(nextFor(t.id)!)}</span>}
-                    </p>
-                  )}
+                  {nextLine(t.id) && <p class="workshop-next">{nextLine(t.id)}</p>}
                   {t.data.teaser && <p class="workshop-teaser">{t.data.teaser}</p>}
                   <p class="workshop-more" aria-hidden="true">See this workshop →</p>
                 </li>
