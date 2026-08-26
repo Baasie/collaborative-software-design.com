@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  kebab, richText, teaserOf, tidyDividers, withoutTeaser, imageExt, isAssetFor, createBlocksToMd,
+  kebab, richText, teaserOf, tidyDividers, withoutLede, imageExt, isAssetFor, createBlocksToMd,
 } from '../../scripts/lib/notion-md.ts';
 
 const md = () => createBlocksToMd({ childrenOf: async () => [], downloadImage: async () => null });
@@ -86,24 +86,49 @@ test('a divider that is a real seam survives', () => {
   assert.equal(tidyDividers(body), body);
 });
 
-test('withoutTeaser removes the section the frontmatter already carries', () => {
+test('withoutLede removes the one paragraph the frontmatter carries', () => {
   const body = '## Teaser\n\nThe pitch.\n\n## About the Workshop\n\nThe rest.';
-  assert.equal(withoutTeaser(body), '## About the Workshop\n\nThe rest.');
-  // The teaser is still extractable from the ORIGINAL, which is the order the
+  assert.equal(withoutLede(body), '## About the Workshop\n\nThe rest.');
+  // The lede is still extractable from the ORIGINAL, which is the order the
   // sync uses: read it out, then take it away.
   assert.equal(teaserOf(body), 'The pitch.');
 });
 
-test('withoutTeaser leaves a body that has no Teaser section alone', () => {
-  const body = '## Agenda\n\nDay one.';
-  assert.equal(withoutTeaser(body), body);
+test('withoutLede KEEPS the rest of the teaser section', () => {
+  // The thing the old `withoutTeaser` threw away. The Collaborative Software
+  // Design teaser is a hook followed by two columns expanding on it, and the
+  // columns never reached the site at all.
+  const body = [
+    '## Teaser', '', 'The hook.', '',
+    '<div class="cols" style="--tracks: 50fr 50fr">', '',
+    '<div class="col">', '', 'Left.', '', '</div>', '',
+    '<div class="col">', '', 'Right.', '', '</div>', '',
+    '</div>', '', '---', '', '## About the workshop', '', 'Body.',
+  ].join('\n');
+
+  assert.equal(teaserOf(body), 'The hook.');
+  const out = withoutLede(body);
+  assert.ok(!out.includes('The hook.'), 'the lede is not printed twice');
+  assert.ok(!out.includes('## Teaser'), 'and the section keeps no heading of its own');
+  assert.ok(out.includes('Left.') && out.includes('Right.'), 'the columns survive');
+  assert.ok(out.startsWith('<div class="cols"'), 'and they are still the first thing on the page');
 });
 
-test('withoutTeaser stops at the next heading of any depth', () => {
+test('withoutLede leaves a body that has no Teaser section alone', () => {
+  const body = '## Agenda\n\nDay one.';
+  assert.equal(withoutLede(body), body);
+});
+
+test('withoutLede stops at the next heading of any depth', () => {
   assert.equal(
-    withoutTeaser('## Teaser\n\nPitch.\n\n### Deeper\n\nKept.'),
+    withoutLede('## Teaser\n\nPitch.\n\n### Deeper\n\nKept.'),
     '### Deeper\n\nKept.',
   );
+});
+
+test('a teaser that opens with columns does not hand back a div as its pitch', () => {
+  const body = '## Teaser\n\n<div class="cols">\n\n<div class="col">\n\nWords.\n\n</div>\n\n</div>';
+  assert.equal(teaserOf(body), 'Words.');
 });
 
 test('teaserOf prefers the Teaser section', () => {

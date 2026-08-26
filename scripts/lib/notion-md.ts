@@ -298,30 +298,70 @@ export function tidyDividers(body: string): string {
   return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/^\n+/, '').trimEnd();
 }
 
-/** The body with its `Teaser` section removed.
+/** Where the `Teaser` section starts and ends.
  *
- * The teaser is lifted into the frontmatter by `teaserOf`, and the page prints
- * it as the lede above everything else. Which is what the live training page
- * does with it too. Leaving the section in the body as well means every
- * workshop page opens by saying the same thing twice.
- *
- * Only the FIRST heading called Teaser, and only its own section: the next
- * heading of any depth ends it. A workshop with no such section is returned
- * unchanged, which is most of them.
+ * Line based rather than one regular expression, because the section runs to
+ * the next heading of any depth OR to the end of the document, and expressing
+ * "or the end" in a JavaScript regular expression is where `\Z` gets written
+ * by mistake. `\Z` is not an escape in JavaScript; it matches a literal Z, and
+ * the version this replaced had exactly that in it.
  */
-export function withoutTeaser(body: string): string {
-  return body
-    .replace(/^#{2,6}\s*Teaser\s*$[\s\S]*?(?=^#{2,6}\s|\Z)/m, '')
-    .replace(/^\n+/, '')
-    .trimEnd();
+function teaserRange(body: string): { start: number; end: number } | null {
+  const lines = body.split('\n');
+  const start = lines.findIndex((l) => /^#{2,6}\s*Teaser\s*$/.test(l.trim()));
+  if (start === -1) return null;
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (/^#{2,6}\s/.test(lines[i])) { end = i; break; }
+  }
+  return { start, end };
+}
+
+/** The first block of real prose. Skips headings, images, tables and raw HTML,
+ *  so a teaser that opens with a set of columns does not hand back a `<div>`
+ *  as the workshop's pitch. */
+function firstProse(blocks: string[]): number {
+  return blocks.findIndex((b) => { const t = b.trim(); return t !== '' && !/^[#!|<]/.test(t); });
+}
+
+/** The body with the ONE paragraph that became the lede taken out.
+ *
+ * That paragraph is lifted into the frontmatter by `teaserOf`, and the page
+ * prints it as the lede above everything else, which is what the live training
+ * page does. Printing it again at the top of the body would make every
+ * workshop open by saying the same thing twice.
+ *
+ * EVERYTHING ELSE IN THE SECTION STAYS, where the author put it. This used to
+ * remove the whole section, which was fine while a teaser was one paragraph
+ * and silently threw the rest away as soon as it was not: the Collaborative
+ * Software Design teaser grew a pair of columns under its hook, and they never
+ * reached the site at all.
+ *
+ * The `Teaser` heading goes with the paragraph, because the hero above IS the
+ * teaser, and a section headed "Teaser" underneath it labels something the
+ * reader has just finished.
+ */
+export function withoutLede(body: string): string {
+  const range = teaserRange(body);
+  if (!range) return body;
+
+  const lines = body.split('\n');
+  const blocks = lines.slice(range.start + 1, range.end).join('\n').split(/\n{2,}/);
+  const i = firstProse(blocks);
+  if (i >= 0) blocks.splice(i, 1);
+
+  return [
+    lines.slice(0, range.start).join('\n'),
+    blocks.join('\n\n').trim(),
+    lines.slice(range.end).join('\n'),
+  ].filter((part) => part.trim()).join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 export function teaserOf(body: string): string | undefined {
-  const section = body.match(/^#{2,6}\s*Teaser\s*$([\s\S]*?)(?=^#{2,6}\s|\Z)/m);
-  const scope = section ? section[1] : body;
-  const para = scope
-    .split(/\n{2,}/)
-    .map((p) => p.trim())
-    .find((p) => p && !p.startsWith('#') && !p.startsWith('!') && !p.startsWith('|') && !p.startsWith('<!--'));
-  return para ? para.replace(/\s+/g, ' ') : undefined;
+  const range = teaserRange(body);
+  const lines = body.split('\n');
+  const scope = range ? lines.slice(range.start + 1, range.end).join('\n') : body;
+  const blocks = scope.split(/\n{2,}/).map((p) => p.trim());
+  const i = firstProse(blocks);
+  return i >= 0 ? blocks[i].replace(/\s+/g, ' ') : undefined;
 }
