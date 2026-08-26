@@ -19,7 +19,7 @@ import sharp from 'sharp';
 import { normaliseTags } from '../src/lib/tags';
 import {
   createBlocksToMd, assetRefs, fileUrl, imageExt, isAssetFor, kebab, plainTitle,
-  statusOf, teaserOf, withoutTeaser, yamlList, yamlStr,
+  statusOf, teaserOf, tidyDividers, withoutTeaser, yamlList, yamlStr,
   type AssetCtx, type StatusKind,
 } from './lib/notion-md';
 // Whether Notion is still shaped the way the readers below assume. Every typed
@@ -610,7 +610,7 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
       // page prints it as the lede, so leaving the section in the body as well
       // would make every workshop open by saying the same thing twice.
       teaser = teaserOf(full);
-      body = withoutTeaser(full);
+      body = tidyDividers(withoutTeaser(full));
       const cover = page.cover ? fileUrl(page.cover) : '';
       featured = cover ? await downloadImage(cover, ctx, 'featured') : null;
       process.stdout.write('.');

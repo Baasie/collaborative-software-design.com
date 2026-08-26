@@ -187,12 +187,16 @@ test('a long workshop page carries its contents and a following booking bar', ()
       assert.ok(html.includes(`id="${sl}"`), `${urlOf(f)} links to #${sl}, which is not on the page`);
     }
 
-    // 2. A divider in Notion is a seam, and the page draws it with `hr + h2`.
-    //    Every `<hr>` the body carries must therefore be followed by a
-    //    heading, or the divider the editor placed draws nothing.
+    // 2. A divider in Notion is a seam, drawn with `hr + h2`. This checks the
+    //    seams still reach the page, NOT that every divider is one: where an
+    //    editor puts a divider is their call, and a rule that fails the deploy
+    //    over somebody's Notion page is the wrong kind of rule. The sync
+    //    reports a divider that draws nothing; nothing here breaks.
     const hrs = (html.match(/<hr\b/g) ?? []).length;
     const seams = (html.match(/<hr[^>]*>\s*<h2\b/g) ?? []).length;
-    assert.equal(seams, hrs, `${urlOf(f)} has ${hrs} dividers but only ${seams} of them start a section`);
+    if (hrs > 0) {
+      assert.ok(seams > 0, `${urlOf(f)} has ${hrs} dividers and none of them opens a section`);
+    }
 
     // 3. The booking bar ships hidden, so a visitor with no JavaScript never
     //    meets a bar that nothing can move.

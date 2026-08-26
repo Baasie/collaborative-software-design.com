@@ -233,6 +233,41 @@ export function createBlocksToMd(deps: MdDeps) {
  *
  *  Prefers an explicit `Teaser` section; falls back to the first paragraph of
  *  prose, which is what a page that has not been given one still has. */
+/** Dividers, tidied.
+ *
+ * A divider is a SEAM: the workshop page draws a heavy rule and opens the next
+ * section on a plate. Three placements draw nothing, and all three are things
+ * an editor does without thinking about it:
+ *
+ *   - one at the very top, above the first heading;
+ *   - one at the very bottom, closing the last section;
+ *   - two in a row.
+ *
+ * They are dropped here rather than reported, because none of them is a
+ * mistake worth telling somebody about. A divider that sits mid-body above a
+ * paragraph IS worth reporting, and `strayDividers` in the sync does that.
+ */
+export function tidyDividers(body: string): string {
+  const lines = body.split('\n');
+  const out: string[] = [];
+  const isRule = (l: string) => l.trim() === '---';
+  const restIsBlank = (i: number) => lines.slice(i + 1).every((l) => !l.trim());
+
+  for (const [i, line] of lines.entries()) {
+    if (!isRule(line)) { out.push(line); continue; }
+    // Nothing but blank lines above it, or below it.
+    if (out.every((l) => !l.trim())) continue;
+    if (restIsBlank(i)) continue;
+    // The one before it, ignoring blanks, was also a rule.
+    const prev = [...out].reverse().find((l) => l.trim());
+    if (prev && isRule(prev)) continue;
+    out.push(line);
+  }
+  // Dropping a rule leaves the blank line that followed it, so a run of three
+  // or more newlines is what a removed divider looks like afterwards.
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/^\n+/, '').trimEnd();
+}
+
 /** The body with its `Teaser` section removed.
  *
  * The teaser is lifted into the frontmatter by `teaserOf`, and the page prints

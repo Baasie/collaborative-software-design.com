@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  kebab, richText, teaserOf, withoutTeaser, imageExt, isAssetFor, createBlocksToMd,
+  kebab, richText, teaserOf, tidyDividers, withoutTeaser, imageExt, isAssetFor, createBlocksToMd,
 } from '../../scripts/lib/notion-md.ts';
 
 const md = () => createBlocksToMd({ childrenOf: async () => [], downloadImage: async () => null });
@@ -28,6 +28,19 @@ test('a Notion page mention does not become a dead link to a page id', () => {
     richText([{ plain_text: 'Some page', annotations: {}, href: '/e342ff0d1c2b4a5f8e9d0c1b2a3f4e5d' }]),
     'Some page',
   );
+});
+
+test('a divider that draws nothing is dropped rather than reported', () => {
+  // All three are things an editor does without thinking about it, and none of
+  // them is a mistake worth telling somebody about.
+  assert.equal(tidyDividers('---\n\n## One\n\nText.'), '## One\n\nText.', 'leading');
+  assert.equal(tidyDividers('## One\n\nText.\n\n---\n'), '## One\n\nText.', 'trailing');
+  assert.equal(tidyDividers('## One\n\n---\n\n---\n\n## Two'), '## One\n\n---\n\n## Two', 'doubled');
+});
+
+test('a divider that is a real seam survives', () => {
+  const body = '## One\n\nText.\n\n---\n\n## Two\n\nMore.';
+  assert.equal(tidyDividers(body), body);
 });
 
 test('withoutTeaser removes the section the frontmatter already carries', () => {

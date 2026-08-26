@@ -148,9 +148,9 @@ const jsonLd = courseJsonLd({
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
 
-  <div class="section section--paper">
-    <article class="wrap prose workshop-body"><Content /></article>
-  </div>
+  {/* No `.wrap`: the bands span the viewport and each child carries the text
+      measure as padding. See the band rules in the stylesheet below. */}
+  <article class="prose workshop-body"><Content /></article>
 
   <section class="section section--blue" data-test="more-workshops">
     <div class="wrap more-grid">
@@ -242,37 +242,73 @@ const jsonLd = courseJsonLd({
     width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
   }
 
-  /* THE SEAM. A divider in Notion becomes an `<hr>`, and on these pages every
-     one of them sits immediately before an `<h2>`, so `hr + h2` is exact.
-     That makes the editor the one who decides where the page breaks, which is
-     the right place for the decision: the template cannot know where a section
-     ends without guessing.
-
-     What it buys: the body was one undifferentiated white slab, 5,011px of a
-     6,968px page. It is now five visibly separate parts, each opening on a
-     plate with a heavy rule over it, which is the same square-cornered,
-     heavy-ruled idiom the cards and the date rows use.
-
-     What it is NOT: a real change of background for the whole section. That
-     would need the body split into separate elements, and the body arrives as
-     one rendered document whose images Astro resolves at build time. Splitting
-     the HTML would break every picture in it. See the note in the commit. */
-  .workshop-body :global(hr) { border: 0; height: 0; margin: var(--space-16) 0 0; }
-  .workshop-body :global(hr + h2) {
-    margin-top: 0;
-    border-top: 6px solid var(--color-ink);
-    background: var(--color-paper-2);
-    /* Past the text column on both sides, so the plate reads as a band behind
-       the heading rather than as a box around it. */
-    margin-inline: calc(var(--space-5) * -1);
-    padding: var(--space-6) var(--space-5) var(--space-5);
+  /* THE BANDS.
+   *
+   * A divider in Notion is a seam, and each stretch between two seams gets its
+   * own ground, which is what the live WordPress page does:
+   *
+   *     hero and About the workshop   pink   #e69ec6
+   *     What You Will Learn           white
+   *     Before the workshop, Audience blue   #aec9e9
+   *
+   * Measured off `/training/` rather than chosen. The fourth ground is the
+   * grey the home page puts behind the talk, for the Agenda, which the live
+   * page has no equivalent of.
+   *
+   * WHY IT IS DONE WITH SIBLING SELECTORS. The obvious way is to split the
+   * rendered body at each `<hr>` and wrap the parts in sections. That breaks
+   * every picture in the body: Astro resolves markdown images through the
+   * `Content` component at build time, and the stored HTML still holds the
+   * unresolved paths. So the document stays whole and the ground travels down
+   * it instead.
+   *
+   * `hr:nth-of-type(n) ~ *` matches everything after that divider, so an
+   * element after the third divider matches all three rules and the last one
+   * declared wins. Which means these rules must stay in order, and a fifth
+   * divider needs a fifth rule. */
+  .workshop-body {
+    /* `50vw` can exceed the page width when a scrollbar is out. */
+    overflow-x: clip;
+    --measure: 23rem;
   }
+  .workshop-body :global(> *) {
+    /* The text keeps its 46rem measure; the background reaches the edges. */
+    padding-inline: max(var(--space-5), calc(50vw - var(--measure)));
+    /* Margins would leave the grounds showing through between blocks, so the
+       rhythm is padding here. */
+    margin-block: 0;
+    padding-block: var(--space-3);
+    background: var(--band);
+  }
+  .workshop-body :global(> *) { --band: var(--color-ground-pink); }
+  .workshop-body :global(> hr:nth-of-type(1) ~ *) { --band: var(--color-paper); }
+  .workshop-body :global(> hr:nth-of-type(2) ~ *) { --band: var(--color-ground-blue); }
+  .workshop-body :global(> hr:nth-of-type(3) ~ *) { --band: var(--color-ground-grey); }
+  .workshop-body :global(> hr:nth-of-type(4) ~ *) { --band: var(--color-paper); }
+  .workshop-body :global(> hr:nth-of-type(5) ~ *) { --band: var(--color-ground-blue); }
+  .workshop-body :global(> hr:nth-of-type(6) ~ *) { --band: var(--color-ground-grey); }
 
-  /* A readable measure. The live page runs its body in two 510px columns,
-     which this template cannot do. The body is one markdown document out of
-     Notion and there is no honest place to cut it. One column at a sane width
-     beats a full-width 1100px line of monospace, which is what it was. */
-  .workshop-body { max-width: 46rem; }
+  /* The divider itself draws nothing. The change of ground is the seam. */
+  .workshop-body :global(hr) { border: 0; height: 0; margin: 0; padding-block: 0; }
+
+  /* Air at the top and bottom of every band, so a heading does not open one
+     flush against the edge. `:has(+ hr)` is the last element of a band. */
+  .workshop-body :global(> hr + h2) { padding-top: var(--space-12); margin-top: 0; }
+  .workshop-body :global(> *:has(+ hr)) { padding-bottom: var(--space-12); }
+  .workshop-body :global(> :first-child) { padding-top: var(--space-12); }
+  .workshop-body :global(> :last-child) { padding-bottom: var(--space-16); }
+
+  /* A link in this body can land on any of the four grounds, and the accent is
+     only legible on three of them: 21:1 on the white, 12.3 on the blue, 17.6
+     on the grey, and 3.85 on the pink, which is under what normal text needs.
+     Ink reads on all four, and the underline `p a` already gives it is what
+     marks it as a link. Same reasoning as the navigation. */
+  .workshop-body :global(a) { color: var(--color-ink); }
+  .workshop-body :global(a:hover) { text-decoration-thickness: 3px; }
+
+  /* `.prose` sets a 40rem measure for a letter. Here the measure lives on the
+     children, so the container has to let go of it. */
+  .workshop-body { max-width: none; }
 
   /* The magenta tick, scoped to the ONE list it came from.
      It was on every `ul` in the body, which put twenty of them on this page:

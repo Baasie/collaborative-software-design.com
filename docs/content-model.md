@@ -89,10 +89,26 @@ as `divider-not-a-seam` rather than letting it disappear quietly. A blocking
 test also holds every `<hr>` in the built page against the heading that should
 follow it.
 
-What a divider does NOT do is change the background of the whole section. That
-would need the body split into separate elements, and the body arrives as one
-rendered document whose images Astro resolves at build time; splitting the HTML
-would break every picture in it.
+**Each stretch between two dividers gets its own ground**, in the order the
+live WordPress `/training/` page uses:
+
+| Stretch | Ground | Live equivalent |
+|---|---|---|
+| Before the first divider | pink `#e69ec6` | the hero band, which carries "About the workshop" |
+| After the 1st | white | "What You Will Learn" |
+| After the 2nd | blue `#aec9e9` | "Before the workshop" and "Audience" |
+| After the 3rd | grey `#ebebeb` | nothing; the live page has no Agenda |
+| After the 4th, 5th, 6th | white, blue, grey | the cycle repeats |
+
+So **the order of the sections in Notion decides the colour of each one**.
+Reordering the page reorders the palette, which is the point: the shape of the
+page is an editorial decision, not a template one.
+
+A seventh divider would keep the sixth's colour until somebody adds a seventh
+rule, because this is done with sibling selectors rather than by splitting the
+body. Splitting is what it looks like it should do, and it breaks every picture
+in the body: Astro resolves markdown images through the `Content` component at
+build time, and the stored HTML still holds unresolved paths.
 
 ### Pictures on a workshop page
 
