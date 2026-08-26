@@ -79,6 +79,9 @@ jobs:
           [ "${{ inputs.full }}" = "true" ] && FLAGS="--full"
           npx tsx scripts/sync-notion.ts content --write $FLAGS
           npx tsx scripts/sync-notion.ts trainings --write $FLAGS
+          # After trainings, not beside it: a public run names the workshop it
+          # belongs to, and this checks that against what trainings just wrote.
+          npx tsx scripts/sync-notion.ts sessions --write
 
       # A slug change is an address change, and the sync has just recorded it.
       # Regenerating here means the redirect ships in the same commit as the

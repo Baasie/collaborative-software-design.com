@@ -19,11 +19,18 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import heroWoman from '../../assets/home/hero-woman.png';
-import { trainingsByFormat, trainings } from '../../lib/collections';
+import { sessions, trainingsByFormat, trainings } from '../../lib/collections';
+import { dateRange, todayISO, upcoming, upcomingFor, where } from '../../lib/sessions';
 import { pageTitle, organisation, mailto, AUTHORS } from '../../lib/seo';
 
 const groups = await trainingsByFormat();
 const all = await trainings();
+
+// Read once, so every row on the page agrees about what day it is.
+const today = todayISO();
+const runs = await sessions();
+const nextFor = (slug: string) => upcomingFor(runs, slug, today)[0];
+const anyUpcoming = upcoming(runs, today).length;
 
 const description =
   'Hands-on workshops in the facilitation discipline behind good domain modelling '
@@ -69,6 +76,13 @@ const jsonLd = {
           {all.length} workshops, run by the authors of the book:
           {AUTHORS.map((a) => a.name).join(', ')}.
         </p>
+        {/* Only claim there are public dates when there are. An empty list is
+            not a state to design around; it is the normal one between runs. */}
+        {anyUpcoming > 0 && (
+          <p class="hire-count">
+            {anyUpcoming === 1 ? 'One public date is open.' : `${anyUpcoming} public dates are open.`}
+          </p>
+        )}
         <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
       </div>
     </div>
@@ -87,6 +101,12 @@ const jsonLd = {
               {items.map((t) => (
                 <li class="workshop">
                   <h3><a class="workshop-link" href={`/training/${t.id}/`}>{t.data.title}</a></h3>
+                  {nextFor(t.id) && (
+                    <p class="workshop-next">
+                      Next: {dateRange(nextFor(t.id)!)}
+                      {where(nextFor(t.id)!) && <span>, {where(nextFor(t.id)!)}</span>}
+                    </p>
+                  )}
                   {t.data.teaser && <p class="workshop-teaser">{t.data.teaser}</p>}
                   <p class="workshop-more" aria-hidden="true">See this workshop →</p>
                 </li>
@@ -160,6 +180,13 @@ const jsonLd = {
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden;
   }
   .workshop-more { margin: 0; font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-brand); }
+  /* The next public date, where somebody scanning the list is looking for it.
+     Ink on white, and set in the heading face so it reads as a fact about the
+     workshop rather than as more of the teaser. */
+  .workshop-next {
+    margin: 0 0 var(--space-3); font-family: var(--font-heading); font-weight: 700;
+    font-size: var(--text-base); letter-spacing: 0.02em;
+  }
 
   .more-grid h2 { margin-top: 0; font-size: var(--text-2xl); }
   .more-grid p { max-width: 42rem; }

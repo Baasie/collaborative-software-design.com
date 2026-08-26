@@ -3,6 +3,7 @@
  *
  *   content     the Dear CoMo letters, to markdown
  *   trainings   the workshops, to markdown
+ *   sessions    the scheduled public runs of those workshops, to JSON
  *
  * Nothing here is hand-edited afterwards: Notion is the source of truth and
  * this is the only writer. Add --write to land files under src/content/;
@@ -50,6 +51,15 @@ const CONTENT_DS = 'c21ccb43-5f0c-490c-8f81-f5f2794f5322';
  *  properties to read, so the title, the order and the grouping all have to be
  *  recovered from the page's own structure. */
 const WORKSHOPS_PAGE = '2f8a485a-fafc-80c4-8f67-ec6163c1cc6c';
+
+/** `Public trainings`, a database under the Workshops page. One row per
+ *  scheduled public run: which workshop, when, where, how much, where to buy.
+ *
+ *  This exists because a date written into a page goes stale and stays stale.
+ *  The WordPress training page carried a hand-typed "Tickets: June 16 to 17 /
+ *  Amsterdam" button long after June. A row with an end date on it drops off
+ *  the site by itself the day after that date, which is the whole point. */
+const SESSIONS_DS = '5ec8656f-a083-4e5a-bd09-52dc71e0005e';
 
 // --- API pacing -------------------------------------------------------------
 // Notion allows roughly three requests per second and answers 429 above that.
@@ -640,6 +650,114 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
   return { moved, gone };
 }
 
+// --- sessions ----------------------------------------------------------------
+//
+// The scheduled public runs. Unlike the two commands above this writes JSON
+// rather than markdown, because a run has no body: it is nine properties, and
+// the pages that show it want to sort and filter them.
+//
+// `Workshop` is a Notion select rather than a relation, because the workshops
+// are child pages of a page and a relation needs a database on both ends. The
+// select's options are the workshop titles, and this matches them by the same
+// `kebab()` the trainings command slugs with. A row naming a workshop that no
+// longer exists raises an alert instead of vanishing quietly, because a public
+// date nobody can see is worse than one that is wrong.
+
+const SESSIONS_FILE = 'sessions.json';
+
+/** Statuses that reach the site. `Draft` is somebody still writing the row;
+ *  `Cancelled` is a run that is not happening, and a cancelled run should
+ *  disappear rather than sit there advertising itself. */
+const SESSION_LIVE = ['Announced', 'Open', 'Sold out'];
+
+async function runSessions(outRoot: string, write: boolean) {
+  mkdirSync(outRoot, { recursive: true });
+
+  const rows = await queryAll(SESSIONS_DS);
+  const watch = schemaWatch();
+  const alerts: Alert[] = [];
+
+  // `watch.note` records what a read asked for and what came back; it does not
+  // return the value. Reading and recording stay one call here so a property
+  // cannot be read without being watched, which is how a rename stays visible.
+  const read = <T>(name: string, kind: Reader, prop: unknown, of: (v: any) => T): T => {
+    watch.note(name, kind, prop);
+    return of(prop);
+  };
+
+  // The workshops as they exist right now, so a row can be checked against
+  // them rather than trusted.
+  const slugs = new Set(
+    readdirSync(`${outRoot}/trainings`)
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => f.replace(/\.md$/, '')),
+  );
+
+  const sessions = rows.flatMap((row: any) => {
+    const p = row.properties ?? {};
+    const name = plainTitle(row, 'Name') || '(untitled)';
+    const status = read('Status', 'select', p.Status, (v) => v?.select?.name ?? '');
+    if (!SESSION_LIVE.includes(status)) return [];
+
+    const workshop = read('Workshop', 'select', p.Workshop, (v) => v?.select?.name ?? '');
+    const start = read('Dates', 'date', p.Dates, (v) => v?.date?.start ?? '');
+    if (!workshop || !start) {
+      alerts.push({
+        kind: 'session-incomplete', title: name, url: row.url,
+        detail: 'A public run needs both a Workshop and a start date before it can be shown.',
+      });
+      return [];
+    }
+
+    const slug = kebab(workshop);
+    if (!slugs.has(slug)) {
+      alerts.push({
+        kind: 'session-unknown-workshop', title: name, url: row.url,
+        detail: `"${workshop}" is not a workshop under Workshops. Rename the option or point the row at an existing workshop.`,
+      });
+      return [];
+    }
+
+    const tickets = read('Tickets', 'url', p.Tickets, (v) => v?.url ?? '');
+    const ticketRead = tickets ? usableUrl(tickets) : undefined;
+    if (ticketRead?.problem === 'unusable') {
+      alerts.push({
+        kind: 'bad-url', title: name, url: row.url,
+        detail: `Tickets is not an address: ${JSON.stringify(ticketRead.raw)}. The run is still listed, without a ticket link.`,
+      });
+    }
+
+    return [{
+      slug,
+      name,
+      start,
+      end: (p.Dates?.date?.end as string | undefined) || undefined,
+      city: read('City', 'rich_text', p.City, (v) => (v?.rich_text ?? []).map((t: any) => t.plain_text).join('').trim()) || undefined,
+      delivery: read('Delivery', 'select', p.Delivery, (v) => v?.select?.name ?? '') || undefined,
+      language: read('Language', 'select', p.Language, (v) => v?.select?.name ?? '') || undefined,
+      price: read('Price', 'number', p.Price, (v) => v?.number as number | null) ?? undefined,
+      tickets: ticketRead?.url,
+      status,
+    }];
+  });
+
+  // Soonest first, so a page can take the head of the list without sorting.
+  sessions.sort((a, b) => a.start.localeCompare(b.start) || a.name.localeCompare(b.name));
+
+  if (write) {
+    writeFileSync(`${outRoot}/${SESSIONS_FILE}`, JSON.stringify(sessions, null, 2) + '\n');
+    writeAlert('sessions', [
+      ...alerts,
+      ...driftAlerts('Public trainings', `https://www.notion.so/${SESSIONS_DS.replace(/-/g, '')}`, watch.drift()),
+    ]);
+  }
+
+  console.log(`sessions: ${sessions.length} public run(s) ${write ? 'written to' : 'previewed in'} ${outRoot}/${SESSIONS_FILE}`);
+  for (const line of driftLines(watch.drift())) console.warn(`  ! ${line}`);
+  if (alerts.length) console.warn(`  ! ${alerts.length} row(s) need a decision`);
+  return { alerts };
+}
+
 // --- CLI ---------------------------------------------------------------------
 
 const args = process.argv.slice(2);
@@ -653,8 +771,11 @@ const outRoot = write ? 'src/content' : 'preview';
 const run = async () => {
   if (command === 'content') await runContent(outRoot, write, full);
   else if (command === 'trainings') await runTrainings(outRoot, write, full);
+  // `sessions` reads the trainings directory to check a row points at a real
+  // workshop, so it runs after `trainings` rather than beside it.
+  else if (command === 'sessions') await runSessions(outRoot, write);
   else {
-    console.error('Usage: sync-notion.ts <content | trainings> [--write] [--full]');
+    console.error('Usage: sync-notion.ts <content | trainings | sessions> [--write] [--full]');
     process.exit(1);
   }
   if (seenUnhandled.size) {

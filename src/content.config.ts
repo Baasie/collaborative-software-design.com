@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 
 // Content is GENERATED from Notion by scripts/sync-notion.ts and written to
 // src/content/<collection>/<slug>.md, never hand-edited. These schemas mirror
@@ -92,4 +92,37 @@ const trainings = defineCollection({
     }),
 });
 
-export const collections = { writing, trainings };
+// The scheduled public runs of the workshops. JSON rather than markdown,
+// because a run has no body: it is nine fields, and every page that shows one
+// wants to sort and filter them. Written by `sync-notion.ts sessions` from the
+// `Public trainings` database.
+//
+// Nothing here is required except the workshop and the start date, and that is
+// deliberate. A run announced before the price is agreed should still show its
+// dates; the sync alerts on a row missing the two fields that make it a run at
+// all, and lets the rest through.
+const sessions = defineCollection({
+  loader: file('src/content/sessions.json', { parser: (text) => JSON.parse(text) }),
+  schema: z.object({
+    /** The workshop's slug, so a session finds its page without a second table.
+     *  The sync derives it from the `Workshop` select with the same `kebab()`
+     *  the trainings use, and alerts when it names no workshop that exists. */
+    slug: z.string(),
+    /** Notion's row title. Editorial shorthand ("Amsterdam, June 2026"), never
+     *  shown: the site builds its own label out of the dates and the city. */
+    name: z.string(),
+    start: z.string(),
+    /** Absent for a one-day run. */
+    end: z.string().optional(),
+    /** Absent for an online run. */
+    city: z.string().optional(),
+    delivery: z.string().optional(),
+    language: z.string().optional(),
+    price: z.number().optional(),
+    tickets: z.string().url().optional(),
+    /** `Announced`, `Open` or `Sold out`. Draft and Cancelled never get here. */
+    status: z.string(),
+  }),
+});
+
+export const collections = { writing, trainings, sessions };

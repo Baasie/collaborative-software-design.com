@@ -23,20 +23,29 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactSection from '../../components/ContactSection.astro';
 import heroWoman from '../../assets/home/hero-woman.png';
-import { trainings } from '../../lib/collections';
+import { sessions, trainings } from '../../lib/collections';
+import { dateRange, todayISO, upcomingFor, where } from '../../lib/sessions';
 import { courseJsonLd, pageTitle, BOOK_URL, mailto } from '../../lib/seo';
 import { socialCard } from '../../lib/social-card';
 import { excerpt } from '../../lib/excerpt';
 
 export async function getStaticPaths() {
   const items = await trainings();
+  const runs = await sessions();
+  // `todayISO()` is read once here rather than per page, so every page in one
+  // build agrees about what day it is.
+  const today = todayISO();
   return items.map((entry) => ({
     params: { slug: entry.id },
-    props: { entry, others: items.filter((o) => o.id !== entry.id) },
+    props: {
+      entry,
+      others: items.filter((o) => o.id !== entry.id),
+      runs: upcomingFor(runs, entry.id, today),
+    },
   }));
 }
 
-const { entry, others } = Astro.props;
+const { entry, others, runs } = Astro.props;
 const { Content } = await render(entry);
 const description = entry.data.seoMetadescription
   ?? entry.data.teaser
@@ -75,9 +84,39 @@ const jsonLd = courseJsonLd({
       </div>
 
       <div class="hire-aside">
-        <p class="hire-actions">
-          <a class="btn btn--ink" href={enquiry}>Ask about a date</a>
-        </p>
+        {/* The dates come from the `Public trainings` database, and a run
+            disappears the day after it ends. The WordPress page had this as a
+            button somebody typed, which is why it still said June in
+            November. See src/lib/sessions.ts. */}
+        {runs.length > 0 ? (
+          <div class="runs" data-test="runs">
+            <h2 class="runs-head">Next dates</h2>
+            <ul>
+              {runs.map((r) => (
+                <li class="run">
+                  <p class="run-when">{dateRange(r)}</p>
+                  <p class="run-where">
+                    {where(r)}
+                    {r.language && r.language !== 'English' && <span> · in {r.language}</span>}
+                    {r.price != null && <span> · €{r.price.toLocaleString('en-GB')}</span>}
+                  </p>
+                  {r.status === 'Sold out'
+                    ? <p class="run-sold">Sold out</p>
+                    : r.tickets
+                      ? <p><a class="btn btn--ink" href={r.tickets} rel="noopener">Book a place</a></p>
+                      : <p><a class="btn btn--ink" href={enquiry}>Ask about this date</a></p>}
+                </li>
+              ))}
+            </ul>
+            <p class="runs-private">
+              <a href={enquiry}>Or ask about running it in-house</a>
+            </p>
+          </div>
+        ) : (
+          <p class="hire-actions">
+            <a class="btn btn--ink" href={enquiry}>Ask about a date</a>
+          </p>
+        )}
         {entry.data.featuredImage && (
           /* On a white plate, as the live page frames its illustration. The
              alt is empty because the picture illustrates the workshop rather
@@ -142,6 +181,20 @@ const jsonLd = courseJsonLd({
   .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
   .hire-actions { margin: 0 0 var(--space-8); }
   .detail-back { margin: 0 0 var(--space-6); font-size: var(--text-sm); }
+
+  /* The scheduled runs. A white plate, like the illustration below it, because
+     this is the one block on the page somebody is looking FOR. */
+  .runs { background: var(--color-paper); padding: var(--space-5); margin-bottom: var(--space-8); }
+  .runs-head { margin: 0 0 var(--space-4); font-size: var(--text-lg); }
+  .runs ul { list-style: none; margin: 0; padding: 0; }
+  .run + .run { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 2px solid var(--color-ink); }
+  .run p { margin: 0 0 var(--space-3); }
+  .run-when { font-family: var(--font-heading); font-weight: 700; font-size: var(--text-xl); line-height: 1.1; }
+  .run-where { font-size: var(--text-sm); color: var(--color-ink-muted); }
+  /* Not a button: a sold-out run is information, and a control that cannot be
+     used is worse than a line of text saying why. */
+  .run-sold { font-family: var(--font-body); text-transform: uppercase; letter-spacing: 0.07em; font-size: var(--text-button); }
+  .runs-private { margin: var(--space-5) 0 0; font-size: var(--text-sm); }
 
   /* The white plate the live page frames its illustration with. */
   .hire-figure-plate { margin: 0; padding: var(--space-4); background: var(--color-paper); }

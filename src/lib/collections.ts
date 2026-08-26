@@ -6,6 +6,7 @@
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { normaliseTags } from './tags';
+import type { Session } from './sessions';
 
 export type Letter = CollectionEntry<'writing'>;
 
@@ -57,6 +58,16 @@ export async function trainingsByFormat() {
     groups.get(key)!.push(t);
   }
   return groups;
+}
+
+/** The scheduled public runs, unfiltered and in Notion's order.
+ *
+ *  The return type is the hand-written `Session` in `sessions.ts` rather than
+ *  the collection's inferred one, and that is the point: the pure functions
+ *  there cannot import `astro:content`, so this one line is where the compiler
+ *  checks the zod schema still produces what they expect. */
+export async function sessions(): Promise<Session[]> {
+  return (await getCollection('sessions')).map((e) => e.data);
 }
 
 /** Every tag in use, most-used first, with its count. Drives the filter bar. */

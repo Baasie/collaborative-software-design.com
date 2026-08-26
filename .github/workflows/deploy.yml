@@ -12,6 +12,12 @@ on:
   push:
     branches: [main]
     paths-ignore: ['**.md', 'LICENSE*', 'reference/**']
+  # A daily rebuild, because one thing on this site depends on the date it was
+  # built: a public training run disappears the day after it ends. Nothing
+  # pushes on the day that happens, so without this a finished workshop would
+  # sit on the page advertising itself until the next content change.
+  schedule:
+    - cron: '20 3 * * *'
   # A pull request gets everything above the deploy line: types, build, the
   # blocking suite. Without this a dependency bump could only be judged after it
   # had already landed on main.
