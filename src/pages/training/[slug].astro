@@ -360,15 +360,19 @@ const jsonLd = courseJsonLd({
      it is a gutter. The live page runs its two at 510px inside a 1080 row, and
      mirroring the left edge on the right gives very nearly that. */
   .workshop-body :global(> .cols) { padding-right: var(--edge); }
-  /* A picture in a column is capped. A portrait photograph at the column's
-     full width is 1122px tall, which took the "Before the workshop" row on the
+  /* A picture in a column is capped in height. A portrait at the column's full
+     width is 1122px tall, which took the "Before the workshop" row on the
      Systems Design page to 1597px and left a thousand pixels of empty beside
      the text next to it. The cap only bites on a portrait: anything wider than
      about 1.3:1 is already under it and is untouched.
-     `top` rather than `center` because the subject of a photograph of people
-     is near the top of it. */
+
+     It scales the picture rather than cropping it. Cropping was the first
+     version and it cut the authors' names off the bottom of the book cover:
+     a photograph survives losing its edges and a cover does not, and nothing
+     here can tell which one it is holding. */
   .workshop-body :global(.col img) {
-    max-height: 26rem; object-fit: cover; object-position: center top;
+    max-height: 26rem; max-width: 100%; width: auto; height: auto;
+    display: block; margin-inline: auto;
   }
   .workshop-body :global(.cols) { display: grid; grid-template-columns: 1fr; gap: var(--space-8); }
   .workshop-body :global(.cols > .col > :first-child) { margin-top: 0; }

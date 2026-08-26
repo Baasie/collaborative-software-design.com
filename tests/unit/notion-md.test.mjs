@@ -114,8 +114,23 @@ test('withoutLede KEEPS the rest of the teaser section', () => {
   assert.ok(out.startsWith('<div class="cols"'), 'and they are still the first thing on the page');
 });
 
-test('withoutLede leaves a body that has no Teaser section alone', () => {
-  const body = '## Agenda\n\nDay one.';
+test('withoutLede still takes the lede when there is no Teaser section', () => {
+  // This used to leave the body alone, and that was the bug: `teaserOf` reads
+  // the lede from anywhere in the body, so a page with no `Teaser` heading had
+  // its opening paragraph printed in the hero and left in place underneath.
+  // The Collaborative Software Design page renamed its heading in Notion and
+  // opened by saying the same thing twice.
+  const body = '<div class="col">\n\nThe pitch.\n\nThe rest.\n\n</div>';
+  assert.equal(teaserOf(body), 'The pitch.');
+  const out = withoutLede(body);
+  assert.ok(!out.includes('The pitch.'), 'the lede is not printed twice');
+  assert.ok(out.includes('The rest.'), 'and the paragraph under it survives');
+  assert.ok(out.startsWith('<div class="col">'), 'inside the column it was written in');
+});
+
+test('withoutLede leaves a body with no prose in it alone', () => {
+  const body = '## Agenda\n\n![](./_assets/one.png)\n\n### Day one';
+  assert.equal(teaserOf(body), undefined);
   assert.equal(withoutLede(body), body);
 });
 

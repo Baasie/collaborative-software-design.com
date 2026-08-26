@@ -210,6 +210,35 @@ test('a long workshop page carries its contents and a following booking bar', ()
   }
 });
 
+test('no workshop page opens by saying the same thing twice', () => {
+  // The lede is lifted out of the body and printed under the title, so a copy
+  // left behind in the body is read twice by anybody who reads the page. That
+  // shipped: the lede was looked for anywhere in the body but only removed
+  // from a `Teaser` section, so a page whose heading was renamed in Notion
+  // printed its opening paragraph in the hero and again underneath.
+  const dir = 'src/content/trainings';
+  const flat = (t) => t.replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"')
+    .replace(/&#\d+;|&\w+;/g, ' ').replace(/\s+/g, ' ').trim();
+
+  let checked = 0;
+  for (const name of readdirSync(dir).filter((f) => f.endsWith('.md'))) {
+    const teaser = readFileSync(`${dir}/${name}`, 'utf8').match(/^teaser: "(.+)"$/m)?.[1];
+    if (!teaser) continue;
+    checked += 1;
+
+    const f = pages.find((x) => x.endsWith(`/training/${name.replace(/\.md$/, '')}/index.html`));
+    assert.ok(f, `${name} built no page`);
+
+    // Long enough to be this page's own sentence, short enough to survive the
+    // odd word being marked up in the body but not in the front matter.
+    const needle = flat(teaser.replace(/\\"/g, '"')).slice(0, 80);
+    const text = flat(read(f).replace(/<[^>]+>/g, ' '));
+    const hits = text.split(needle).length - 1;
+    assert.equal(hits, 1, `${urlOf(f)} prints its lede ${hits} times`);
+  }
+  assert.ok(checked >= 5, `only ${checked} workshops have a lede; the reader stopped matching`);
+});
+
 test('a workshop that has a picture does not share the generic card', () => {
   // `featuredImage` used to be both the hero plate and the social card, so a
   // page that moved its picture from the Notion cover into the body kept its

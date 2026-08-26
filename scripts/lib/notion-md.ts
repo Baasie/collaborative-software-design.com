@@ -341,27 +341,44 @@ function firstProse(blocks: string[]): number {
  * teaser, and a section headed "Teaser" underneath it labels something the
  * reader has just finished.
  */
-export function withoutLede(body: string): string {
+
+/** Where the lede is. The first block of prose, looked for inside the Teaser
+ *  section when the page has one and anywhere in the body when it does not.
+ *
+ *  Reading the lede and removing it both go through here, and they have to:
+ *  when only the reading fell back to the whole body, a page that dropped its
+ *  Teaser heading had its opening paragraph lifted into the hero AND left in
+ *  place, and printed it twice. */
+function ledeAt(body: string) {
   const range = teaserRange(body);
-  if (!range) return body;
-
   const lines = body.split('\n');
-  const blocks = lines.slice(range.start + 1, range.end).join('\n').split(/\n{2,}/);
+  const start = range ? range.start + 1 : 0;
+  const end = range ? range.end : lines.length;
+  const blocks = lines.slice(start, end).join('\n').split(/\n{2,}/);
   const i = firstProse(blocks);
-  if (i >= 0) blocks.splice(i, 1);
-
-  return [
-    lines.slice(0, range.start).join('\n'),
-    blocks.join('\n\n').trim(),
-    lines.slice(range.end).join('\n'),
-  ].filter((part) => part.trim()).join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+  return i < 0 ? null : { range, lines, start, end, blocks, i };
 }
 
+/** The paragraph the page opens with, which the site prints as its lede. */
 export function teaserOf(body: string): string | undefined {
-  const range = teaserRange(body);
-  const lines = body.split('\n');
-  const scope = range ? lines.slice(range.start + 1, range.end).join('\n') : body;
-  const blocks = scope.split(/\n{2,}/).map((p) => p.trim());
-  const i = firstProse(blocks);
-  return i >= 0 ? blocks[i].replace(/\s+/g, ' ') : undefined;
+  const at = ledeAt(body);
+  return at ? at.blocks[at.i].trim().replace(/\s+/g, ' ') : undefined;
+}
+
+/** The body with that paragraph taken out, and with the Teaser heading itself
+ *  taken out when there was one: the page prints the lede above the body, and
+ *  would otherwise open by saying the same thing twice. */
+export function withoutLede(body: string): string {
+  const at = ledeAt(body);
+  if (!at) return body;
+
+  const blocks = [...at.blocks];
+  blocks.splice(at.i, 1);
+  const head = at.range ? at.lines.slice(0, at.range.start) : at.lines.slice(0, at.start);
+
+  return [
+    head.join('\n'),
+    blocks.join('\n\n').trim(),
+    at.lines.slice(at.end).join('\n'),
+  ].filter((part) => part.trim()).join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
 }
