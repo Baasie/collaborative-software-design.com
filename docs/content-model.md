@@ -106,6 +106,58 @@ the real thing. And a unit test pins that.
 The WordPress `/training/` page carried **one** workshop. This one carries five,
 because Notion has five. That is the point of moving it.
 
+## Public trainings, the scheduled runs
+
+**Database:** `Public trainings`, id `5ec8656f-a083-4e5a-bd09-52dc71e0005e`,
+under the `Workshops` page.
+**Collection:** `sessions` -> `src/content/sessions.json`
+**Shown on:** the next date per workshop on `/training/`, and every upcoming
+run on `/training/<slug>/`.
+
+One row per scheduled public run.
+
+| Property | Type | Notes |
+|---|---|---|
+| `Name` | title | Editorial shorthand ("Amsterdam, June 2026"). Never shown; the site builds its own label from the dates and the city. |
+| `Workshop` | select | Which workshop this is a run of. |
+| `Dates` | date | Start, plus end for anything longer than a day. |
+| `City` | text | Empty for an online run. |
+| `Delivery` | select | In person / Online. |
+| `Language` | select | Shown only when it is not English. |
+| `Price` | number | Euro, excluding VAT. Empty shows no price. |
+| `Tickets` | url | Without one, the run points at the contact form instead. |
+| `Status` | select | `Draft` and `Cancelled` never reach the site. `Announced`, `Open` and `Sold out` all show. |
+
+### Why this is a database and the training dates were not
+
+The WordPress training page carried a hand-typed
+**"Tickets: June 16 to 17 / Amsterdam"** button, and it was still carrying it
+long after June. Nobody made a mistake. A date written into a page has no idea
+what it means, so nothing takes it down.
+
+A row does know. `upcoming()` in `src/lib/sessions.ts` drops a run the day
+after its end date, so the site cannot advertise something that has already
+happened.
+
+**This is a static site, so "today" is the day it was BUILT.** Nothing pushes
+on the day a workshop finishes, which is why `deploy.yml` also runs on a daily
+schedule. Remove that cron and finished runs linger until the next content
+change.
+
+### Workshop is a select, not a relation
+
+A relation needs a database on both ends, and the workshops are child pages of
+a page. So the select's options are the workshop titles, and the sync matches
+one to a slug with the same `kebab()` the trainings use.
+
+That means the option text and the page title have to agree. **Renaming a
+workshop page means renaming the matching select option**, and the sync raises
+`session-unknown-workshop` when they disagree rather than dropping the row
+silently, because a public date nobody can see is worse than a wrong one.
+
+Converting `Workshops` into a proper database would turn this into a real
+relation and delete the whole problem. See the section below.
+
 ### This is worse than a database in one specific way
 
 A rename moves an address, and nobody renaming a page in Notion thinks of it as
@@ -117,6 +169,14 @@ price, a next date, a booking link, a "show on the site" checkbox. The right
 answer is to make them a proper database and give the sync a spec, not to encode
 more meaning in the body of a page. That is rule 7: the fix is allowed to be on
 the Notion side.
+
+Half of that has already happened. Dates and prices live in `Public trainings`
+rather than in a workshop's body, which is why they expire on their own. What
+is still owed is the conversion of `Workshops` itself: it would make `format`
+and `order` real properties instead of things recovered from headings and
+positions, and it would turn `Workshop` above into a relation, so a rename
+could not put the two out of step. It is worth doing on a day with nothing else
+in flight, because every workshop URL depends on that slug.
 
 ## What is deliberately *not* in Notion
 
