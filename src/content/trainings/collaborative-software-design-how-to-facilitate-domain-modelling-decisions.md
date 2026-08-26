@@ -3,6 +3,7 @@ title: "Collaborative Software Design: How to facilitate domain modelling decisi
 order: 1
 format: "2-day"
 teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
+cardImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-1.jpg"
 ---
 
 <div class="cols" style="--tracks: 50fr 50fr">

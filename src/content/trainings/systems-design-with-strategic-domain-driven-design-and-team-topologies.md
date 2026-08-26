@@ -3,6 +3,7 @@ title: "Systems Design with Strategic Domain-Driven Design and Team Topologies"
 order: 2
 format: "2-day"
 teaser: "Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?"
+cardImage: "./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-1.jpg"
 ---
 
 <div class="cols" style="--tracks: 50fr 50fr">
