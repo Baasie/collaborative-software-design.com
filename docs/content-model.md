@@ -110,6 +110,24 @@ body. Splitting is what it looks like it should do, and it breaks every picture
 in the body: Astro resolves markdown images through the `Content` component at
 build time, and the stored HTML still holds unresolved paths.
 
+### Two columns
+
+Notion's **column blocks** carry through. The workshop page uses them in the
+three places the live WordPress page splits into two: the About text, the What
+you will learn list, and Before the workshop beside Audience.
+
+The track widths are Notion's own ratios, so **dragging a column divider in
+Notion changes the page**. Below 900px they stack, because two columns of
+monospace on a phone is about twenty characters a line.
+
+A pair of columns takes the whole row rather than the 46rem reading measure,
+which is what the live page does with its two 510px columns inside a 1080 row.
+
+Markdown has no columns, so the sync emits the wrappers as HTML. The blank line
+around every tag is load-bearing: a CommonMark HTML block ends at one, so the
+content between the wrappers is still parsed as markdown. Written any tighter,
+a whole column would ship as literal text, and a unit test pins that.
+
 ### Pictures on a workshop page
 
 There is nothing to build and nothing to put in the repository. Both routes
