@@ -52,6 +52,22 @@ If you want to dive deeper beforehand, our book *Collaborative Software Design* 
 
 **Tech Stack (Online Editions)** This workshop is highly interactive. We use **Miro** as our digital canvas. If you are new to Miro, we strongly recommend spending 15 minutes on the [Miro Academy: Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding) prior to the session. Familiarity with the tool will allow you to focus entirely on the facilitation dynamics rather than the interface.
 
+## Audience
+
+This workshop is designed for technical leaders who want to move beyond "running meetings" to effectively facilitating shared understanding. It is ideal for:
+
+- **Software, Solution, & Domain Architects**
+
+- **Tech Leads, Staff+ Engineers, and Senior Developers**
+
+- **Product Managers & Product Owners**
+
+- **Business Analysts & QA Professionals**
+
+- **Engineering Managers & Scrum Masters**
+
+If you are responsible for bridging the gap between business requirements and technical implementation, this workshop is for you.
+
 ---
 
 ## Agenda
@@ -79,19 +95,3 @@ On the second day, we tackle a specific design challenge using your preferred co
 - **Sustainable Decisions:** How to close the loop. Moving from sticky notes and discussions to concrete, supported design decisions — and communicating them in ways that make the commitment stick beyond the meeting.
 
 ---
-
-## Audience
-
-This workshop is designed for technical leaders who want to move beyond "running meetings" to effectively facilitating shared understanding. It is ideal for:
-
-- **Software, Solution, & Domain Architects**
-
-- **Tech Leads, Staff+ Engineers, and Senior Developers**
-
-- **Product Managers & Product Owners**
-
-- **Business Analysts & QA Professionals**
-
-- **Engineering Managers & Scrum Masters**
-
-If you are responsible for bridging the gap between business requirements and technical implementation, this workshop is for you.
