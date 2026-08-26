@@ -232,7 +232,13 @@ test('no workshop page opens by saying the same thing twice', () => {
     // Long enough to be this page's own sentence, short enough to survive the
     // odd word being marked up in the body but not in the front matter.
     const needle = flat(teaser.replace(/\\"/g, '"')).slice(0, 80);
-    const text = flat(read(f).replace(/<[^>]+>/g, ' '));
+    // Structured data repeats the lede on purpose, and it is not read by
+    // anybody: drop the scripts before flattening, or this counts the
+    // JSON-LD description as a second printing on every page.
+    const visible = read(f)
+      .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g, ' ')
+      .replace(/<[^>]+>/g, ' ');
+    const text = flat(visible);
     const hits = text.split(needle).length - 1;
     assert.equal(hits, 1, `${urlOf(f)} prints its lede ${hits} times`);
   }

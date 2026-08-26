@@ -73,7 +73,7 @@ structure:
 | *the filename* | `kebab()` of the title. |
 | `format` | The nearest heading above it, "2-day", "1 day or less". |
 | `order` | Its position on the Workshops page. **Dragging in Notion re-orders the site.** |
-| `teaser` | The `Teaser` section of the body, or the first paragraph of prose if there is none. **The section is then removed from the body**, because the page prints the teaser as its lede and would otherwise open by saying the same thing twice. |
+| `teaser` | The first paragraph of prose, looked for inside the `Teaser` section when the page has one and anywhere in the body when it does not. **It is then removed from the body**, along with the `Teaser` heading itself, because the page prints it as the lede and would otherwise open by saying the same thing twice. Reading it and removing it go through one function for exactly that reason: when only the reading fell back to the whole body, a page that renamed its heading printed its opening paragraph in the hero and again underneath. |
 | `featuredImage` | The Notion page's **cover**, if it has one. Only the hero plate uses it. |
 | `cardImage` | The cover, or the **first picture in the body** when there is no cover. This is the social card, and nothing else reads it. |
 
@@ -226,12 +226,17 @@ hero plate still reads `featuredImage`.
 dates and no cover the right column held a single button, which reads as a
 hole rather than as a layout.
 
-**A picture in a column is capped at 26rem tall**, cropped from the top. Left
-uncapped, a portrait fills the column's width and then keeps going: the
-755x1599 one in Systems Design's Audience rendered 1122px tall, took that row
-to 1597px, and left a thousand pixels of nothing beside the text next to it.
-The cap only bites on a portrait. Anything wider than about 1.3:1 was already
-under it.
+**A picture in a column is capped at 26rem tall**, and is scaled rather than
+cropped. Left uncapped, a portrait fills the column's width and then keeps
+going: the 755x1599 one in Systems Design's Audience rendered 1122px tall,
+took that row to 1597px, and left a thousand pixels of nothing beside the text
+next to it. The cap only bites on a portrait. Anything wider than about 1.3:1
+was already under it.
+
+Cropping to the cap was the first version of that, and it cut the authors'
+names off the bottom of the book cover in the Collaborative Software Design
+teaser. A photograph survives losing its edges and a cover does not, and the
+stylesheet cannot tell which one it is holding.
 
 Two of these pages hold an older draft of themselves as a *nested* page. The
 converter skips `child_page` blocks, so the draft is not published underneath
