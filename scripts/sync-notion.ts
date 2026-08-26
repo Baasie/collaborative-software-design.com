@@ -616,6 +616,18 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
       process.stdout.write('.');
     }
 
+    // A divider in Notion is a SEAM: the workshop page draws a heavy rule and
+    // starts the next section on a plate. The page does that with `hr + h2`,
+    // so a divider that is not immediately followed by a heading renders
+    // nothing at all. That is a silent no-op, and a silent no-op in an editor's
+    // hands is worse than a wrong one, so it is reported.
+    for (const stray of strayDividers(body)) {
+      gone.push({
+        kind: 'divider-not-a-seam', title, url: block.id && `https://www.notion.so/${block.id.replace(/-/g, '')}`,
+        detail: `A divider sits above "${stray}" rather than above a heading, so it draws nothing. Move it directly above the heading that starts the next section, or take it out.`,
+      });
+    }
+
     const fm = [`title: ${yamlStr(title)}`, `order: ${order}`];
     if (format) fm.push(`format: ${yamlStr(format)}`);
     if (teaser) fm.push(`teaser: ${yamlStr(teaser)}`);
@@ -648,6 +660,21 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
   if (gone.length) console.warn(`  ! ${gone.length} live training(s) no longer in Notion`);
   if (moved.length) console.warn(`  ~ ${moved.length} address(es) moved; run \`npm run redirects\``);
   return { moved, gone };
+}
+
+/** Dividers that are not immediately above a heading.
+ *
+ * Returns the first few words of whatever each one IS above, so the alert can
+ * say where to look. */
+function strayDividers(body: string): string[] {
+  const lines = body.split('\n');
+  const stray: string[] = [];
+  for (const [i, line] of lines.entries()) {
+    if (line.trim() !== '---') continue;
+    const next = lines.slice(i + 1).find((l) => l.trim());
+    if (next && !/^#{2,6}\s/.test(next.trim())) stray.push(next.trim().slice(0, 48));
+  }
+  return stray;
 }
 
 // --- sessions ----------------------------------------------------------------

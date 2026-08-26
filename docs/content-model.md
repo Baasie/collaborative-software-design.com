@@ -76,6 +76,24 @@ structure:
 | `teaser` | The `Teaser` section of the body, or the first paragraph of prose if there is none. **The section is then removed from the body**, because the page prints the teaser as its lede and would otherwise open by saying the same thing twice. |
 | `featuredImage` | The Notion page's **cover**. |
 
+### Dividers are seams
+
+A **divider** in a workshop page is not decoration. The page draws a heavy rule
+and starts the next section on a plate, which is what breaks a 7,000px page into
+parts somebody can navigate. Put one directly above each heading that starts a
+new section.
+
+It has to be **immediately above a heading**. The page draws it with `hr + h2`,
+so a divider above a paragraph renders nothing at all, and the sync reports that
+as `divider-not-a-seam` rather than letting it disappear quietly. A blocking
+test also holds every `<hr>` in the built page against the heading that should
+follow it.
+
+What a divider does NOT do is change the background of the whole section. That
+would need the body split into separate elements, and the body arrives as one
+rendered document whose images Astro resolves at build time; splitting the HTML
+would break every picture in it.
+
 ### Pictures on a workshop page
 
 There is nothing to build and nothing to put in the repository. Both routes

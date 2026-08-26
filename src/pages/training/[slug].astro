@@ -242,6 +242,32 @@ const jsonLd = courseJsonLd({
     width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;
   }
 
+  /* THE SEAM. A divider in Notion becomes an `<hr>`, and on these pages every
+     one of them sits immediately before an `<h2>`, so `hr + h2` is exact.
+     That makes the editor the one who decides where the page breaks, which is
+     the right place for the decision: the template cannot know where a section
+     ends without guessing.
+
+     What it buys: the body was one undifferentiated white slab, 5,011px of a
+     6,968px page. It is now five visibly separate parts, each opening on a
+     plate with a heavy rule over it, which is the same square-cornered,
+     heavy-ruled idiom the cards and the date rows use.
+
+     What it is NOT: a real change of background for the whole section. That
+     would need the body split into separate elements, and the body arrives as
+     one rendered document whose images Astro resolves at build time. Splitting
+     the HTML would break every picture in it. See the note in the commit. */
+  .workshop-body :global(hr) { border: 0; height: 0; margin: var(--space-16) 0 0; }
+  .workshop-body :global(hr + h2) {
+    margin-top: 0;
+    border-top: 6px solid var(--color-ink);
+    background: var(--color-paper-2);
+    /* Past the text column on both sides, so the plate reads as a band behind
+       the heading rather than as a box around it. */
+    margin-inline: calc(var(--space-5) * -1);
+    padding: var(--space-6) var(--space-5) var(--space-5);
+  }
+
   /* A readable measure. The live page runs its body in two 510px columns,
      which this template cannot do. The body is one markdown document out of
      Notion and there is no honest place to cut it. One column at a sane width

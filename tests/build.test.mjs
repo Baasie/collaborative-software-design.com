@@ -187,12 +187,19 @@ test('a long workshop page carries its contents and a following booking bar', ()
       assert.ok(html.includes(`id="${sl}"`), `${urlOf(f)} links to #${sl}, which is not on the page`);
     }
 
-    // 2. The booking bar ships hidden, so a visitor with no JavaScript never
+    // 2. A divider in Notion is a seam, and the page draws it with `hr + h2`.
+    //    Every `<hr>` the body carries must therefore be followed by a
+    //    heading, or the divider the editor placed draws nothing.
+    const hrs = (html.match(/<hr\b/g) ?? []).length;
+    const seams = (html.match(/<hr[^>]*>\s*<h2\b/g) ?? []).length;
+    assert.equal(seams, hrs, `${urlOf(f)} has ${hrs} dividers but only ${seams} of them start a section`);
+
+    // 3. The booking bar ships hidden, so a visitor with no JavaScript never
     //    meets a bar that nothing can move.
     assert.match(html, /class="book-bar js-book-bar"[^>]*\shidden/,
       `${urlOf(f)} ships its booking bar visible`);
 
-    // 3. And it is last, so it is last in the tab order too.
+    // 4. And it is last, so it is last in the tab order too.
     const barAt = html.indexOf('js-book-bar');
     const contactAt = html.indexOf('data-test="contact"');
     assert.ok(barAt > contactAt, `${urlOf(f)} puts the booking bar before the contact section`);
