@@ -2,7 +2,7 @@
  *
  * The live WordPress page embeds YouTube directly, which is why it also needs a
  * cookie banner. Here the page ships a poster and a button, and the player is
- * built only when somebody presses play — so a visitor who never watches the
+ * built only when somebody presses play. So a visitor who never watches the
  * talk is never announced to Google, and the privacy policy keeps saying
  * something true.
  *

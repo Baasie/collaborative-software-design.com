@@ -23,7 +23,7 @@ months.
 
 | Group | Count | What happens |
 |---|---|---|
-| `/dear-como/<slug>/` | 15 | **Served as-is.** No redirect needed — this site uses the same addresses. |
+| `/dear-como/<slug>/` | 15 | **Served as-is.** No redirect needed. This site uses the same addresses. |
 | `/`, `/training/`, `/facilitation/`, `/faq/` | 4 | Served. |
 | The three chapter pages | 3 | Served. |
 | `/category/dear-como/` | 1 | **301** → `/faq/` |
@@ -48,7 +48,7 @@ A test pins the first, and the browser test pins the third by visiting
 ### One tag is misspelled, and stays misspelled
 
 `/tag/preperation/`. The tag normaliser corrects the **display** to
-"Preparation" — but `tagSlug()` maps it back to `preperation` for the URL,
+"Preparation". But `tagSlug()` maps it back to `preperation` for the URL,
 because that address is live. Fixing the spelling in the URL would break the
 redirect the moment it was written. Two unit tests hold both halves.
 
@@ -79,7 +79,7 @@ from,to,why
 /some-old-page/,,retired 2026-08; nothing replaces it
 ```
 
-Then `npm run redirects`. Do not delete it from `data/live-urls.txt` — the point
+Then `npm run redirects`. Do not delete it from `data/live-urls.txt`. The point
 of that file is that every address the site ever answered is accounted for, and
 "deliberately Gone" is one of the three ways to account for it.
 
@@ -91,7 +91,7 @@ somebody has linked to has stopped working.
 
 Two things the sitemaps cannot tell you, worth a look before the switch:
 
-- **Search Console** may know addresses the sitemap never listed — old
+- **Search Console** may know addresses the sitemap never listed, old
   attachment pages, feeds, a `?p=` permalink somebody shared.
 - **Anything printed**: a slide, a handout, a conference programme. Those never
   appear in any crawl and are exactly the addresses that outlive a redirect.

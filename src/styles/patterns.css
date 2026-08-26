@@ -1,11 +1,11 @@
-/* Reusable components. Every colour here is a token from tokens.css — a
+/* Reusable components. Every colour here is a token from tokens.css, a
    literal in this file or in a component is what `conformance.test.mjs` fails
    on, so that swapping the brand stays a one-file change. */
 
 /* --- buttons -------------------------------------------------------------- */
 /* A button is set in the MONO, not in the condensed heading face: the live
    site's are `IBM Plex Mono, 14px, letter-spacing:1px`. The uppercase stays a
-   transform rather than capitals typed into every label — it renders the same
+   transform rather than capitals typed into every label. It renders the same
    as the live "SEE THIS CHAPTER" without shouting in the source, and it keeps
    a label readable to a screen reader that spells out capitals. */
 .btn {
@@ -20,7 +20,7 @@
 /* Magenta fill, white text: 8.02:1. The site's primary action. */
 .btn--primary { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); }
 .btn--primary:hover { background: var(--color-brand-deep); border-color: var(--color-brand-deep); color: var(--on-brand); text-decoration: none; }
-/* Black fill, white text — the live site's second button style. */
+/* Black fill, white text. The live site's second button style. */
 .btn--ink { background: var(--color-ink); color: var(--on-colour); border-color: var(--color-ink); }
 .btn--ink:hover { background: var(--color-brand); border-color: var(--color-brand); color: var(--on-brand); text-decoration: none; }
 /* Outlined, on the orange ground. Black rather than magenta: magenta on orange
@@ -44,23 +44,23 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
 
 /* --- eyebrow -------------------------------------------------------------- */
-/* "Chapter #01", "2 day workshop", "Bookings" — the small label above a
+/* "Chapter #01", "2 day workshop", "Bookings". The small label above a
    heading, which the live site uses on almost every section.
  *
  * INK BY DEFAULT, and this is the important part. The obvious choice is the
  * brand magenta, and on a white plate it is right (8:1). But the page ground
- * here is orange, and magenta on orange is 2.74:1 — so a magenta-by-default
+ * here is orange, and magenta on orange is 2.74:1. So a magenta-by-default
  * eyebrow is unreadable everywhere the page has not been given a plate, which
  * is most of it. A browser test caught exactly that on three pages.
  *
  * The live site resolves this more bluntly than the rebuild first did: its
  * eyebrow is INK on every ground it appears on, white plate or not, and it is
- * not set in the heading face either — "Chapter #01", "Discover" and "About"
+ * not set in the heading face either, "Chapter #01", "Discover" and "About"
  * all measure IBM Plex Mono 16px, no capitals, no tracking. So that is what
  * this is now. The safe colour is the only colour, and the pairing that fails
  * cannot be reached by forgetting a modifier.
  *
- * (The magenta-on-a-plate variant this used to have was legible — 8:1 — and
+ * (The magenta-on-a-plate variant this used to have was legible (8:1) and
  * some may prefer it. To bring it back, add `.section--paper .eyebrow,
  * .card .eyebrow, .panel .eyebrow { color: var(--color-brand); }` and nothing
  * else; the white-on-magenta rule below already covers the dangerous ground.) */
@@ -84,30 +84,30 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .section--brand { background: var(--color-brand); color: var(--on-colour); }
 .section--brand h1, .section--brand h2, .section--brand h3 { color: var(--on-colour); }
 /* Without this a link in prose on the magenta band is magenta ON magenta, i.e.
-   invisible — which is what happened to the "or write to <address>" line in the
+   invisible. Which is what happened to the "or write to <address>" line in the
    contact section. The `.panel-brand` twin below had the rule; this did not. */
 .section--brand a:not(.btn) { color: var(--on-colour); }
 .section--brand a:not(.btn):hover { color: var(--color-ground); }
 .section--paper { background: var(--color-paper); }
-/* A section that sits directly on the page's ORANGE, with no plate of its own —
+/* A section that sits directly on the page's ORANGE, with no plate of its own,
    the contact band, and anything else added later that does the same. It needs
    a modifier even though it paints nothing, because what it carries is a
    constraint: a link in prose here must be INK. The site's link colour is the
    magenta, and magenta on orange is 2.73:1. This is the fourth time that
-   pairing has been caught by the contrast test — eyebrows, prose links, the
-   current nav item, and then this — so it is named rather than fixed in place.
+   pairing has been caught by the contrast test (eyebrows, prose links, the
+   current nav item, and then this), so it is named rather than fixed in place.
    Hover moves the underline, not the colour, since there is no darker accent
    that reads on this ground either. */
 .section--ground a:not(.btn) { color: var(--color-ink); }
 .section--ground a:not(.btn):hover { color: var(--color-ink); text-decoration-thickness: 3px; }
 /* The PINK is the orange's twin and needs the same rule: the accent on it is
    3.85:1, under the 4.5:1 normal text needs. (On the blue it is 4.71:1 and on
-   the grey 6.73:1, so those two are fine as they are — which is why this is
+   the grey 6.73:1, so those two are fine as they are. Which is why this is
    one rule rather than a blanket one.) */
 .section--pink a:not(.btn) { color: var(--color-ink); }
 .section--pink a:not(.btn):hover { color: var(--color-ink); text-decoration-thickness: 3px; }
 /* The home page's tinted bands. All three are light enough to keep the ink
-   default, so unlike `.section--brand` they need no text rules at all — which
+   default, so unlike `.section--brand` they need no text rules at all. Which
    is the point of choosing them from the measured page rather than inventing
    a darker tint that would then need its own set of overrides. */
 .section--pink { background: var(--color-ground-pink); }
@@ -130,8 +130,8 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 .card-media img { width: 100%; height: 100%; object-fit: cover; }
 .card-body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); flex: 1; }
 /* Any heading level, not just h3. A card's title takes whatever level the
-   surrounding outline needs — h2 on an index where the card IS the section,
-   h3 inside one — and it must look the same either way. Targeting `h3` alone
+   surrounding outline needs: h2 on an index where the card IS the section,
+   h3 inside one. It must look the same either way. Targeting `h3` alone
    is how the Dear CoMo index ended up with fifteen 2.75rem display headings. */
 .card-body :is(h2, h3, h4) { margin: 0; font-size: var(--text-lg); }
 /* The whole card is the link target, without nesting a second <a> inside the
@@ -147,7 +147,7 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 /* --- hero ----------------------------------------------------------------- */
 .hero { padding-block: var(--space-20) var(--space-16); }
 /* The measure lives on the LEDE, not on the block. `.hero-inner` also carries
-   `.wrap`, whose `margin-inline: auto` centres whatever width it ends up with —
+   `.wrap`, whose `margin-inline: auto` centres whatever width it ends up with,
    so a narrower max-width here did not make a narrow column, it made an indented
    one, and the heading no longer lined up with the section under it. The live
    site aligns every row to the same left edge. */
@@ -170,7 +170,7 @@ a.chip:hover, button.chip:hover { background: var(--color-brand); color: var(--o
 
    Only under `html.js`. A visitor with no JavaScript has nothing to add
    `.is-revealed`, so without that guard they would get an element that is
-   permanently invisible — strictly worse than no animation at all. */
+   permanently invisible, strictly worse than no animation at all. */
 html.js .js-reveal { opacity: 0; transform: scale(0.5); }
 html.js .js-reveal.is-revealed { animation: reveal-zoom 1s linear forwards; }
 @keyframes reveal-zoom { to { opacity: 1; transform: scale(1); } }

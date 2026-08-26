@@ -93,7 +93,7 @@ test('a body that already starts at heading_1 is brought up to h2', async () => 
 });
 
 test('an empty Notion heading is dropped rather than rendered', async () => {
-  // Two of the workshop pages carry one. Rendered, it is an empty <h2></h2> —
+  // Two of the workshop pages carry one. Rendered, it is an empty <h2></h2>,
   // an axe violation and a heading announced with nothing in it.
   assert.equal(await md().blocksToMd([heading(2, null), heading(2, 'Teaser')], null), '## Teaser');
 });

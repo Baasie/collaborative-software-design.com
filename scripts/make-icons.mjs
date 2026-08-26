@@ -1,6 +1,6 @@
 /* Regenerates the site icons in `public/` from the live site's own favicon.
  *
- * Not part of the build — the outputs are committed, because they change only
+ * Not part of the build. The outputs are committed, because they change only
  * when the brand does. Run it by hand after replacing the source:
  *
  *   node scripts/make-icons.mjs
@@ -8,7 +8,7 @@
  * The source is `reference/brand/favicon-source.jpg`, which is
  * `cropped-favicon_csd.jpg` off the live site at its full 512×512: the woman
  * from the book cover, cropped to her head, on white. It is a PHOTOGRAPH, which
- * is why there is no SVG icon here — the placeholder one this replaced was a
+ * is why there is no SVG icon here. The placeholder one this replaced was a
  * drawing of coloured bars that looked nothing like the site.
  */
 import sharp from 'sharp';
@@ -27,7 +27,7 @@ for (const [size, name] of [[180, 'apple-touch-icon.jpg'], [192, 'favicon-192.jp
   console.log(name);
 }
 
-// A .ico is a container, and Vista-and-later — so every browser in use — accepts
+// A .ico is a container, and Vista-and-later (so every browser in use) accepts
 // a PNG inside one. That avoids hand-rolling a BMP with its upside-down rows and
 // its separate 1-bit AND mask, for no visible difference.
 const body = await png(32);

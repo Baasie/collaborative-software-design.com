@@ -3,7 +3,7 @@
  * Every page here is generated from markdown we hold anyway, so
  * `/dear-como/<slug>/index.md` costs a file and no authoring. It is the
  * cheapest thing we can do for an agent reading the site: no HTML to strip, no
- * nav, no cards — the words, and a header saying what they are and where the
+ * nav, no cards. The words, and a header saying what they are and where the
  * canonical page is.
  */
 import type { APIContext } from 'astro';

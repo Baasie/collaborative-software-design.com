@@ -1,7 +1,7 @@
 ---
 /** A workshop page.
  *
- * Shaped after the live `/training/` page, which is not an index at all — it is
+ * Shaped after the live `/training/` page, which is not an index at all. It is
  * ONE workshop, the two-day Collaborative Software Design one, written straight
  * into WordPress. There are five now, so that page becomes the index and this
  * template carries its look:
@@ -12,7 +12,7 @@
  *          the workshop's picture on a white plate.
  *   white  the body out of Notion.
  *   blue   #aec9e9, where the live page puts "Before the workshop" and
- *          "Audience" — here the other workshops and the book.
+ *          "Audience". Here the other workshops and the book.
  *
  * The picture comes from the Notion page's COVER, which the sync downloads as
  * `featuredImage`. Anything inside the body comes with the body. Neither needs
@@ -153,14 +153,14 @@ const jsonLd = courseJsonLd({
   }
 
   /* A readable measure. The live page runs its body in two 510px columns,
-     which this template cannot do — the body is one markdown document out of
+     which this template cannot do. The body is one markdown document out of
      Notion and there is no honest place to cut it. One column at a sane width
      beats a full-width 1100px line of monospace, which is what it was. */
   .workshop-body { max-width: 46rem; }
 
   /* The live page marks every "What You Will Learn" item with a magenta check.
-     Every workshop body out of Notion is built the same way — a list of
-     `**lead:** explanation` — so the marker belongs to the list rather than to
+     Every workshop body out of Notion is built the same way, as a list of
+     `**lead:** explanation`, so the marker belongs to the list rather than to
      one section, and applying it here is what carries the look across all five
      without the template having to know what the headings say. */
   .workshop-body :global(ul) { list-style: none; padding-left: 0; }

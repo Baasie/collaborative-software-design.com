@@ -1,5 +1,5 @@
 ---
-// Latin subsets only. The default entrypoints ship several more — files where
+// Latin subsets only. The default entrypoints ship several more, files where
 // only a handful are ever requested. A browser would not download the rest
 // (unicode-range keeps them out), but they still travel in every deploy.
 import '@fontsource/pt-sans-narrow/latin-400.css';
@@ -9,7 +9,7 @@ import '@fontsource/ibm-plex-mono/latin-400-italic.css';
 import '@fontsource/ibm-plex-mono/latin-700.css';
 // The two above the fold: the body face and the face every heading uses.
 // Without a preload they are discovered only after the CSS parses, which is a
-// flash of fallback text — and with a monospace body that reflows the page.
+// flash of fallback text. And with a monospace body that reflows the page.
 import mono400 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
 import narrow700 from '@fontsource/pt-sans-narrow/files/pt-sans-narrow-latin-700-normal.woff2?url';
 import '../styles/tokens.css';
@@ -56,7 +56,7 @@ const section = NAV
   .sort((a, b) => b.href.length - a.href.length)[0]?.label;
 
 // Pagefind treats the first `data-pagefind-body` it finds as opting every page
-// in — so a page without one is skipped whole, which is what /404/, /410/ and
+// in. So a page without one is skipped whole, which is what /404/, /410/ and
 // /search/ want. Tied to `noindex`: a page kept out of Google is kept out of
 // ours, for the same reason.
 const searchable = !noindex;
@@ -75,7 +75,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {/* The live site's own icon: the woman from the book cover, cropped to her
-        head. Same four sizes it serves, and no SVG — she is a photograph, so
+        head. Same four sizes it serves, and no SVG, she is a photograph, so
         there is no vector of her to serve. Regenerate with
         `node scripts/make-icons.mjs`. */}
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -104,14 +104,14 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} — Dear CoMo`} href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME}: Dear CoMo`} href="/rss.xml" />
     {markdown && (
-      <link rel="alternate" type="text/markdown" title={`${title} — markdown`} href={`${path}index.md`} />
+      <link rel="alternate" type="text/markdown" title={`${title} (markdown)`} href={`${path}index.md`} />
     )}
     {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     {/* Counts page views and nothing else: no cookies, no cross-site
-        identifier, nothing needing a consent banner — see the privacy policy,
+        identifier, nothing needing a consent banner, see the privacy policy,
         which has to keep saying something true. Absent unless both variables
         are set, so a fork and a local build are silent by default. */}
     {analyticsSrc && analyticsDomain && (
@@ -123,14 +123,14 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
     <header class="site-header" id="site-header" data-test="site-header">
       {/* The header row is 90% of the viewport, not the 72rem the page content
-          uses — the live one is `width:90%; max-width:100%`, so the wordmark
+          uses. The live one is `width:90%; max-width:100%`, so the wordmark
           and the BUY BOOK button sit further out than the text below them. */}
       <div class="header-wrap header-inner">
         {/* Both wordmarks ship and CSS picks. On the orange the outline of
             DESIGN has to be white (`diap`); once the header turns white on
             scroll that same outline vanishes, which is exactly what happens on
             the live site. See Logo.astro. */}
-        <a href="/" class="brand" aria-label={`${SITE_NAME} — home`}>
+        <a href="/" class="brand" aria-label={`${SITE_NAME} home`}>
           <Logo width={320} alt="" variant="diap" class="brand-diap" />
           <Logo width={320} alt="" variant="ink" class="brand-ink" />
         </a>
@@ -162,8 +162,8 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
             </li>
           </ul>
           {/* Outlined, not filled. The live button is transparent with a 1px
-              black rule and black type, and only fills — with the magenta —
-              on hover. A magenta fill at rest would also be the one thing this
+              black rule and black type, and only fills with the magenta on
+              hover. A magenta fill at rest would also be the one thing this
               header cannot carry: it sits on the orange. */}
           <a class="btn btn--outline btn--buy" href={BOOK_URL} rel="noopener" data-test="buy-book">Buy book</a>
         </nav>
@@ -178,14 +178,14 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
     {/* The whole footer, and this is not an abbreviation: the live site's
         footer is one white bar with one line of 12px type in it. Everything a
-        richer footer would repeat is already on the page above — the contact
+        richer footer would repeat is already on the page above. The contact
         band carries the address and the social links, the menu carries the
         pages, and `<link rel="alternate">` in the head carries the feed.
 
         One addition: the privacy policy, which the live site reaches from its
         cookie banner and this site has no banner to reach it from. The pages
         themselves are listed under "Explore" in the contact band above, which
-        is where they belong — a visitor looking for a link looks at the block
+        is where they belong. A visitor looking for a link looks at the block
         with the headings in it, not at the credit line. */}
     <footer class="site-footer" data-test="site-footer">
       <div class="footer-wrap">
@@ -200,7 +200,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
 
     <style>
       /* The header is the ORANGE ground with black type, and turns white once
-         you scroll — which is exactly what the live site does
+         you scroll. Which is exactly what the live site does
          (`.et_pb_section_0_tb_header` is #E37B45, and #FFFFFF in its fixed
          state). No rule under it there, either; the bands below supply their
          own edge.
@@ -230,12 +230,12 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       .site-header.scrolled :global(.brand-ink) { display: inline-block; }
 
       /* The menu sits immediately after the wordmark and the BUY BOOK button
-         goes to the far right — Divi splits the header row 3/4 + 1/4 and this
+         goes to the far right, Divi splits the header row 3/4 + 1/4 and this
          is what that looks like without the grid. */
       .site-nav { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: var(--space-6); }
-      /* The live menu is the body face at its normal size and in sentence case
-         — `IBM Plex Mono, 16px`, "What's inside" not "WHAT'S INSIDE". Only the
-         BUY BOOK button beside it is set in capitals. */
+      /* The live menu is the body face at its normal size and in sentence
+         case: `IBM Plex Mono, 16px`, "What's inside" not "WHAT'S INSIDE".
+         Only the BUY BOOK button beside it is set in capitals. */
       .nav-list {
         display: flex; align-items: center; gap: var(--space-5);
         list-style: none; margin: 0; padding: 0;
@@ -252,15 +252,15 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
          only colour that does both. */
       .nav-list a { color: var(--color-ink); padding-block: var(--space-1); border-bottom: 3px solid transparent; display: inline-block; white-space: nowrap; }
       /* The state is carried by the RULE under the word, not by its colour.
-         Magenta type would be 2.74:1 against the orange header — the same trap
-         the eyebrow fell into — and the header changes ground on scroll, so the
+         Magenta type would be 2.74:1 against the orange header (the same trap
+         the eyebrow fell into), and the header changes ground on scroll, so the
          only text colour that works on both is the ink. */
       .nav-list a:hover { border-bottom-color: var(--color-ink); text-decoration: none; }
       .nav-list a.current { border-bottom-color: var(--color-brand); }
 
       .nav-search { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 24px; min-height: 24px; }
       .nav-search-label { display: none; }
-      /* `1px solid`, 20px type, 6px/20px padding — the live BUY BOOK exactly,
+      /* `1px solid`, 20px type, 6px/20px padding. The live BUY BOOK exactly,
          except that the tap target is held at 48px. Filling with the magenta
          is the hover, and it is the only state in which this button is
          allowed to be magenta: at rest it would be magenta on orange. */
@@ -282,7 +282,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       /* The header switches to the hamburger at 1100px, not at the 800px the
          rest of the site uses, and that is a measured number rather than a
          taste. Laid out on one row the flat menu needs 570px, the wordmark
-         240px and BUY BOOK 130px — 988px of content, which at `width: 90%` is
+         240px and BUY BOOK 130px, 988px of content, which at `width: 90%` is
          a 1098px viewport. Below that it wrapped to two rows and made the
          sticky header 177px tall, which is a lot of chrome to carry down a
          tablet. Six items and a 320px wordmark simply do not fit; no amount of
@@ -299,13 +299,13 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
         .header-inner { flex-wrap: wrap; }
         /* 320px of wordmark plus a 48px button does not fit a 390px phone, and
            wrapping the button under the logo costs a whole row of height on
-           every page. Shrink the wordmark instead — it is a picture, so it
+           every page. Shrink the wordmark instead. It is a picture, so it
            loses nothing. */
         .brand :global(.logo) { width: 220px; }
         /* Stacked, so it is one item per row and the backstop above is moot. */
         .nav-list { flex-wrap: nowrap; }
         /* Without JavaScript the navigation is simply there, stacked under the
-           brand, and the hamburger stays hidden — a button that cannot open
+           brand, and the hamburger stays hidden. A button that cannot open
            anything is worse than no button. */
         .site-nav { width: 100%; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding-top: var(--space-4); }
         .nav-list { flex-direction: column; align-items: flex-start; gap: var(--space-3); width: 100%; }
@@ -330,7 +330,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
         padding: var(--space-5);
       }
       .site-footer p { margin: 0; font-size: var(--text-xs); }
-      /* A 24px target — the links sit in a sentence, but the sentence is the
+      /* A 24px target. The links sit in a sentence, but the sentence is the
          whole footer, so there is nothing else to hit. */
       .site-footer a { color: var(--color-brand); display: inline-block; min-height: 24px; }
       .footer-sep { margin-inline: var(--space-2); }

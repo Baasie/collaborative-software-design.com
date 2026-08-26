@@ -17,7 +17,7 @@ test('a missing scheme is a typing convention, and is repaired', () => {
 
 test('a bare word is not an address, and nothing is published', () => {
   // Without the host check, `nodot` becomes a valid URL pointing at a machine
-  // that does not exist — a worse answer than saying it is not one.
+  // that does not exist. A worse answer than saying it is not one.
   assert.equal(usableUrl('ask Kenny').problem, 'unusable');
   assert.equal(usableUrl('ask Kenny').url, undefined);
   assert.equal(usableUrl('nodot').problem, 'unusable');

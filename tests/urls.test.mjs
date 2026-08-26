@@ -18,7 +18,7 @@ test('the committed .htaccess is what the generator would write today', () => {
   const before = readFileSync('public/.htaccess', 'utf8');
   execFileSync('node', ['scripts/build-redirects.mjs'], { stdio: 'pipe' });
   assert.equal(readFileSync('public/.htaccess', 'utf8'), before,
-    'public/.htaccess is stale — run `npm run redirects` and commit it');
+    'public/.htaccess is stale, run `npm run redirects` and commit it');
 });
 
 test('a tag redirect keeps its fragment', () => {

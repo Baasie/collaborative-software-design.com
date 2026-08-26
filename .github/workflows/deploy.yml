@@ -5,7 +5,7 @@
 # and it calls this once it has committed something.
 #
 # The tests gate the deploy on purpose. If they fail the previous release stays
-# live — a stale site is better than a broken one.
+# live. A stale site is better than a broken one.
 name: Deploy
 
 on:
@@ -26,7 +26,7 @@ on:
         required: false
       ref:
         # A called workflow runs at the *caller's* commit, and the sync commits
-        # after its run began — so without this the deploy builds the site as it
+        # after its run began. So without this the deploy builds the site as it
         # was before the content it was called to publish.
         description: The commit to build. Defaults to the one that triggered the run.
         type: string
@@ -83,7 +83,7 @@ jobs:
           [ -z "$CHANGED" ] && exit 0
           AUTHORS=$(git log --format='%an' "$BEFORE".."$SHA" -- src/content/ | sort -u)
           if echo "$AUTHORS" | grep -qvE '^(github-actions\[bot\]|CoMo sync)$'; then
-            echo "::error::src/content/ changed, and not only by the sync. It is generated from Notion — edit Notion, not these files."
+            echo "::error::src/content/ changed, and not only by the sync. It is generated from Notion, edit Notion, not these files."
             echo "$CHANGED"
             exit 1
           fi

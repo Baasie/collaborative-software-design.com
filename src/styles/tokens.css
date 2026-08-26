@@ -1,4 +1,4 @@
-/* Design tokens — the real brand, measured off the live WordPress site.
+/* Design tokens. The real brand, measured off the live WordPress site.
  *
  * Every value here has a source, recorded in reference/brand/BRAND.md. This is
  * the ONLY place a colour, a face or a measure is written down, and
@@ -10,7 +10,7 @@
    *
    * `--color-brand` is Divi's configured accent (`"accent_color":"#9d0064"`):
    * every link, the header bar, the footer headings, the primary button.
-   * `--color-ground` is the page itself — `body.custom-background` is ORANGE,
+   * `--color-ground` is the page itself, `body.custom-background` is ORANGE,
    * which is the single most surprising thing about this brand and the thing
    * a "sensible" rebuild gets wrong. */
   --color-brand: #9d0064;
@@ -30,7 +30,7 @@
 
   /* Section grounds. The home page is not orange-and-magenta alone: it runs a
    * band of tints, one per section, and they are as much the brand as the two
-   * above. Measured off the live page as rendered, not read off a swatch —
+   * above. Measured off the live page as rendered, not read off a swatch:
    * `.et_pb_section_5` is the pink, `_6` the blue, `_4` the grey behind the
    * talk. All three take BLACK type (10.1:1, 12.3:1, 17.6:1), which is why they can
    * be used flat where the magenta cannot. */
@@ -44,7 +44,7 @@
    *   --on-ground  text on the orange.  Black: 7.15:1.
    *
    * The pairing these DO NOT permit is the important one. Magenta on orange is
-   * 2.73:1 — nowhere near the 4.5:1 small text needs — so brand-coloured text
+   * 2.73:1 (nowhere near the 4.5:1 small text needs) so brand-coloured text
    * must never sit directly on the ground. It needs a white or black plate
    * under it. There is no token for that pairing because it must not exist,
    * and the browser contrast test measures every fill as rendered rather than
@@ -66,7 +66,7 @@
   /* Typography.
    *
    * Condensed sans headings over a MONOSPACE body. Unusual, deliberate, and a
-   * large part of why the site reads the way it does — the live CSS is
+   * large part of why the site reads the way it does. The live CSS is
    * `body,input,textarea,select{font-family:'IBM Plex Mono',monospace}`. Keep
    * the mono unless somebody decides otherwise out loud. */
   --font-heading: 'PT Sans Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -75,9 +75,9 @@
   /* Type scale. Headings are condensed, so they carry a larger size than a
    * normal sans would at the same measure. The live display heading is 60px,
    * 700, `letter-spacing:1px`, `line-height:1.1em`. */
-  --text-xs: 0.75rem;      /* 12px — the footer credit line */
+  --text-xs: 0.75rem;      /* 12px. The footer credit line */
   --text-sm: 0.8125rem;
-  --text-button: 0.875rem;   /* 14px — every button on the live site, exactly */
+  --text-button: 0.875rem;   /* 14px. Every button on the live site, exactly */
   --text-base: 1rem;
   --text-lg: 1.1875rem;
   --text-xl: 1.5rem;
@@ -110,12 +110,12 @@
   --radius-sm: 0px;
   --shadow: 0 2px 0 rgba(0, 0, 0, 0.18), 0 12px 32px rgba(0, 0, 0, 0.12);
 
-  /* Body line-height is 2em on the live site — airy, which a monospace body
+  /* Body line-height is 2em on the live site, airy, which a monospace body
    * needs to stay readable. Held as a token because it is unusual enough that
    * somebody will otherwise "fix" it to 1.6. */
   --leading-body: 1.85;
 
-  /* Breakpoints — few, and each one earned.
+  /* Breakpoints, few, and each one earned.
    *   640px   stop stacking; two columns
    *   800px   the main layout switch (sidebars, the contact band)
    *   900px   wide two-column layouts

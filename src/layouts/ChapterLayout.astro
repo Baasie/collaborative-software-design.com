@@ -6,13 +6,13 @@
  * at 1440px, where all three are identical to the pixel:
  *
  *   section  magenta #9d0064, the drawn "WHAT'S INSIDE" graphic as a background
- *            at `10% 0%` at natural size — the same one the home page's second
- *            band uses — 62px of padding above and 54px below.
+ *            at `10% 0%` at natural size, the same one the home page's second
+ *            band uses. 62px of padding above and 54px below.
  *   row 0    full width: the chapter switcher (mono 16px), then the h1 at
  *            60px/66px in PT Sans Narrow.
  *   row 1    two equal columns, 510px each with a 60px gutter.
- *            left  — the lede, mono 20px, line-height 32px.
- *            right — the body, mono 16px, line-height 32px, then BUY BOOK.
+ *            left:  the lede, mono 20px, line-height 32px.
+ *            right: the body, mono 16px, line-height 32px, then BUY BOOK.
  *
  * The picture is where they differ, and there are exactly two treatments:
  *
@@ -26,7 +26,7 @@
  * magenta, which is 2.62:1. Everything here is white instead.
  *
  * I first kept the heading black on the grounds that 60px bold is large-scale
- * text and so only needs 3:1 — which is true, and 2.62 is still under it. It
+ * text and so only needs 3:1. Which is true, and 2.62 is still under it. It
  * also slipped past both tests: axe reports `color-contrast` as INCOMPLETE
  * rather than as a violation whenever the element sits over a background
  * image, and this band has one. The contrast test now measures headings too,
@@ -68,7 +68,7 @@ const jsonLd = {
   <section class="chapter" style={`--whats-inside-title: url(${whatsInsideTitle.src})`}>
     <div class="wrap">
       {/* The switcher the live site puts at the top of every chapter. The
-          current one is plain text rather than a link to itself — a link that
+          current one is plain text rather than a link to itself. A link that
           goes where you already are is noise for everyone and a trap for a
           screen-reader user. The separators live outside the anchors; on the
           live page they are inside them, so "| Chapter #05" is the link text
@@ -138,7 +138,7 @@ const jsonLd = {
     align-items: baseline; margin-bottom: var(--space-2);
     font-family: var(--font-body); font-size: var(--text-base);
   }
-  /* White, not the live page's black — this band is 2.62:1 against black. The
+  /* White, not the live page's black. This band is 2.62:1 against black. The
      current chapter is the one WITHOUT an underline, so the state does not
      depend on colour alone. */
   .chapter-nav a, .chapter-nav .current { color: var(--on-brand); min-height: 24px; display: inline-block; }
@@ -149,7 +149,7 @@ const jsonLd = {
   .chapter-cols { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
   /* The lede is the big one: 20px against the body's 16px, both at a 32px
      line. The size carries the hierarchy here, because the live page's way of
-     carrying it — white lede, black body — is not available on this ground. */
+     carrying it (white lede, black body) is not available on this ground. */
   .chapter-lede :global(p) { font-size: var(--text-lg); line-height: 1.6; margin: 0 0 var(--space-6); }
   .chapter-lede :global(p:last-child) { margin-bottom: 0; }
   .chapter-body { color: var(--on-colour-muted); }
@@ -157,7 +157,7 @@ const jsonLd = {
   .chapter-cta { margin: var(--space-8) 0 0; }
 
   /* Rotated 5°, hard right, and lifted so it sits beside the heading rather
-     than under it — `matrix(0.996195, 0.0871557, …)` on the live module. */
+     than under it, `matrix(0.996195, 0.0871557, …)` on the live module. */
   .chapter-inset {
     width: 320px; max-width: 100%; height: auto;
     margin: 0 0 var(--space-8) auto;

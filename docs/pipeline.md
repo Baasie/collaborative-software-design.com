@@ -13,14 +13,14 @@ a bad afternoon at Notion cannot stop a release.
 
 Runs hourly, and on demand. It is the only thing that writes `src/content/`.
 
-1. `sync-notion.ts content --write` — the `Dear CoMo Content` database.
-2. `sync-notion.ts trainings --write` — the child pages of `Workshops`.
-3. `npm run redirects` — because a slug that changed is an address that changed,
+1. `sync-notion.ts content --write`: the `Dear CoMo Content` database.
+2. `sync-notion.ts trainings --write`: the child pages of `Workshops`.
+3. `npm run redirects`: because a slug that changed is an address that changed,
    and the redirect must ship in the same commit as the rename.
 4. Commit, push, and **call** `deploy.yml` with the sha it just pushed.
 
 That last part is not decoration. A push made with `GITHUB_TOKEN` does not
-trigger another workflow, by design — so a sync that only pushed would update
+trigger another workflow, by design. So a sync that only pushed would update
 the repository and never the site. And a called workflow runs at the *caller's*
 commit by default, which is the one **before** the content; passing `ref` is
 what stops the deploy building the site as it was a minute ago.
@@ -72,7 +72,7 @@ Deleting it would be faster and would break every link anyone ever made to it.
 
 Notion's URL property is a text box. It accepts `manning.com` and it accepts
 `ask Kenny`, and it says nothing about either. The schema says `.url()`, so a
-typo written straight through becomes a file `astro check` rejects — and the
+typo written straight through becomes a file `astro check` rejects. And the
 deploy stops at its first step, before the build, with every other page on the
 site perfectly fine and none of it able to ship.
 
@@ -98,12 +98,12 @@ On a push to `main`, on a pull request, and when the sync calls it.
 1. Print **which commit is being built**. The defect this guards against is
    invisible precisely because nothing ever printed it.
 2. Reject a push that hand-edited `src/content/`.
-3. `npm test` — types, unit tests, a build, then the blocking suite. Green, or
+3. `npm test`: types, unit tests, a build, then the blocking suite. Green, or
    the previous release stays live. A stale site is better than a broken one.
 4. rsync into a **new release directory**, then move a symlink. Releases are
    atomic: a visitor never meets a half-copied site, and a rollback is one
    `ln -sfn`, not a deploy. Five releases are kept.
-5. `verify:live` — ask the host whether the release actually landed. A deploy
+5. `verify:live`: ask the host whether the release actually landed. A deploy
    that rsyncs successfully and serves the *previous* release is green all the
    way through and completely wrong.
 
@@ -114,12 +114,12 @@ A pull request gets everything above step 4 and deploys nothing.
 | Secret | For |
 |---|---|
 | `NOTION_TOKEN` | The sync. Read access to the Collaborative software design teamspace. |
-| `KUALO_HOST`, `KUALO_USER`, `KUALO_PATH`, `KUALO_SSH_KEY` | The rsync. Without `KUALO_HOST` the deploy builds, tests and stops — which is a fine state to leave it in until you are ready. |
+| `KUALO_HOST`, `KUALO_USER`, `KUALO_PATH`, `KUALO_SSH_KEY` | The rsync. Without `KUALO_HOST` the deploy builds, tests and stops. Which is a fine state to leave it in until you are ready. |
 | `KUALO_KNOWN_HOSTS` | The host's public key. `StrictHostKeyChecking=yes` with a pinned key, not `no`: turning it off to save a secret is how a deploy quietly starts trusting whatever answers on that address. |
 | `SITE_URL` | `verify:live`. Optional; without it the deploy says it was not verified. |
 
 Set them with **`./scripts/setup-secrets.sh`**, which prompts for each, generates
-the deploy keypair, and runs `ssh-keyscan` for `KUALO_KNOWN_HOSTS` — the two
+the deploy keypair, and runs `ssh-keyscan` for `KUALO_KNOWN_HOSTS`. The two
 that are fiddly to get right by pasting. Values go straight to `gh` and never
 touch this repository.
 

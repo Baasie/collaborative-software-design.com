@@ -32,7 +32,7 @@ test('it prefers to stop at a sentence rather than mid-word', () => {
 });
 
 test('but not when stopping at the sentence would throw most of it away', () => {
-  // A sentence end in the first 60% of the window is cutting back too far —
+  // A sentence end in the first 60% of the window is cutting back too far,
   // three words and a full stop reads as a mistake, not as a summary.
   const out = excerpt('Short. ' + 'and then a great deal more running well past the limit '.repeat(3), '', 60);
   assert.ok(out.endsWith('…'), out);

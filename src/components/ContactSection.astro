@@ -3,7 +3,7 @@
  *
  * The WordPress original is a form (Name, Email, Message, and a "I want to
  * book a: training / consulting" selector). A static site cannot process a
- * form post, so this is a `mailto:` instead — two of them, pre-filled with the
+ * form post, so this is a `mailto:` instead, two of them, pre-filled with the
  * subject, so a booking enquiry still arrives labelled and the authors can
  * tell training from consulting without reading the body.
  *
@@ -19,7 +19,7 @@ import iconLinkedin from '../assets/icon-linkedin.png';
 import iconBluesky from '../assets/icon-bluesky.png';
 
 /** "Explore": every page on the site, in the one place a visitor looks for a
- *  link the five-item menu does not carry — the chapters especially, which the
+ *  link the five-item menu does not carry. The chapters especially, which the
  *  menu never lists at all.
  *
  *  BUILT FROM `NAV` AND `CHAPTERS`, not typed out. A hand-kept list of links is
@@ -31,7 +31,7 @@ import iconBluesky from '../assets/icon-bluesky.png';
  *
  *  The labels are the MENU's words, including "FAQ" for a page whose own
  *  heading says "Dear CoMo". That mismatch is deliberate and it is the live
- *  site's — `/faq/` is the address WordPress gave the column, and somebody
+ *  site's, `/faq/` is the address WordPress gave the column, and somebody
  *  hunting for the word they saw in the menu should find it here too.
  *
  *  A chapter goes in under its plain title, without the "#01" the home page
@@ -53,7 +53,7 @@ const ICONS: Record<string, ImageMetadata> = {
 ---
 {/* ORANGE, not magenta. This band is the live site's footer template
     (`.et_pb_section_0_tb_footer`), and it is `#e37b45` with black type on
-    every page — the same ground the page already sits on, so it needs no
+    every page. The same ground the page already sits on, so it needs no
     background of its own. */}
 <section class="section section--ground" id="contact" data-test="contact">
   <div class="wrap contact-grid">
@@ -103,7 +103,7 @@ const ICONS: Record<string, ImageMetadata> = {
 <style>
   .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); }
   @media (min-width: 800px) { .contact-grid { grid-template-columns: 1.2fr 1fr; gap: var(--space-12); } }
-  /* Three columns once there is room — the shape virtualddd.com's footer uses,
+  /* Three columns once there is room. The shape virtualddd.com's footer uses,
      and the reason this band looked half-empty before: the copy stops at 34rem
      and everything to the right of it was air. */
   @media (min-width: 1100px) { .contact-grid { grid-template-columns: 1.3fr 1fr 0.5fr; gap: var(--space-12); } }
@@ -114,7 +114,7 @@ const ICONS: Record<string, ImageMetadata> = {
   .contact-explore li { margin-bottom: var(--space-2); }
   /* A 24px target: a column of links is a list, not a sentence, so the inline
      exception to WCAG 2.5.8 does not apply. They keep the underline `li a`
-     gives them — on this band they are ink rather than magenta, so the rule
+     gives them, on this band they are ink rather than magenta, so the rule
      under the word is the only thing marking them as links at all. */
   .contact-explore a { display: inline-block; min-height: 24px; font-size: var(--text-sm); }
   .contact-direct { margin-top: var(--space-6); font-size: var(--text-sm); }

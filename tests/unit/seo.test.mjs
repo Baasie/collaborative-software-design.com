@@ -12,7 +12,9 @@ test('the home page title does not repeat the site name', () => {
 });
 
 test('a page title is suffixed once, and only once', () => {
-  assert.equal(pageTitle('Training'), `Training — ${SITE_NAME}`);
+  // A hyphen, because that is the separator the live site uses:
+  // "Consulting - Collaborative Software Design".
+  assert.equal(pageTitle('Training'), `Training - ${SITE_NAME}`);
   const already = `${SITE_NAME} in practice`;
   assert.equal(pageTitle(already), already);
 });

@@ -2,7 +2,7 @@
  *
  * This is the one piece of the SEO layer that needs Astro's image pipeline,
  * and `astro:assets` only exists inside a build. Holding it here leaves
- * `seo.ts` — where every structured-data decision lives — importable by a
+ * `seo.ts`: where every structured-data decision lives, importable by a
  * plain unit test.
  */
 import { getImage } from 'astro:assets';

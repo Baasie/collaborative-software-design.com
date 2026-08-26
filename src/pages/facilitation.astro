@@ -1,5 +1,5 @@
 ---
-/** The consulting page. `/facilitation/` because that is the live address —
+/** The consulting page. `/facilitation/` because that is the live address,
  *  the menu calls it "Consulting", the heading calls it "Software design
  *  facilitation", the URL calls it facilitation, and the URL is the promise.
  *
@@ -7,14 +7,14 @@
  *
  *    ground   #e69ec6, the same pink as the home page's bookings band, with
  *             `meap_woman.png` at `100% 0%` at natural size and blended with
- *             `lighten` — the same treatment the home hero gives her, on a
+ *             `lighten`: the same treatment the home hero gives her, on a
  *             different ground.
  *    left     3/5 (624px): eyebrow, h1 at 56px, and one long lede at 20px.
  *    right    2/5 (396px): a pull quote at 26px italic, then BOOK CONSULTING.
  *
  *  ONE DEVIATION. The live quote is WHITE on the pink: 2.09:1, which fails
  *  even the 3:1 large text is allowed. It is `--color-brand-deep` here (5.2:1),
- *  which keeps what the white was doing — marking the quote as not-the-body —
+ *  which keeps what the white was doing (marking the quote as not-the-body)
  *  and is a colour this brand already owns. Black would have worked too, at
  *  10:1, but then the quote and the lede would be the same colour and only the
  *  size would separate them.
@@ -27,7 +27,7 @@ import { pageTitle, organisation } from '../lib/seo';
 
 /* Yoast leaves this page with no description at all. This one is written
    rather than copied, because "no description" is not something to be
-   faithful to — Google writes its own from the page, badly. */
+   faithful to, Google writes its own from the page, badly. */
 const description =
   'Hire us to facilitate your software design. If your team already knows the '
   + 'power of EventStorming, Example Mapping, Wardley Mapping and the rest but '
@@ -70,7 +70,7 @@ const jsonLd = {
         </blockquote>
         {/* The live button points at the home page's `#contact`. This one
             points at the contact band on THIS page, which is the same section
-            — it is in the footer template, so every page carries it — and
+            (it is in the footer template, so every page carries it) and
             saves a page load to reach it. */}
         <p><a class="btn btn--ink" href="#contact">Book consulting</a></p>
       </div>
@@ -100,7 +100,7 @@ const jsonLd = {
   .hire-quote { margin: 0 0 var(--space-10); padding: 0; border: 0; background: none; }
   .hire-quote p {
     margin: 0;
-    /* 26px italic. `--color-brand-deep` rather than the live page's white —
+    /* 26px italic. `--color-brand-deep` rather than the live page's white,
        see the note at the head of this file. */
     color: var(--color-brand-deep);
     font-family: var(--font-body); font-size: var(--text-xl); line-height: 1.45;

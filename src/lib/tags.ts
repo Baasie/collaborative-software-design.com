@@ -37,8 +37,8 @@ export function normaliseTag(tag: string): string {
   return CANONICAL[key] ?? tag.trim();
 }
 
-/** Normalise, drop empties, and de-duplicate what the mapping just merged —
- *  a row carrying both "Collaborative modeling" and "Collaborative modelling"
+/** Normalise, drop empties, and de-duplicate what the mapping just merged. A
+ *  row carrying both "Collaborative modeling" and "Collaborative modelling"
  *  must come out with one tag, not the same tag twice. Order is preserved. */
 export function normaliseTags(tags: string[] = []): string[] {
   const seen = new Set<string>();
@@ -55,7 +55,7 @@ export function normaliseTags(tags: string[] = []): string[] {
 /** The URL fragment for a tag.
  *
  * `/tag/preperation/` is an address the WordPress site answers and this site
- * redirects, so the fragment it redirects *to* has to be the same word — even
+ * redirects, so the fragment it redirects *to* has to be the same word, even
  * though the tag now displays as "Preparation". Fixing the spelling in the URL
  * would break the redirect the moment it was written. */
 export function tagSlug(tag: string): string {

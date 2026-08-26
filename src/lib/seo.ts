@@ -1,8 +1,8 @@
 /** Site identity and structured data.
  *
  * Everything here is pure and free of `astro:assets`, so `tests/unit/seo.test.mjs`
- * can import it without a build. The one piece that needs the image pipeline —
- * the social card derivative — lives in `social-card.ts`.
+ * can import it without a build. The one piece that needs the image pipeline
+ * (the social card derivative) lives in `social-card.ts`.
  */
 
 export const SITE_NAME = 'Collaborative Software Design';
@@ -20,13 +20,13 @@ export const BOOK_URL =
   + '?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23'
   + '&a_aid=baas&a_bid=2f174b8d';
 
-/** The plain address, for a citation rather than a call to action — JSON-LD,
+/** The plain address, for a citation rather than a call to action: JSON-LD,
  *  and the one place the live site links without the affiliate tail. */
 export const BOOK_URL_PLAIN = 'https://www.manning.com/books/collaborative-software-design';
 
 /** Where the site's mail goes. Held here because it is the site's identity,
  *  not its content, and because every "get in touch" on every page resolves to
- *  it — `mailto:` rather than a form, since a static site cannot process a
+ *  it, `mailto:` rather than a form, since a static site cannot process a
  *  post. See docs/migration-inventory.md. */
 export const CONTACT_EMAIL = 'info@collaborative-software-design.com';
 
@@ -151,9 +151,13 @@ export function bookJsonLd(site: URL | undefined) {
   };
 }
 
-/** The page title as it appears in a tab and a search result. The home page is
- *  the one that must not read "Home — Collaborative Software Design". */
+/** The page title as it appears in a tab and a search result.
+ *
+ *  The separator is a hyphen because that is what the live site uses:
+ *  "Consulting - Collaborative Software Design". The home page is the one that
+ *  must not read "Home - Collaborative Software Design", so it takes the
+ *  tagline instead of a page name. */
 export function pageTitle(title: string, { home = false } = {}): string {
-  if (home) return `${SITE_NAME} — ${SITE_TAGLINE}`;
-  return title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
+  if (home) return `${SITE_NAME} - ${SITE_TAGLINE}`;
+  return title.includes(SITE_NAME) ? title : `${title} - ${SITE_NAME}`;
 }

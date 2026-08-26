@@ -13,7 +13,7 @@
  *   pink   the same #e69ec6 the workshop pages open with, so arriving at one
  *          from here is a continuation rather than a jump.
  *   white  the workshops, grouped by the heading they sit under in Notion.
- *   blue   the other half of the answer — hire us to facilitate instead.
+ *   blue   the other half of the answer, hire us to facilitate instead.
  */
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -146,7 +146,7 @@ const jsonLd = {
   .workshop h3 { margin: 0 0 var(--space-3); font-size: var(--text-xl); }
   .workshop-link { color: var(--color-ink); }
   /* The whole block is the target, without nesting a second link inside the
-     first — the title carries the href and this stretches its hit area. */
+     first. The title carries the href and this stretches its hit area. */
   .workshop-link::after { content: ''; position: absolute; inset: 0; }
   .workshop:hover .workshop-link { color: var(--color-brand); }
   /* Clamped. All five Notion pages carry a `Teaser` section and the lengths

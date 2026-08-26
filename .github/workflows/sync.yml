@@ -1,7 +1,7 @@
 # Fetch content from Notion, commit what changed, and deploy it.
 #
 # This is the only thing that writes src/content/. It runs on a clock so that
-# publishing a letter in Notion is the whole of publishing it — nobody has to
+# publishing a letter in Notion is the whole of publishing it. Nobody has to
 # come here and press anything.
 #
 # It commits and then *calls* deploy.yml rather than relying on the push to
@@ -48,7 +48,7 @@ jobs:
       #
       # This runs hourly. Hard-failing on a missing secret turns an unfinished
       # setup step into a red cross every hour for ever, and a repository whose
-      # CI is always red is a repository where nobody looks at CI — which costs
+      # CI is always red is a repository where nobody looks at CI. Which costs
       # far more than the missing sync. Same bargain deploy.yml already makes
       # for KUALO_HOST.
       #
@@ -82,7 +82,7 @@ jobs:
 
       # A slug change is an address change, and the sync has just recorded it.
       # Regenerating here means the redirect ships in the same commit as the
-      # rename — never a deploy later.
+      # rename, never a deploy later.
       - name: Regenerate redirects
         if: steps.gate.outputs.go == 'true'
         run: npm run redirects
@@ -119,7 +119,7 @@ jobs:
             const rows = Object.entries(a).flatMap(([s, items]) => items.map((i) => ({ s, ...i })));
             if (!rows.length) process.exit(0);
             console.log("## Needs a person\n");
-            for (const r of rows) console.log(`- **${r.kind}** (${r.s}) ${r.title}${r.detail ? " — " + r.detail : ""}${r.url ? " <" + r.url + ">" : ""}`);
+            for (const r of rows) console.log(`- **${r.kind}** (${r.s}) ${r.title}${r.detail ? ", " + r.detail : ""}${r.url ? " <" + r.url + ">" : ""}`);
           ' >> "$GITHUB_STEP_SUMMARY"
 
   deploy:

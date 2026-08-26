@@ -3,7 +3,7 @@ import { letters, trainings, hrefOf } from '../lib/collections';
 import { CHAPTERS } from '../lib/nav';
 import { SITE_NAME, SITE_TAGLINE, BOOK_URL_PLAIN, AUTHORS, SITE_URL } from '../lib/seo';
 
-/** https://llmstxt.org — a map of the site for an agent reading it.
+/** https://llmstxt.org. A map of the site for an agent reading it.
  *
  * Links point at the `.md` twin of each page rather than the HTML, because
  * that is the point: the words, with no nav and no cards to strip. */
@@ -26,7 +26,7 @@ export async function GET(context: APIContext) {
     '',
     '## Training and consulting',
     '',
-    ...ts.map((t) => `- [${t.data.title}](${abs(`/training/${t.id}/index.md`)})${t.data.format ? ` — ${t.data.format}` : ''}`),
+    ...ts.map((t) => `- [${t.data.title}](${abs(`/training/${t.id}/index.md`)})${t.data.format ? ` (${t.data.format})` : ''}`),
     `- [Software design facilitation](${abs('/facilitation/')})`,
     '',
     '## Dear CoMo',

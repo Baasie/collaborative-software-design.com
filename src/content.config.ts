@@ -3,7 +3,7 @@ import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 // Content is GENERATED from Notion by scripts/sync-notion.ts and written to
-// src/content/<collection>/<slug>.md — never hand-edited. These schemas mirror
+// src/content/<collection>/<slug>.md, never hand-edited. These schemas mirror
 // the verified Notion data-source schemas; see docs/content-model.md.
 //
 // Two shapes, because Notion holds them two ways:
@@ -14,7 +14,7 @@ import { glob } from 'astro/loaders';
 //               collection warning for as long as a section has no rows.
 //               `section` carries the split, and because it is a field rather
 //               than a directory, a row that changes Category is a file that
-//               changes one line — which the sync can see, and turn into a
+//               changes one line. Which the sync can see, and turn into a
 //               redirect rather than a broken link.
 //   trainings   a child page each of the `Workshops` page. No database, so no
 //               properties: everything is read out of the body or derived from
@@ -29,16 +29,16 @@ const seo = {
 
 // A Notion select is a picker, and adding an option to it is one click nobody
 // thinks of as a code change. Holding `status` as a plain string rather than a
-// z.enum keeps that click from failing `astro check` — the deploy's first step
-// — and taking the whole site down over a label. The sync is the gate that
-// decides what is published; the build is not.
+// z.enum keeps that click from failing `astro check`, which is the deploy's
+// first step, and taking the whole site down over a label. The sync is the
+// gate that decides what is published; the build is not.
 //
 // `section` is the exception, and deliberately so: it is not a label, it is an
 // ADDRESS. A value outside this set has no page to be rendered at, so the
 // build is the right place to refuse it. Today there is exactly one, because
 // the live site has exactly one: the Dear CoMo column. Notion's `Category` also
 // offers `Article`, but nothing is published under it and no such section
-// exists — the sync reports a published Article as needing a decision rather
+// exists. The sync reports a published Article as needing a decision rather
 // than inventing an address for it. Adding `/articles/` later is this enum,
 // one line in the sync's mapping, and a page.
 const writing = defineCollection({
@@ -65,7 +65,7 @@ const writing = defineCollection({
 
 // Trainings: the workshops the site exists to sell. Generated from the child
 // pages of the `Workshops` page in Notion, which is where they are written and
-// kept — the training page used to be hand-maintained in WordPress with a
+// kept. The training page used to be hand-maintained in WordPress with a
 // single workshop on it, and moving it here is the point of this collection.
 //
 // `format` and `order` are the only two things a page needs that the body

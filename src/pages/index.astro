@@ -4,7 +4,7 @@
  * The live page is eight Divi sections, and each one is a band of its own
  * colour. In order: orange hero, magenta "what's inside", white "the book",
  * white "what you will learn", grey talk, pink bookings, blue authors, orange
- * contact. The band pattern IS the design — a version of this page in one
+ * contact. The band pattern IS the design. A version of this page in one
  * ground colour with cards on it is a different page, which is what the first
  * rebuild was.
  *
@@ -20,12 +20,12 @@
  *   - "WHAT'S INSIDE" is not text on the live page. It is a drawn graphic used
  *     as a section background at `left 10% top 5%`. It stays a background here,
  *     and the section gets a real heading for the outline that is visible only
- *     to a screen reader — otherwise the page has a whole section with no name.
+ *     to a screen reader, otherwise the page has a whole section with no name.
  *
  * ONE DELIBERATE DEVIATION, and it is the only one: on the magenta band the
  * live page sets every heading and paragraph to BLACK (`body{color:#000000}`
  * reaching into `et_pb_bg_layout_light`). Black on #9d0064 measures 2.62:1. The
- * text here is white instead — 8.02:1, and the colour the brand already uses on
+ * text here is white instead, 8.02:1, and the colour the brand already uses on
  * magenta everywhere else, including its own buttons. See AGENTS.md, "the trap
  * in this brand"; the blocking contrast test would fail on the faithful choice.
  */
@@ -62,7 +62,7 @@ const [lead, ...pair] = CHAPTERS;
 
 /** The four icons under "What you will learn". The second line of a title is a
  *  `<br />` on the live page, so it is a separate field rather than a newline
- *  inside one string — a wrap that has to happen is not whitespace. */
+ *  inside one string. A wrap that has to happen is not whitespace. */
 const LEARN = [
   { icon: iconFacilitating, title: 'Holding and facilitating collaborative modeling sessions' },
   { icon: iconDecisions, title: 'How to make sustainable software design decisions' },
@@ -240,7 +240,7 @@ const TALK = {
   /* --- hero --------------------------------------------------------------- */
   /* `padding-top:0` and `padding-bottom:54px` are the live section's own. The
      figure is absolutely placed against the section, anchored to its right edge
-     and its top, at natural size — `background-size:initial` on the original. */
+     and its top, at natural size, `background-size:initial` on the original. */
   .hero {
     position: relative; overflow: hidden;
     background: var(--color-ground); color: var(--on-ground);
@@ -291,7 +291,7 @@ const TALK = {
 
   /* --- the book ----------------------------------------------------------- */
   .book-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
-  /* The pull quote is magenta on white — 8:1, and the one place on the page
+  /* The pull quote is magenta on white, 8:1, and the one place on the page
      where the accent is used as type rather than as a fill. */
   .book-quote {
     margin: 0; padding: 0; border: 0;
@@ -332,8 +332,8 @@ const TALK = {
   .author-photo { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; }
   .author h3 { margin: var(--space-6) 0 var(--space-4); font-size: var(--text-xl); }
   /* Black, as the live page's author names are. They are plain text there;
-     here each one links to its author, which the underline on hover shows —
-     the magenta a link would otherwise take is not this band's colour. */
+     here each one links to its author, which the underline on hover shows.
+     The magenta a link would otherwise take is not this band's colour. */
   .author h3 a { color: var(--color-ink); }
   .author p { margin: 0; font-size: var(--text-sm); line-height: 1.8; }
 

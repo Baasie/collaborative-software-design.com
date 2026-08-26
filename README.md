@@ -1,14 +1,14 @@
 # collaborative-software-design.com
 
 The site for **Collaborative Software Design: How to facilitate domain modelling
-decisions** (Manning) — the book, the workshops, the consulting, and Dear CoMo.
+decisions** (Manning). The book, the workshops, the consulting, and Dear CoMo.
 
 Built with [Astro](https://astro.build). **Notion is the source of truth**: the
 words are written in Notion and pulled in by a sync. Publishing is a thing you
 do in Notion, not here.
 
 Replaces a WordPress site at the same address. All 42 addresses that site
-answered are served, redirected or Gone here — `npm run check:urls` proves it.
+answered are served, redirected or Gone here, `npm run check:urls` proves it.
 
 ## The everyday loop does not touch this repository
 
@@ -32,7 +32,7 @@ npm run build        # + prune-dist + the Pagefind search index
 npm test             # types, unit tests, build, and the blocking suite
 ```
 
-`npm run dev` has **no search index** — Pagefind indexes the built HTML, so
+`npm run dev` has **no search index**: Pagefind indexes the built HTML, so
 `/search/` says so rather than looking broken. Use `npm run build && npm run
 preview` to try it.
 
@@ -78,7 +78,7 @@ teamspace. In CI it is the `NOTION_TOKEN` repository secret.
 
 Prompts for each value, generates the SSH deploy key, and scans the host's
 public key. Values go straight to `gh` and never touch this repository. See
-[docs/pipeline.md](docs/pipeline.md) for what each secret is for — and for why
+[docs/pipeline.md](docs/pipeline.md) for what each secret is for. And for why
 placeholder values are worse than none.
 
 The database and page ids in `scripts/sync-notion.ts` are published on purpose.
@@ -87,7 +87,7 @@ They identify a database; they do not grant access to one.
 ## Where things are
 
 ```
-src/content/          generated from Notion — never hand-edited
+src/content/          generated from Notion, never hand-edited
   writing/            the Dear CoMo letters
   trainings/          the workshops (child pages of Notion's Workshops page)
 src/pages/            the routes
@@ -95,7 +95,7 @@ src/lib/              what more than one page needs; nav.ts is the single menu
 src/styles/tokens.css EVERY colour, face and measure. A test keeps literals out of components.
 scripts/sync-notion.ts the only writer under src/content/
 scripts/lib/          the pure parts of the sync, so they can be unit-tested
-data/                 committed state — see data/README.md
+data/                 committed state, see data/README.md
 reference/            the crawl of the WordPress site: the brand, and its pages
 docs/                 see AGENTS.md for which to read when
 ```
@@ -103,7 +103,7 @@ docs/                 see AGENTS.md for which to read when
 ## Contributing
 
 Read **[AGENTS.md](./AGENTS.md)** first. It is the working brief, and it is
-tool-neutral on purpose — a person, a coding agent, or the two together. It also
+tool-neutral on purpose. A person, a coding agent, or the two together. It also
 carries the one thing worth knowing before writing any CSS: magenta on the
 orange ground is 2.73:1, and the site is built around not doing that.
 

@@ -4,7 +4,7 @@ import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Canonical origin — used by the sitemap, the feed and every canonical URL.
+  // Canonical origin, used by the sitemap, the feed and every canonical URL.
   site: 'https://collaborative-software-design.com',
   // Every URL ends in a slash, which is what WordPress served. A link that
   // worked yesterday must not 301 today just to gain a slash.

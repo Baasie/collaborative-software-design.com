@@ -2,7 +2,7 @@
  *
  * Two things the static checks cannot see: whether the page is accessible once
  * the CSS has cascaded, and whether the brand colours meet contrast *as
- * rendered* — which is the half of rule 3 a machine can judge, and the half
+ * rendered*. Which is the half of rule 3 a machine can judge, and the half
  * that matters most here. This brand puts magenta and orange next to each
  * other, and that pairing is 2.73:1.
  */
@@ -59,7 +59,7 @@ after(async () => {
 // that reuses an existing template is covered by the one already listed; a new
 // template is not, and ADDING IT HERE IS PART OF BUILDING IT. That is not a
 // style note: a page built and not listed shipped a magenta link on the orange
-// — the 2.74:1 pairing this file has caught five times now — and every test
+// (the 2.74:1 pairing this file has caught five times now) and every test
 // passed, because none of them had ever loaded it.
 const PAGES = [
   '/', '/faq/', '/training/', '/facilitation/',
@@ -78,7 +78,7 @@ test('no serious or critical accessibility violations', async () => {
       (await window.axe.run(document, { resultTypes: ['violations'] })).violations
         .filter((v) => v.impact === 'serious' || v.impact === 'critical')
         .map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target.join(' ')).slice(0, 3) })));
-    for (const v of results) found.push(`${path}: ${v.id} — ${v.nodes.join(', ')}`);
+    for (const v of results) found.push(`${path}: ${v.id}, ${v.nodes.join(', ')}`);
   }
   await page.close();
   assert.deepEqual(found, [], `accessibility violations:\n${found.join('\n')}`);
@@ -113,13 +113,13 @@ test('rule 3: text on a brand fill meets contrast as rendered', async () => {
       const out = [];
       // Headings are in this list because leaving them out hid a real failure:
       // a 60px h1 sat at 2.62:1 on the magenta band and nothing complained.
-      // axe did not catch it either — it reports `color-contrast` as
+      // axe did not catch it either. It reports `color-contrast` as
       // INCOMPLETE, not as a violation, whenever the element sits over a
       // background image, and that band has one. So this measures them
       // directly, which is the whole point of measuring as rendered.
       // `p a` is in here for the same reason the headings are. The site's link
       // colour is the accent, and the accent is legible on some of these
-      // grounds and not others — 4.71:1 on the blue, 3.85:1 on the pink,
+      // grounds and not others, 4.71:1 on the blue, 3.85:1 on the pink,
       // 2.74:1 on the orange. Measuring the fills alone caught none of that.
       for (const el of document.querySelectorAll('h1, h2, h3, p a, li a, .btn, .chip, .eyebrow, .panel-brand, .card-excerpt, .hero-lede, .site-nav a, .contact-explore a')) {
         if (!el.textContent.trim()) continue;
@@ -150,8 +150,8 @@ test('the navigation works without JavaScript, and nothing in it hides', async (
   // worse than no hamburger.
   //
   // Training and Consulting are checked by name because they are the two that
-  // used to live inside a hover dropdown. They are top-level items now — see
-  // src/lib/nav.ts — and this is what would notice if they went back to being
+  // used to live inside a hover dropdown. They are top-level items now (see
+  // src/lib/nav.ts), and this is what would notice if they went back to being
   // reachable only on hover.
   const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 800 } });
   const plain = await noJs.newPage();

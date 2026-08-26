@@ -2,7 +2,7 @@
  *
  * Pure DOM, no framework, and nothing rendered here: the cards are all in the
  * page already and this only sets `hidden` on the ones that do not match. That
- * is what keeps the no-JavaScript case correct — the page ships complete, and
+ * is what keeps the no-JavaScript case correct. The page ships complete, and
  * this narrows it.
  *
  * The chosen tag lives in the hash, which is not a nicety: `/tag/{slug}/` is

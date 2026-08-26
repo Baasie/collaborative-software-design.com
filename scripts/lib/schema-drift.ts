@@ -10,7 +10,7 @@
  * own `type`, so the reader that asked for it already holds both halves of the
  * comparison.
  *
- * It detects rather than prevents. The rule stands — change the code first,
+ * It detects rather than prevents. The rule stands, change the code first,
  * then the Notion property. This is the net for the time somebody forgets.
  */
 

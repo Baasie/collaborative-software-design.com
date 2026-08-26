@@ -13,11 +13,11 @@ or for use as training data.
 
 The same goes for `src/content/**/_assets/`, some of which are figures from
 *Collaborative Software Design* and are © Manning Publications, and for
-everything under `reference/` — that is a crawl of the authors' own site, kept
+everything under `reference/`. That is a crawl of the authors' own site, kept
 so the migration can be checked against it.
 
 **The logo** (`src/assets/logo.png`, `reference/brand/*.png`) was made by
 [Art of Design](https://artofdesign.nl/) and is theirs. The footer credit stays.
 
-If you want to quote or reuse any of it, ask — the authors are easy to find, and
+If you want to quote or reuse any of it, ask. The authors are easy to find, and
 the answer is usually yes.

@@ -2,7 +2,7 @@
  *
  * Divi calls it a waypoint: the module sits at `opacity: 0` and `scale(0.5)`
  * until it scrolls into view, then animates to full size over 1s and stays
- * there. Measured off the live page rather than guessed — `.et_pb_image_6`
+ * there. Measured off the live page rather than guessed, `.et_pb_image_6`
  * reports `matrix3d(0.5 … )` at the start of the run and `none` at the end,
  * with `animation-duration: 1s` and `animation-timing-function: linear`.
  *
@@ -16,7 +16,7 @@
  *     the same reason.
  *   - `prefers-reduced-motion` is handled in global.css, which collapses every
  *     animation on the site to 0.01ms. The class still lands, so the end state
- *     is still reached — it just arrives immediately.
+ *     is still reached. It just arrives immediately.
  *
  * It fires once per element and then stops watching it: this is an entrance,
  * not a scroll effect, and re-running it as somebody scrolls back up would be

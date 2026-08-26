@@ -11,7 +11,7 @@ export type Letter = CollectionEntry<'writing'>;
 
 /** The statuses that mean "this is on the site".
  *
- * The sync is the real gate — a row that is not live never becomes a file — so
+ * The sync is the real gate (a row that is not live never becomes a file) so
  * this is a second belt for content committed before a status changed. `Done`
  * counts: the Dear CoMo board uses it for a letter that has run. */
 const LIVE = new Set(['Published', 'Done']);
@@ -27,7 +27,7 @@ export const LETTER_PATH = '/dear-como/';
 /** Newest first, and undated last rather than first.
  *
  * A row with no Publish date sorts to `0` under a naive comparator, which puts
- * an unscheduled draft at the TOP of the index — the one place it must not be. */
+ * an unscheduled draft at the TOP of the index. The one place it must not be. */
 function byNewest(a: Letter, b: Letter) {
   const ad = a.data.publishDate ? +new Date(a.data.publishDate) : -Infinity;
   const bd = b.data.publishDate ? +new Date(b.data.publishDate) : -Infinity;

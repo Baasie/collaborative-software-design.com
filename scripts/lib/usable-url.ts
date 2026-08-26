@@ -4,12 +4,12 @@
  * `ask Kenny`, and it says nothing about either. The schema in
  * src/content.config.ts says `z.string().url()`, so the sync would write the
  * typo into a generated file, `astro check` would reject it, and the deploy
- * would stop at its first step — before the build, before the tests, before
+ * would stop at its first step, before the build, before the tests, before
  * anything ships, with every other page on the site perfectly fine.
  *
  * The content report reports rather than blocks, because publishing must never
  * be hostage to an editorial typo. A URL property is the same bargain, so the
- * sync decides here — where a person can be told — rather than handing the
+ * sync decides here (where a person can be told) rather than handing the
  * build something it is going to refuse:
  *
  *   - A missing scheme is a typing convention, not an ambiguity. `manning.com`
@@ -22,7 +22,7 @@
  * ## The invariant
  *
  * Whatever comes back from here must satisfy the schema that will read it. The
- * gate is `new URL()`, which is what Zod's `.url()` uses — and
+ * gate is `new URL()`, which is what Zod's `.url()` uses, and
  * tests/unit/usable-url.test.mjs pins that against the real schema rather than
  * trusting this comment, because the day they disagree is the day this file
  * stops being worth having.
@@ -33,15 +33,15 @@ export interface UrlRead {
   url?: string;
   /** What Notion held, when that was not already an address. */
   raw?: string;
-  /** `repaired` — a scheme was missing and `https://` was assumed.
-   *  `unusable` — nothing here is an address, so nothing is published. */
+  /** `repaired`: a scheme was missing and `https://` was assumed.
+   *  `unusable`: nothing here is an address, so nothing is published. */
   problem?: 'repaired' | 'unusable';
 }
 
 const parses = (v: string) => { try { new URL(v); return true; } catch { return false; } };
 
 /** Something with a dot in it before the first slash, i.e. a host. Without this
- *  a bare word would parse once `https://` is bolted onto the front — `nodot`
+ *  a bare word would parse once `https://` is bolted onto the front, `nodot`
  *  becomes a perfectly valid URL pointing at a machine that does not exist,
  *  which is a worse answer than saying it is not an address. */
 const looksLikeAHost = /^[^\s/]+\.[^\s/]+/;

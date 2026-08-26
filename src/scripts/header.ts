@@ -1,8 +1,8 @@
 /** The header: collapse on scroll, and the mobile menu toggle.
  *
  * The header is `position: sticky` in CSS and stays that way without
- * JavaScript. This upgrades it to `fixed` — via `html.js-header-fixed`, with
- * `--header-h` holding the space it used to take — because a *sticky* header
+ * JavaScript. This upgrades it to `fixed` (via `html.js-header-fixed`, with
+ * `--header-h` holding the space it used to take) because a *sticky* header
  * that shrinks removes its own height from the page, and the browser hands
  * those pixels back as scroll. That flips the collapse straight off again, and
  * the page cannot be scrolled past its own header. No threshold fixes it: the

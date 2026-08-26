@@ -2,7 +2,7 @@
  *
  * Follows the live site's menu, including the two anchors: "What's inside" and
  * "Contact" are sections of the home page, not pages. That is why `global.css`
- * sets `scroll-padding-top` — with a sticky header, an anchor that is not
+ * sets `scroll-padding-top`, with a sticky header, an anchor that is not
  * offset arrives underneath it.
  *
  * ONE DEPARTURE: the live menu hides Training and Consulting inside a
@@ -10,7 +10,7 @@
  *
  * Three reasons, and the first is the one that decided it. A parent that goes
  * nowhere cannot be a link, so it had to be rendered as a plain label with the
- * submenu revealed on hover or focus — a workaround for a menu item that is
+ * submenu revealed on hover or focus. A workaround for a menu item that is
  * not a destination. The group existed only to hold two things. Second, those
  * two ARE the commercial pages, and a word that names neither of them is a bad
  * place to put a hover before the thing a paying visitor came for. Third, a
@@ -40,7 +40,7 @@ export const NAV: NavItem[] = [
 /** The chapter pages, which cross-link to each other on every one of them.
  *  The numbers are the book's, not a sequence: there is no #03 or #04 here.
  *
- *  `title` is how a chapter is named in a list — the footer, the cross-links at
+ *  `title` is how a chapter is named in a list. The footer, the cross-links at
  *  the foot of a chapter. `heading` and `blurb` are what the home page prints,
  *  word for word off the live page, and they are not the same strings: the home
  *  page says "The need for collaborative software design" where the menu says

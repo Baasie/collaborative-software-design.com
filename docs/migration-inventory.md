@@ -1,7 +1,7 @@
 # What the WordPress site actually is
 
 Crawled 2026-08-21 from the Yoast sitemaps. This is the map the migration has
-to satisfy — 42 addresses, and every one of them is a promise.
+to satisfy, 42 addresses, and every one of them is a promise.
 
 ## It is a book site
 
@@ -16,7 +16,7 @@ persistent header button is **BUY BOOK**.
 |---|---|
 | Home | `/` |
 | What's inside | `/#whatsinside` (an anchor on the home page) |
-| Bookings ▸ | `#` — a dropdown, not a page |
+| Bookings ▸ | `#`. A dropdown, not a page |
 | ⤷ Training | `/training/` |
 | ⤷ Consulting | `/facilitation/` |
 | FAQ | `/faq/` |
@@ -35,7 +35,7 @@ Dropping `a_aid`/`a_bid` silently costs the authors their affiliate revenue.
 
 1. **The Dear CoMo letters are already at `/dear-como/{slug}/`.** I had guessed
    WordPress served them at the root and planned fifteen redirects. It does
-   not, and they do not need any — the addresses match what the new site
+   not, and they do not need any. The addresses match what the new site
    already serves.
 2. **`/faq/` *is* the Dear CoMo index.** It is not a list of questions about the
    book; it is the archive of the column, every letter, newest first. So the
@@ -48,7 +48,7 @@ Dropping `a_aid`/`a_bid` silently costs the authors their affiliate revenue.
 |---|---|---|
 | `/dear-como/{slug}/` | 15 | **Served as-is.** No redirect needed. |
 | `/` | 1 | Served. |
-| `/training/` | 1 | Served — now driven from Notion, with five workshops instead of one. |
+| `/training/` | 1 | Served, now driven from Notion, with five workshops instead of one. |
 | `/facilitation/` | 1 | Served. The consulting page. |
 | `/faq/` | 1 | Served, as the Dear CoMo index. |
 | `/the-need-for-collaborative-design/` | 1 | Served. Chapter #01. |
@@ -76,7 +76,7 @@ structure. These are real pages that exist and were missed:
 
 - The three **chapter** pages (#01, #02, #05), each a teaser plus a BUY BOOK
   call to action, cross-linked to the other two.
-- `/facilitation/` — "Software design facilitation", the consulting offer.
+- `/facilitation/`: "Software design facilitation", the consulting offer.
 - `/faq/` as the Dear CoMo index.
 - The home page's real sections: hero, three chapter teasers, "The book" with a
   cover mockup and a testimonial, "What you will learn" (four icons), the

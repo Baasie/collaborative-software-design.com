@@ -13,7 +13,7 @@
 # to generate, and no value reaches this repository.
 #
 # WHAT NOT TO DO INSTEAD: do not create these secrets with placeholder values to
-# "reserve the name". Both workflows gate on a secret being PRESENT — that is
+# "reserve the name". Both workflows gate on a secret being PRESENT. That is
 # what makes them skip cleanly while you are still setting up. A placeholder
 # NOTION_TOKEN turns the hourly sync from "skipped" into "failed" every hour,
 # and a placeholder KUALO_HOST points a deploy at a machine that is not there.
@@ -62,7 +62,7 @@ ask() {
   echo "    set"
 }
 
-# Same, but not secret — so it can be shown while typing and checked.
+# Same, but not secret. So it can be shown while typing and checked.
 ask_visible() {
   local name="$1" prompt="$2" optional="${3:-}" value=""
   if have "$name" && [ "$FORCE" -eq 0 ]; then
@@ -95,7 +95,7 @@ if [ "$WHAT" = "all" ] || [ "$WHAT" = "deploy" ]; then
   echo "── The host ───────────────────────────────────────────────────────────"
   ask_visible KUALO_HOST "SSH hostname, e.g. ssh.kualo.com"
   ask_visible KUALO_USER "SSH username"
-  ask_visible KUALO_PATH "Absolute path to the docroot's PARENT — the deploy writes \$PATH/releases/… and moves \$PATH/current"
+  ask_visible KUALO_PATH "Absolute path to the docroot's PARENT. The deploy writes \$PATH/releases/… and moves \$PATH/current"
   ask_visible KUALO_SSH_PORT "SSH port (blank for 22)" optional
   ask_visible SITE_URL "Public URL for the post-deploy check, e.g. https://collaborative-software-design.com" optional
   echo
@@ -108,7 +108,7 @@ if [ "$WHAT" = "all" ] || [ "$WHAT" = "deploy" ]; then
     if [ -f "$KEY" ]; then
       echo "  Using the existing key at $KEY"
     else
-      echo "  Generating a new deploy key at $KEY (no passphrase — a CI key cannot type one)"
+      echo "  Generating a new deploy key at $KEY (no passphrase. A CI key cannot type one)"
       ssh-keygen -t ed25519 -N '' -C 'collaborative-software-design.com deploy' -f "$KEY" >/dev/null
     fi
     gh secret set KUALO_SSH_KEY --repo "$REPO" < "$KEY"

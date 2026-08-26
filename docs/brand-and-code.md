@@ -10,7 +10,7 @@ that file names the CSS rule it came from.
 ## The one thing to know before writing CSS
 
 The page ground is **orange** (`#E37B45`). The brand accent is **magenta**
-(`#9D0064`). Together they measure **2.73:1** — nowhere near the 4.5:1 small
+(`#9D0064`). Together they measure **2.73:1**: nowhere near the 4.5:1 small
 text needs.
 
 So **brand-coloured text must never sit directly on the page ground.** It needs
@@ -23,7 +23,7 @@ navigation. Expect to hit it again.
 Two consequences are baked into the CSS, and both are load-bearing:
 
 - **`.eyebrow` is ink by default** and becomes magenta only inside
-  `.section--paper`, `.card` or `.panel` — i.e. where a plate exists. The safe
+  `.section--paper`, `.card` or `.panel`, i.e. where a plate exists. The safe
   colour is the default; the brand colour is opted into by *context*, not by a
   modifier somebody has to remember to add.
 - **Detail pages put their content on a paper plate.** That is also what
@@ -56,7 +56,7 @@ knowing before you "fix" either:
   character, so the same rem measure is fewer words per line.
 
 Headings are uppercase with a little tracking, as the live display heading is
-(`font-weight:700; letter-spacing:1px; line-height:1.1em`) — but **headings
+(`font-weight:700; letter-spacing:1px; line-height:1.1em`). But **headings
 inside `.prose` are not**. A letter's own headings are sentences, and shouting
 them changes the author's tone.
 
@@ -70,8 +70,8 @@ src/styles/tokens.css       every colour, every face, every measure
 src/components/Logo.astro   the wordmark
 ```
 
-`tests/conformance.test.mjs` fails on a colour literal — a hex, an `rgb()`, an
-`hsl()` — anywhere in `src/components/`, `src/layouts/`, `src/pages/`,
+`tests/conformance.test.mjs` fails on a colour literal (a hex, an `rgb()`, an
+`hsl()`) anywhere in `src/components/`, `src/layouts/`, `src/pages/`,
 `global.css` or `patterns.css`, and on any `font-family` that is not a token.
 There is one named exemption, `<meta name="theme-color">`, which the browser
 chrome reads before any CSS exists.
@@ -82,13 +82,13 @@ replaced once**, from a placeholder to the real brand, and it was one file.
 ## Writing CSS here
 
 - **A colour goes in `tokens.css` or nowhere.** If you need one that is not a
-  token, that is a design decision — rule 4 applies: propose it, do not add it.
+  token, that is a design decision, rule 4 applies: propose it, do not add it.
 - **Two tokens for two jobs.** `--on-brand` is text on the magenta;
   `--on-ground` is text on the orange. There is deliberately **no token** for
   brand-on-ground, because that pairing must not exist.
 - **Only reusable surfaces are tokens.** The stops inside one component's own
   gradient are a shape, not a token.
-- **Three breakpoints, and only three** — 640, 800, 900. Recorded in
+- **Three breakpoints, and only three**: 640, 800, 900. Recorded in
   `tokens.css` and written literally in the stylesheets, because CSS cannot use
   a custom property inside a media query. `max-width` companions are 639.98px
   and 799.98px so a range never overlaps its partner.
@@ -100,7 +100,7 @@ replaced once**, from a placeholder to the real brand, and it was one file.
 
 Check whether `LetterCard`, `TrainingCard`, `PrevNext`, `TagFilter` or
 `ContactSection` already does it. A fourth way to render a card is the additive
-bias AGENTS.md warns about, and no mechanical check can see it — the new
+bias AGENTS.md warns about, and no mechanical check can see it. The new
 component is imported by something, so everything calls it used. It is visible
 in a diff, by a reader, and nowhere else.
 
@@ -112,7 +112,7 @@ the chapter switcher gained a fourth entry.
 
 Decisions this site has made, and will keep:
 
-- **The navigation works without JavaScript** — including the Bookings
+- **The navigation works without JavaScript**: including the Bookings
   dropdown, which is revealed by `:focus-within` rather than a click handler. A
   browser test enforces it, and it matters more here than usual: the parent item
   goes to `#`, so without a working submenu two real pages are unreachable.
@@ -122,7 +122,7 @@ Decisions this site has made, and will keep:
 - **The tag filter hides itself without JavaScript** rather than hiding the
   cards. "All the letters" is a perfectly good index; a filter that cannot
   filter is not.
-- **The nav's current item is marked by a rule, not a colour** — see the trap
+- **The nav's current item is marked by a rule, not a colour**: see the trap
   above.
 - **Tap targets are at least 24px**, and links in lists get `min-height`
   explicitly, because the inline exception to WCAG 2.5.8 does not apply to them.

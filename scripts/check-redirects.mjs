@@ -16,7 +16,7 @@ const urls = readFileSync('data/live-urls.txt', 'utf8')
   .split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
 
 if (!existsSync('dist')) {
-  console.error('check:urls needs a build first — run `npm run build`.');
+  console.error('check:urls needs a build first, run `npm run build`.');
   process.exit(1);
 }
 

@@ -137,7 +137,7 @@ function loadState(): SyncState {
 }
 
 /** Sorted at both levels, because JSON key order is insertion order and the
- *  order Notion returns rows in is not stable — an unsorted file produces a
+ *  order Notion returns rows in is not stable. An unsorted file produces a
  *  diff on every run that says nothing. */
 function saveState(state: SyncState) {
   const sorted: SyncState = {};
@@ -320,7 +320,7 @@ const SECTION_OF_CATEGORY: Record<string, string> = {
 };
 
 /** Where each section's letters live. The index is at /faq/ and the letters at
- *  /dear-como/ — both the live site's addresses, not a choice. */
+ *  /dear-como/. Both the live site's addresses, not a choice. */
 const SECTION_PATH: Record<string, string> = {
   'dear-como': '/dear-como/',
 };
@@ -451,7 +451,7 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
     const existing = readExisting(path);
     const edited = page.last_edited_time as string;
     // Re-fetch a body only when Notion says the page changed, or when what is
-    // on disk is not what we last wrote — an edit made here rather than in
+    // on disk is not what we last wrote. An edit made here rather than in
     // Notion is overwritten, because Notion is the source of truth.
     const unchanged = !full && existing
       && before?.edited === edited
@@ -535,8 +535,8 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
 // it (the format), its position (the order), and the `Teaser` section of the
 // body.
 //
-// This is worse than a database in one specific way — a rename moves an
-// address, and nobody renaming a page in Notion thinks of it as moving one — so
+// This is worse than a database in one specific way. A rename moves an
+// address, and nobody renaming a page in Notion thinks of it as moving one, so
 // the rename tracking below is the same as for the letters. If the trainings
 // ever grow a property worth filtering on (a price, a next date, a booking
 // link), the right answer is to make them a database, not to encode more of

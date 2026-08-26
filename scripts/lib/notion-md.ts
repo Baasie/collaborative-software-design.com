@@ -84,7 +84,7 @@ export function assetRefs(entry: string): string[] {
  *
  * Trusting the extension is how an HTML error page gets committed as somebody's
  * photograph: a file property that *links to* a document elsewhere can answer
- * with a viewer page — 74 KB of HTML, 200 OK, at an address ending `.png`. The
+ * with a viewer page, 74 KB of HTML, 200 OK, at an address ending `.png`. The
  * bytes are the one thing that cannot lie, so they decide both whether this is
  * an image at all and what to call it. */
 export function imageExt(buf: Buffer): string | null {
@@ -128,7 +128,7 @@ export interface MdDeps {
 /** Build a `blocksToMd` bound to the given side effects.
  *
  * Returns the converter plus `seenUnhandled`, the set of Notion block types the
- * run met and had no rule for — reported at the end of a sync so a new block
+ * run met and had no rule for, reported at the end of a sync so a new block
  * type surfaces as a message rather than as a silent gap in a page. */
 export function createBlocksToMd(deps: MdDeps) {
   const seenUnhandled = new Set<string>();
@@ -160,7 +160,7 @@ export function createBlocksToMd(deps: MdDeps) {
     const move = shift ?? headingShift(blocks);
     // An empty heading is a formatting artifact, not content: Notion leaves one
     // behind whenever somebody presses `##` and changes their mind, and two of
-    // the workshop pages carry one. Rendered, it is an empty `<h2></h2>` — an
+    // the workshop pages carry one. Rendered, it is an empty `<h2></h2>`, an
     // axe violation, and a heading a screen reader announces with nothing in
     // it. Dropped rather than rendered.
     const heading = (level: number, rt: any[]) => {
@@ -236,7 +236,7 @@ export function createBlocksToMd(deps: MdDeps) {
 /** The body with its `Teaser` section removed.
  *
  * The teaser is lifted into the frontmatter by `teaserOf`, and the page prints
- * it as the lede above everything else — which is what the live training page
+ * it as the lede above everything else. Which is what the live training page
  * does with it too. Leaving the section in the body as well means every
  * workshop page opens by saying the same thing twice.
  *

@@ -5,18 +5,18 @@ writing.
 
 | Suite | Command | Blocks a deploy? |
 |---|---|---|
-| Unit — the pure logic | `npm run test:unit` | Yes |
-| Build — what actually shipped into `dist` | inside `npm test` | Yes |
-| Browser — what only a real browser can see | inside `npm test` | Yes |
-| Conformance — the rules in AGENTS.md a machine can read | inside `npm test` | Yes |
-| URLs — rule 2 | inside `npm test` | Yes |
+| Unit. The pure logic | `npm run test:unit` | Yes |
+| Build, what actually shipped into `dist` | inside `npm test` | Yes |
+| Browser, what only a real browser can see | inside `npm test` | Yes |
+| Conformance. The rules in AGENTS.md a machine can read | inside `npm test` | Yes |
+| URLs, rule 2 | inside `npm test` | Yes |
 
 `npm test` runs `astro check` first, because it is the cheapest thing that can
 fail.
 
 ## What each one is protecting
 
-### Unit — `tests/unit/`
+### Unit, `tests/unit/`
 
 Pure functions, no build, no browser. Everything here is importable because the
 logic was deliberately kept **out** of `scripts/sync-notion.ts`, which exits on a
@@ -27,7 +27,7 @@ separate files: the pure parts of the sync live where a test can reach them.
 **If you add logic to the sync and cannot test it, that is the signal to move
 it.**
 
-### Build — `tests/build.test.mjs`
+### Build, `tests/build.test.mjs`
 
 Reads `dist`, so it fails on what ships rather than on what a component was
 meant to render. One h1 per page, a title and canonical everywhere, a meta
@@ -44,12 +44,12 @@ Two that are not generic hygiene:
 - **The `dist` ceiling.** That is how a silent `prune-dist.mjs` failure surfaces
   as a red test instead of a slow rsync.
 
-### Browser — `tests/browser.test.mjs`
+### Browser, `tests/browser.test.mjs`
 
 Serves `dist` over http (module scripts and Pagefind do not work from `file://`)
 and drives Chromium across seven pages, one of each shape.
 
-- **axe**, serious and critical only — a suite that fails on every minor
+- **axe**, serious and critical only. A suite that fails on every minor
   advisory gets muted, and a muted suite protects nothing.
 - **Contrast on brand fills, as rendered.** The half of rule 3 a machine can
   judge, and on this brand it earns its place three times over: it caught
@@ -60,25 +60,25 @@ and drives Chromium across seven pages, one of each shape.
   entirely.
 - **The navigation with JavaScript off**, including that both pages behind the
   Bookings dropdown are reachable.
-- **The tag filter**, including arriving at `/faq/#tag=facilitation` — which is
+- **The tag filter**, including arriving at `/faq/#tag=facilitation`. Which is
   where eighteen legacy redirects land.
 - **An anchor landing below the sticky header**, because half the menu is one.
 
 In a sandbox whose Chromium revision does not match Playwright's, set
 `PLAYWRIGHT_CHROMIUM_PATH`, or let it find `/opt/pw-browsers/chromium`.
 
-### Conformance — `tests/conformance.test.mjs`
+### Conformance, `tests/conformance.test.mjs`
 
 Where a rule from AGENTS.md becomes executable. **Every test names the rule it
 enforces.** If you add a rule there, either add a test here or write "nobody"
-beside it — a rule that sounds enforced and is not costs more than an honest
+beside it. A rule that sounds enforced and is not costs more than an honest
 habit, because it gets assumed.
 
 **Check a test has teeth before trusting it.** Inject a violation, watch it go
 red, take it back out. A conformance test that cannot fail is worse than none,
 because it reads as protection.
 
-### URLs — `tests/urls.test.mjs`
+### URLs, `tests/urls.test.mjs`
 
 Rule 2, made to run on every push: all 42 addresses answered, the committed
 `.htaccess` matching its generator, and the `[NE]` flag that keeps the tag
@@ -87,7 +87,7 @@ fragments intact.
 ## Rule 5, and its one exemption
 
 Tests select `[data-test]` hooks and `js-*` classes. Never a styling class,
-never visible copy — so restyling cannot break a test, and neither can an editor
+never visible copy. So restyling cannot break a test, and neither can an editor
 rewording a heading in Notion.
 
 The contrast test is exempt, **by name**, in a set in the conformance test so
