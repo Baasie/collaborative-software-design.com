@@ -288,9 +288,17 @@ const jsonLd = courseJsonLd({
     padding-block: var(--space-3);
     background: var(--band);
   }
-  .workshop-body :global(> *) { --band: var(--color-ground-pink); }
-  .workshop-body :global(> hr:nth-of-type(1) ~ *) { --band: var(--color-paper); }
-  .workshop-body :global(> hr:nth-of-type(2) ~ *) { --band: var(--color-ground-blue); }
+  /* Ground, and list marker, per band. The second band is "What you will
+     learn", which is the one the live page ticks. */
+  .workshop-body :global(> *) {
+    --band: var(--color-ground-pink); --marker: disc; --tick: none; --tick-pad: 0;
+  }
+  .workshop-body :global(> hr:nth-of-type(1) ~ *) {
+    --band: var(--color-paper); --marker: none; --tick: '✓'; --tick-pad: var(--space-8);
+  }
+  .workshop-body :global(> hr:nth-of-type(2) ~ *) {
+    --band: var(--color-ground-blue); --marker: disc; --tick: none; --tick-pad: 0;
+  }
   .workshop-body :global(> hr:nth-of-type(3) ~ *) { --band: var(--color-ground-grey); }
   .workshop-body :global(> hr:nth-of-type(4) ~ *) { --band: var(--color-paper); }
   .workshop-body :global(> hr:nth-of-type(5) ~ *) { --band: var(--color-ground-blue); }
@@ -300,8 +308,10 @@ const jsonLd = courseJsonLd({
   .workshop-body :global(hr) { border: 0; height: 0; margin: 0; padding-block: 0; }
 
   /* Air at the top and bottom of every band, so a heading does not open one
-     flush against the edge. `:has(+ hr)` is the last element of a band. */
-  .workshop-body :global(> hr + h2) { padding-top: var(--space-12); margin-top: 0; }
+     flush against the edge. `hr + *` and not `hr + h2`: a band can open with a
+     pair of columns that carry their own headings, which is what "Before the
+     workshop" beside "Audience" does. */
+  .workshop-body :global(> hr + *) { padding-top: var(--space-12); margin-top: 0; }
   .workshop-body :global(> *:has(+ hr)) { padding-bottom: var(--space-12); }
   .workshop-body :global(> :first-child) { padding-top: var(--space-12); }
   .workshop-body :global(> :last-child) { padding-bottom: var(--space-16); }
@@ -313,6 +323,23 @@ const jsonLd = courseJsonLd({
      marks it as a link. Same reasoning as the navigation. */
   .workshop-body :global(a) { color: var(--color-ink); }
   .workshop-body :global(a:hover) { text-decoration-thickness: 3px; }
+
+  /* TWO COLUMNS, where the Notion page has them. The track widths are Notion's
+     own ratios, carried through by the sync as `--tracks`, so dragging a
+     column divider in Notion changes the page.
+
+     One column below 900px. Two columns of monospace on a phone is about 20
+     characters a line, which is not reading, it is a word ladder. */
+  /* A pair of columns takes the whole row rather than the reading measure.
+     Half of 46rem is about 30 characters of monospace, which is not a column,
+     it is a gutter. The live page runs its two at 510px inside a 1080 row, and
+     mirroring the left edge on the right gives very nearly that. */
+  .workshop-body :global(> .cols) { padding-right: var(--edge); }
+  .workshop-body :global(.cols) { display: grid; grid-template-columns: 1fr; gap: var(--space-8); }
+  .workshop-body :global(.cols > .col > :first-child) { margin-top: 0; }
+  @media (min-width: 900px) {
+    .workshop-body :global(.cols) { grid-template-columns: var(--tracks, 1fr 1fr); gap: var(--space-12); }
+  }
 
   /* `.prose` sets a 40rem measure for a letter. Here the measure lives on the
      children, so the container has to let go of it. */
@@ -328,18 +355,25 @@ const jsonLd = courseJsonLd({
      Rename that heading in Notion and the ticks quietly become plain bullets,
      which is the safe direction for a decoration to fail in. All five
      workshops use "What you will learn", so all five get them. */
-  /* `list-style` only. This rule carries an ID, so it outranks the band
-     padding on `> *`, and setting `padding-left: 0` here pulled the whole list
-     to the left edge of the screen while every paragraph around it stayed in
-     the column. The indent for the tick belongs to the item, not to the list. */
-  .workshop-body :global(#what-you-will-learn + ul) { list-style: none; }
-  .workshop-body :global(#what-you-will-learn + ul > li) { position: relative; padding-left: var(--space-8); }
-  .workshop-body :global(#what-you-will-learn + ul > li)::before {
-    content: '✓'; position: absolute; left: 0; top: 0;
+  /* THE TICK, carried by the band rather than by a heading.
+   *
+   * It used to hang off `#what-you-will-learn + ul`, which broke the moment
+   * that list moved inside a column: the heading's next sibling is the column
+   * wrapper now, not the list. It was fragile anyway, since renaming the
+   * heading in Notion silently took the ticks away.
+   *
+   * So it travels with the band, the same way the ground does. Custom
+   * properties inherit, so a list nested any number of columns deep still
+   * picks up whichever value the band above it set. */
+  .workshop-body :global(ul) { list-style-type: var(--marker); }
+  .workshop-body :global(li) { position: relative; padding-left: var(--tick-pad); }
+  .workshop-body :global(li)::before {
+    /* `content: none` generates nothing at all, so the bands that are not
+       ticking pay for none of this. */
+    content: var(--tick);
+    position: absolute; left: 0; top: 0;
     color: var(--color-brand); font-weight: 700;
   }
-  /* Every other list keeps a marker, in the brand rather than in black, so it
-     still belongs to the page. */
   .workshop-body :global(li)::marker { color: var(--color-brand); }
 
   .more-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }

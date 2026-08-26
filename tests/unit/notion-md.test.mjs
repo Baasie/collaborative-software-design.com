@@ -30,6 +30,49 @@ test('a Notion page mention does not become a dead link to a page id', () => {
   );
 });
 
+test('Notion columns become HTML wrappers with markdown still inside them', async () => {
+  // The blank lines are the whole trick. A CommonMark HTML block ends at one,
+  // so everything between the wrappers is parsed as markdown; written tighter,
+  // the column would ship as literal text.
+  const children = {
+    list: [
+      { id: 'a', type: 'column', column: { width_ratio: 0.5 }, has_children: true },
+      { id: 'b', type: 'column', column: { width_ratio: 0.5 }, has_children: true },
+    ],
+    a: [{ type: 'heading_2', has_children: false, heading_2: { rich_text: [{ plain_text: 'Left' }] } }],
+    b: [{ type: 'paragraph', has_children: false, paragraph: { rich_text: [{ plain_text: 'Right' }] } }],
+  };
+  const md = createBlocksToMd({
+    childrenOf: async (id) => children[id] ?? [],
+    downloadImage: async () => null,
+  });
+  const out = await md.blocksToMd(
+    [{ id: 'list', type: 'column_list', has_children: true, column_list: {} }], null);
+
+  assert.match(out, /<div class="cols" style="--tracks: 50fr 50fr">/);
+  assert.equal((out.match(/<div class="col">/g) ?? []).length, 2);
+  // A blank line after every opening tag and before every closing one.
+  assert.match(out, /<div class="col">\n\n## Left\n\n<\/div>/);
+  assert.match(out, /<div class="col">\n\nRight\n\n<\/div>/);
+});
+
+test('a column with no ratio takes an equal share', async () => {
+  const children = {
+    list: [
+      { id: 'a', type: 'column', column: {}, has_children: false },
+      { id: 'b', type: 'column', column: {}, has_children: false },
+      { id: 'c', type: 'column', column: {}, has_children: false },
+    ],
+  };
+  const md = createBlocksToMd({
+    childrenOf: async (id) => children[id] ?? [],
+    downloadImage: async () => null,
+  });
+  const out = await md.blocksToMd(
+    [{ id: 'list', type: 'column_list', has_children: true, column_list: {} }], null);
+  assert.match(out, /--tracks: 33fr 33fr 33fr/);
+});
+
 test('a divider that draws nothing is dropped rather than reported', () => {
   // All three are things an editor does without thinking about it, and none of
   // them is a mistake worth telling somebody about.

@@ -192,6 +192,36 @@ export function createBlocksToMd(deps: MdDeps) {
         }
         case 'code': out.push('```' + (data.language ?? '') + '\n' + richText(data.rich_text) + '\n```'); break;
         case 'divider': out.push('---'); break;
+        // Notion's columns, which the workshop pages use in the three places
+        // the live WordPress page splits into two: the About text, the What
+        // you will learn list, and Before the workshop beside Audience.
+        //
+        // Markdown has no columns, so this emits the wrappers as HTML. Each
+        // tag sits alone with a blank line around it, which is what keeps the
+        // content between them MARKDOWN: a CommonMark HTML block ends at a
+        // blank line, so everything after one is parsed normally again. Written
+        // any tighter and the whole column would ship as literal text.
+        //
+        // The track widths come from Notion's own ratios, so dragging a column
+        // divider in Notion changes the page. A column with no ratio falls back
+        // to an equal share.
+        case 'column_list': {
+          const cols = kids.filter((k: any) => k.type === 'column');
+          if (!cols.length) break;
+          const tracks = cols
+            .map((c: any) => `${Math.round((c.column?.width_ratio ?? 1 / cols.length) * 100)}fr`)
+            .join(' ');
+          const parts: string[] = [];
+          for (const col of cols) {
+            const inner = await blocksToMd(await deps.childrenOf(col.id), ctx, '', move);
+            parts.push(`<div class="col">\n\n${inner.trim()}\n\n</div>`);
+          }
+          out.push(`<div class="cols" style="--tracks: ${tracks}">\n\n${parts.join('\n\n')}\n\n</div>`);
+          break;
+        }
+        // Reached only when a column is met outside its list, which does not
+        // happen: `column_list` reads its own children.
+        case 'column': break;
         case 'image': {
           const url = fileUrl(data); const cap = richText(data.caption);
           let rel: string | null = url;
