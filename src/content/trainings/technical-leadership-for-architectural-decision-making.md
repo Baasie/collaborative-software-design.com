@@ -5,6 +5,8 @@ format: "2-day"
 teaser: "As a Tech Lead, are you finding it challenging to get your entire software team aligned on crucial architectural decisions? Does the team often fall into endless discussions when opinions differ? Do people make assumptions that are proven wrong when implementing? Do you have trouble getting everyone on board with the design?"
 ---
 
+If you answered yes to some of these questions, this training is designed for you. Learn the facilitation skills needed to lead your team through complex architectural discussions. We will teach you how to overcome resistance, harness collective knowledge, and make decisions that everyone can stand behind. Transform your team's architectural decision-making process, fostering greater ownership, shared understanding, and ultimately, more resilient and sustainable software.
+
 ## About the workshop
 
 For Tech Leads, making sound architectural decisions that are supported by the whole team, is paramount to successful software delivery. However, navigating diverse technical perspectives, uncovering hidden assumptions, and fostering genuine consensus can be a significant hurdle. This workshop dives deep into the art of facilitating collaborative architectural decision-making within your software team.

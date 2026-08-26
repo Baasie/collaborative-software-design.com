@@ -6,6 +6,24 @@ teaser: "Your domain expert stayed quiet the entire session. So did the engineer
 featuredImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-featured.png"
 ---
 
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
+
+This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping — they all do their job. The problem is what happens between the people holding the markers.
+
+</div>
+
+<div class="col">
+
+This training tackles that. Based on the book *Collaborative Software Design* by Kenny Baas-Schwegler, Evelyn van Kelle, and Gien Verschatse, it teaches you the facilitation discipline to make the invisible dynamics in the room visible — and to turn them into better decisions.
+
+</div>
+
+</div>
+
+---
+
 ## About the workshop
 
 <div class="cols" style="--tracks: 50fr 50fr">
