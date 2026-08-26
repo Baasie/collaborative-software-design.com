@@ -50,6 +50,7 @@ The browser tests need Chromium: `npx playwright install chromium`.
 | `npm run sync` | Pull everything from Notion into `src/content/`. Needs `NOTION_TOKEN`. |
 | `npm run sync:writing` | Just the Dear CoMo letters. |
 | `npm run sync:trainings` | Just the workshops. |
+| `npm run sync:sessions` | Just the scheduled public dates. Run it after the workshops: it checks a date points at a workshop that exists. |
 | `npm run redirects` | Regenerate `public/.htaccess`. Run after adding or renaming content. |
 | `npm run check:urls` | Prove every address in `data/live-urls.txt` is still answered. Needs a build first. |
 | `npm run verify:live <url>` | Ask the deployed host whether the release actually landed. |

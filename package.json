@@ -14,9 +14,10 @@
     "redirects": "node scripts/build-redirects.mjs",
     "check:urls": "node scripts/check-redirects.mjs",
     "verify:live": "node scripts/verify-live.mjs",
-    "sync": "npm run sync:writing && npm run sync:trainings",
+    "sync": "npm run sync:writing && npm run sync:trainings && npm run sync:sessions",
     "sync:writing": "tsx scripts/sync-notion.ts content --write",
-    "sync:trainings": "tsx scripts/sync-notion.ts trainings --write"
+    "sync:trainings": "tsx scripts/sync-notion.ts trainings --write",
+    "sync:sessions": "tsx scripts/sync-notion.ts sessions --write"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
