@@ -74,7 +74,64 @@ structure:
 | `format` | The nearest heading above it, "2-day", "1 day or less". |
 | `order` | Its position on the Workshops page. **Dragging in Notion re-orders the site.** |
 | `teaser` | The `Teaser` section of the body, or the first paragraph of prose if there is none. **The section is then removed from the body**, because the page prints the teaser as its lede and would otherwise open by saying the same thing twice. |
-| `featuredImage` | The Notion page's **cover**. |
+| `featuredImage` | The Notion page's **cover**, if it has one. Only the hero plate uses it. |
+| `cardImage` | The cover, or the **first picture in the body** when there is no cover. This is the social card, and nothing else reads it. |
+
+### The shape a workshop page takes
+
+Two of the five workshops are written to their full two-day length, and they
+arrived at the same shape without being made to. Nothing enforces it. It is
+worth copying, because each part of it is load-bearing:
+
+```
+## Teaser
+    one paragraph of prose                 <- lifted out, becomes the lede
+    two columns:  the pitch  |  a picture
+---
+## About the workshop
+    two columns:  a picture  |  the text   (either way round)
+---
+## What you will learn
+    two columns:  half the list | the other half
+---
+    one full-width picture, alone between two dividers      (optional)
+---
+two columns:  ## Before the workshop  |  ## Audience
+---
+## Agenda
+    two columns:  ### Day 1  |  ### Day 2
+```
+
+Six rules make that work, and none of them is guessable from looking at the
+page:
+
+1. **The `Teaser` section is consumed, not printed.** Its first paragraph of
+   prose becomes the hero lede and is *removed* from the body. Whatever else is
+   in the section stays and opens the page. So the paragraph is the one to
+   write for a card and a search result, and the columns under it are the ones
+   to write for somebody who is already reading.
+2. **A picture is the second column of the teaser, not the cover.** Both pages
+   dropped their Notion cover for this. It reads better, it survives the phone
+   breakpoint, and the sync still finds it for the social card. See below.
+3. **A divider goes directly above every `##` that starts a section**, and
+   directly above a column block that starts one without a heading of its own.
+   Before the workshop and Audience are one section carrying two headings.
+4. **A `##` is a navigation chip.** The row under the hero is built from the
+   page's own h2s, including the ones inside columns. Five or six is what fits
+   on one line at 1440px. A `###` is not a chip, which is why the days of the
+   agenda are `###`.
+5. **Colour comes from position**, so the order of the sections is what picks
+   the palette. Adding a divider recolours everything below it. This is the
+   next section.
+6. **A section can be a picture and nothing else.** One full-width photograph
+   between two dividers gets its own band and its own colour, and is the one
+   place the page stops asking to be read.
+
+Reading it as a stranger: the hero makes a promise, the teaser columns say who
+is talking and why, About says what the two days are, What you will learn is
+the part people forward to whoever signs the invoice, Before the workshop and
+Audience answer "is this me", and the Agenda answers "what will I actually
+do". Which is roughly the order the questions arrive in.
 
 ### Dividers are seams
 
@@ -140,26 +197,41 @@ a whole column would ship as literal text, and a unit test pins that.
 
 ### Pictures on a workshop page
 
-There is nothing to build and nothing to put in the repository. Both routes
-already work:
+There is nothing to build and nothing to put in the repository. Add the picture
+in Notion and it appears. Every route the sync knows about is a route Notion
+already offers:
 
-- **The page cover** becomes `featuredImage`, and the workshop page frames it on
-  a white plate beside the booking button. Which is where the live WordPress
-  page puts its illustration. One picture per workshop, and it doubles as the
-  social card.
-- **Any image in the body** is downloaded next to the entry into
-  `src/content/trainings/_assets/` and rendered where it sits, at whatever
-  width the prose column gives it.
+- **A picture in the body** is downloaded next to the entry into
+  `src/content/trainings/_assets/` and rendered where it sits. In a column it
+  takes the column, and on its own it takes the row.
+- **The page cover**, if there is one, becomes `featuredImage`, and the hero
+  frames it on a white plate beside the booking button. Which is where the live
+  WordPress page put its illustration. A cover is cropped to a banner by
+  Notion's own UI but downloaded whole, so give it something that reads at
+  396px wide.
 
 Both are pulled by the sync, committed, and optimised at build time, so the
-deploy never reaches out to Notion's expiring file URLs. Add the picture in
-Notion and it appears; that is the whole procedure. What does NOT work is
-putting it in `src/assets/` and referencing it by slug. The content is
+deploy never reaches out to Notion's expiring file URLs. What does NOT work is
+putting a picture in `src/assets/` and referencing it by slug. The content is
 Notion's, and a picture inside a description is content.
 
-One thing to get right in Notion: a cover is cropped to a wide banner by
-Notion's own UI but downloaded whole, so give it a picture that reads at
-396px wide.
+**A page with no cover still has a social card.** `featuredImage` used to do
+two jobs, and dropping the cover quietly cost the pages the second one: shared
+to LinkedIn they fell back to the generic site card and looked like every other
+page on the site. The sync records `cardImage` separately, which is the cover
+when there is one and the first picture in the body otherwise, and only the
+hero plate still reads `featuredImage`.
+
+**The hero drops to one column when it has nothing for the second.** With no
+dates and no cover the right column held a single button, which reads as a
+hole rather than as a layout.
+
+**A picture in a column is capped at 26rem tall**, cropped from the top. Left
+uncapped, a portrait fills the column's width and then keeps going: the
+755x1599 one in Systems Design's Audience rendered 1122px tall, took that row
+to 1597px, and left a thousand pixels of nothing beside the text next to it.
+The cap only bites on a portrait. Anything wider than about 1.3:1 was already
+under it.
 
 Two of these pages hold an older draft of themselves as a *nested* page. The
 converter skips `child_page` blocks, so the draft is not published underneath

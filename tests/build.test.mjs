@@ -2,7 +2,7 @@
  *  ships. Needs `npm run build` first; `npm test` does that. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { DIST, htmlFiles, read, urlOf, dirSize } from './helpers.mjs';
 
 const pages = htmlFiles();
@@ -208,6 +208,32 @@ test('a long workshop page carries its contents and a following booking bar', ()
     const contactAt = html.indexOf('data-test="contact"');
     assert.ok(barAt > contactAt, `${urlOf(f)} puts the booking bar before the contact section`);
   }
+});
+
+test('a workshop that has a picture does not share the generic card', () => {
+  // `featuredImage` used to be both the hero plate and the social card, so a
+  // page that moved its picture from the Notion cover into the body kept its
+  // picture and silently lost its card: shared to LinkedIn it looked like
+  // every other page on the site. Nothing on the page shows this, which is
+  // why it is here.
+  const dir = 'src/content/trainings';
+  const sources = readdirSync(dir).filter((f) => f.endsWith('.md'));
+  assert.ok(sources.length >= 5, `only ${sources.length} workshop sources`);
+
+  let checked = 0;
+  for (const name of sources) {
+    const md = readFileSync(`${dir}/${name}`, 'utf8');
+    if (!/^(featuredImage|cardImage):/m.test(md) && !/!\[[^\]]*\]\(\.\/_assets\//.test(md)) continue;
+    checked += 1;
+
+    const f = pages.find((x) => x.endsWith(`/training/${name.replace(/\.md$/, '')}/index.html`));
+    assert.ok(f, `${name} built no page`);
+    const og = read(f).match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+    assert.ok(og, `${urlOf(f)} has a picture in Notion and no og:image at all`);
+    assert.doesNotMatch(og, /og-default/,
+      `${urlOf(f)} has a picture in Notion and still shares the generic card`);
+  }
+  assert.ok(checked >= 2, `only ${checked} workshops have a picture; the reader stopped matching`);
 });
 
 test('dist stays under its size ceiling', () => {
