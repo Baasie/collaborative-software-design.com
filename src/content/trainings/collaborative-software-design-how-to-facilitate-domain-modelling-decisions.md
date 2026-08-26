@@ -3,12 +3,15 @@ title: "Collaborative Software Design: How to facilitate domain modelling decisi
 order: 1
 format: "2-day"
 teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
-featuredImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-featured.jpg"
 ---
 
 <div class="cols" style="--tracks: 50fr 50fr">
 
 <div class="col">
+
+Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart.
+
+This training tackles that. Based on the book *Collaborative Software Design* by Kenny Baas-Schwegler, Evelyn van Kelle, and Gien Verschatse, it teaches you the facilitation discipline to make the invisible dynamics in the room visible — and to turn them into better decisions.
 
 This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping — they all do their job. The problem is what happens between the people holding the markers.
 
@@ -16,7 +19,7 @@ This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping 
 
 <div class="col">
 
-This training tackles that. Based on the book *Collaborative Software Design* by Kenny Baas-Schwegler, Evelyn van Kelle, and Gien Verschatse, it teaches you the facilitation discipline to make the invisible dynamics in the room visible — and to turn them into better decisions.
+![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-1.jpg)
 
 </div>
 
@@ -30,6 +33,14 @@ This training tackles that. Based on the book *Collaborative Software Design* by
 
 <div class="col">
 
+![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-2.png)
+
+> *This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
+
+</div>
+
+<div class="col">
+
 Effective software design hinges on strong collaboration. But let's be honest: collaboration is messy. Misunderstandings, hidden assumptions, and social dynamics often undermine even the best technical plans. **Collaboration is not innate; it is a discipline.**
 
 The dynamics that get in the way are more predictable than you might think. The book identifies three forces that quietly shape every design session:
@@ -38,33 +49,13 @@ The dynamics that get in the way are more predictable than you might think. The 
 
 </div>
 
-<div class="col">
-
-![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-1.png)
-
 </div>
-
-</div>
-
-<div class="cols" style="--tracks: 50fr 50fr">
-
-<div class="col">
-
-> *This is an immersive, hands-on two-day workshop. You will not just listen to theory; you will practice the moments that make or break a design session — in a safe space, with real feedback.*
-
-</div>
-
-<div class="col">
 
 **Cognitive bias** shapes what the room considers. Anchoring locks the conversation to the first idea raised. Confirmation bias fills the session with evidence that supports what people already believe. Functional fixedness stops the group from seeing beyond how things currently work. None of this is deliberate. All of it affects the architecture.
 
 **Resistance** gets treated as a problem to overcome — when it's actually the most valuable signal in the room. When someone says "that won't work," they're surfacing a constraint, a risk, or a piece of context that no one else has. Dismissing it doesn't make it disappear. It just moves it to a Slack message two weeks later.
 
 This workshop is designed to make these dynamics visible and navigable. You will learn to read what's actually happening in the room — and to use it, rather than fight it.
-
-</div>
-
-</div>
 
 ---
 
@@ -100,7 +91,7 @@ This workshop is designed to make these dynamics visible and navigable. You will
 
 ---
 
-![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-2.png)
+![](./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-3.png)
 
 ---
 

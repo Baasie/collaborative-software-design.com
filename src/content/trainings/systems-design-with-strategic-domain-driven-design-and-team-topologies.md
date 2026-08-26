@@ -3,7 +3,6 @@ title: "Systems Design with Strategic Domain-Driven Design and Team Topologies"
 order: 2
 format: "2-day"
 teaser: "Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?"
-featuredImage: "./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-featured.jpg"
 ---
 
 <div class="cols" style="--tracks: 50fr 50fr">
@@ -31,6 +30,8 @@ Uncover the power of sociotechnical system design, a holistic approach that opti
 <div class="col">
 
 This two-day workshop focuses on collaboratively designing value streams, software systems, and teams. You'll leave ready to start designing sustainable and adaptable software products. We'll explore the core principles of Strategic Domain-Driven Design and Team Topologies, immediately applying them to a practical case study. Starting from an outcome of a Big Picture EventStorming session, we’ll context map to distil subdomains, design emergent bounded contexts, and eventually organise teams around those boundaries.
+
+![](./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-2.png)
 
 </div>
 
@@ -106,6 +107,8 @@ This workshop is specifically designed for technical leaders deeply involved in 
 
 - CTOs, VPs of Engineering, and Engineering Managers
 
+![](./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-3.jpg)
+
 </div>
 
 </div>
@@ -113,6 +116,10 @@ This workshop is specifically designed for technical leaders deeply involved in 
 ---
 
 ## Agenda
+
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
 
 **Day 1**
 
@@ -123,6 +130,10 @@ This workshop is specifically designed for technical leaders deeply involved in 
 - Problem and Solution Space Modelling and Design
 
 - The Impact and Opportunities of Strategic Context Mapping Patterns
+
+</div>
+
+<div class="col">
 
 **Day 2**
 
@@ -135,3 +146,7 @@ This workshop is specifically designed for technical leaders deeply involved in 
 - Mapping Stream-Aligned Teams with User Needs Mapping
 
 - Catalysing Decision-Making in an Organisation
+
+</div>
+
+</div>
