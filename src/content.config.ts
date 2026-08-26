@@ -87,7 +87,14 @@ const trainings = defineCollection({
       /** The opening pitch, lifted from the body's `Teaser` section by the sync
        *  so the card, the meta description and the page all say the same thing. */
       teaser: z.string().optional(),
+      /** The Notion page's cover. Optional, and both of the two-column
+       *  workshops now do without one: their pictures live in the page. When
+       *  it is there the hero frames it on a white plate. */
       featuredImage: image().optional(),
+      /** What a shared link shows. The cover if there is one, otherwise the
+       *  first picture in the body, so a workshop that keeps its images inside
+       *  the page still gets a card of its own. */
+      cardImage: image().optional(),
       ...seo,
     }),
 });

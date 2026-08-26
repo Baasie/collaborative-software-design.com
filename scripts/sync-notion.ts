@@ -617,10 +617,19 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
       process.stdout.write('.');
     }
 
+    // What a link to this page shows when it is shared. The cover if there is
+    // one, otherwise the first picture in the body. Without this a workshop
+    // that keeps all its images inside the page, which is what both of the
+    // two-column ones now do, falls back to the generic site card and looks
+    // like every other page on the site in a LinkedIn post.
+    const firstBodyImage = body.match(/^!\[[^\]]*\]\((\.\/_assets\/[^)]+)\)/m)?.[1];
+    const card = featured ?? firstBodyImage;
+
     const fm = [`title: ${yamlStr(title)}`, `order: ${order}`];
     if (format) fm.push(`format: ${yamlStr(format)}`);
     if (teaser) fm.push(`teaser: ${yamlStr(teaser)}`);
     if (featured) fm.push(`featuredImage: ${yamlStr(featured)}`);
+    if (card) fm.push(`cardImage: ${yamlStr(card)}`);
 
     files.set(`${slug}.md`, `---\n${fm.join('\n')}\n---\n\n${body.trim()}\n`);
     now[block.id] = { slug, edited, digest: digestOf(body.trim() + '\n') };
