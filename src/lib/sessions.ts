@@ -100,6 +100,18 @@ export function dateRange(s: Session): string {
   return `${fmt(start, { day: 'numeric', month: 'long', year: 'numeric' })} to ${fmt(end, { day: 'numeric', month: 'long', year: 'numeric' })}`;
 }
 
+/** "17 Nov 2026". The start day only.
+ *
+ * For a list where the date is a flag beside a title rather than the thing
+ * being read: the full range is one click away, and a five-row list of long
+ * dates is harder to scan than five short ones.
+ */
+export function shortDate(s: Session): string {
+  return new Date(`${s.start}T12:00:00Z`).toLocaleDateString('en-GB', {
+    timeZone: 'UTC', day: 'numeric', month: 'short', year: 'numeric',
+  });
+}
+
 /** "Amsterdam", "Online", or "Amsterdam, in person" when both are known. */
 export function where(s: Session): string | undefined {
   if (s.city && s.delivery && s.delivery !== 'Online') return `${s.city}, ${s.delivery.toLowerCase()}`;

@@ -2,7 +2,7 @@
  *  ships. Needs `npm run build` first; `npm test` does that. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { DIST, htmlFiles, read, urlOf, dirSize } from './helpers.mjs';
 
 const pages = htmlFiles();
@@ -117,6 +117,50 @@ test('the mailto links carry an encoded subject', () => {
     for (const [, href] of read(f).matchAll(/href="(mailto:[^"]+)"/g)) {
       if (!href.includes('?')) continue;
       assert.ok(!/[?&]subject=[^&]*\s/.test(href), `${urlOf(f)} has an unencoded space in ${href}`);
+    }
+  }
+});
+
+test('a public training date that has passed is not on the site', () => {
+  // The reason the `Public trainings` database exists. The WordPress page
+  // carried a hand-typed "Tickets: June 16 to 17 / Amsterdam" long after June,
+  // because a date written into a page has no idea what it means.
+  //
+  // This holds the built HTML against the data rather than against a rule: it
+  // works out which runs should be showing today and checks the pages show
+  // exactly those. A page that forgot to filter, or filtered on the wrong
+  // boundary, fails here even though every unit test still passes.
+  const runs = JSON.parse(readFileSync('src/content/sessions.json', 'utf8'));
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Amsterdam' });
+  const live = runs.filter((r) => (r.end ?? r.start) >= today);
+  const past = runs.filter((r) => (r.end ?? r.start) < today);
+
+  const withBand = pages.filter((f) => read(f).includes('data-test="public-dates"'));
+
+  if (live.length === 0) {
+    assert.equal(withBand.length, 0,
+      'no run is open, so no page should be showing a dates band');
+  } else {
+    // Both pages that carry the band must carry every open run, so the two
+    // cannot disagree about what is bookable.
+    assert.ok(withBand.length >= 2,
+      `${live.length} run(s) are open but only ${withBand.length} page(s) show them`);
+    for (const f of withBand) {
+      for (const r of live) {
+        assert.match(read(f), new RegExp(`/training/${r.slug}/`),
+          `${urlOf(f)} shows a dates band without the open run for ${r.slug}`);
+      }
+    }
+  }
+
+  // And nothing anywhere prints a finished run's date.
+  for (const r of past) {
+    const day = new Date(`${r.start}T12:00:00Z`).toLocaleDateString('en-GB', {
+      timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric',
+    });
+    for (const f of pages) {
+      assert.ok(!read(f).includes(day),
+        `${urlOf(f)} still advertises ${day}, which is over`);
     }
   }
 });

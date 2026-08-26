@@ -1,0 +1,124 @@
+---
+/** The scheduled public runs, as a band.
+ *
+ * Two pages show this: `/training/` above the workshop list, and the home page
+ * between the talk and the bookings band. One component rather than two, so a
+ * run cannot appear differently in the two places somebody compares.
+ *
+ * It renders NOTHING when there are no runs. That is the normal state between
+ * dates, not an empty state to design around: a heading called "Next public
+ * dates" with nothing under it says something worse than silence does.
+ *
+ * Every run carries its workshop's title, because on both of these pages the
+ * reader is looking at more than one workshop at a time. The workshop's own
+ * page uses a different, taller block in its hero, where the title is already
+ * the h1 two inches above.
+ */
+import { dateRange, where, type Session } from '../lib/sessions';
+
+interface Props {
+  runs: Session[];
+  /** slug to title, so a row can name its workshop. */
+  titles: Record<string, string>;
+  /** The mailto for "no date that suits you". */
+  enquiry: string;
+  /** `--paper` on a coloured band, `--grey` on the white ones. */
+  variant?: 'paper' | 'grey';
+  eyebrow?: string;
+  heading?: string;
+}
+const {
+  runs, titles, enquiry, variant = 'paper',
+  eyebrow = 'Bookings', heading = 'Next public dates',
+} = Astro.props;
+---
+{runs.length > 0 && (
+  <section class:list={['dates', `dates--${variant}`]} data-test="public-dates">
+    <div class="wrap">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2>{heading}</h2>
+
+      <ul class="dates-list">
+        {runs.map((r) => (
+          <li class="date-row">
+            <div class="date-when">
+              <p class="date-day">{dateRange(r)}</p>
+              {where(r) && <p class="date-place">{where(r)}</p>}
+            </div>
+
+            <div class="date-what">
+              <h3><a href={`/training/${r.slug}/`}>{titles[r.slug] ?? r.slug}</a></h3>
+              <p class="date-terms">
+                {r.price != null && <span>€{r.price.toLocaleString('en-GB')}</span>}
+                {r.price != null && r.language && r.language !== 'English' && <span> · </span>}
+                {r.language && r.language !== 'English' && <span>in {r.language}</span>}
+              </p>
+            </div>
+
+            <div class="date-act">
+              {r.status === 'Sold out'
+                ? <p class="date-sold">Sold out</p>
+                : r.tickets
+                  ? <a class="btn btn--ink" href={r.tickets} rel="noopener">Book a place</a>
+                  : <a class="btn btn--ink" href={enquiry}>Ask about this date</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <p class="dates-private">
+        <a href={enquiry}>No date that suits you? Ask about running one in-house</a>
+      </p>
+    </div>
+  </section>
+)}
+
+<style>
+  .dates { padding-block: var(--space-16); }
+  .dates--paper { background: var(--color-paper); }
+  .dates--grey { background: var(--color-ground-grey); }
+  .dates h2 { margin-top: 0; }
+
+  .dates-list { list-style: none; margin: 0; padding: 0; }
+  /* A ruled row rather than a card: this is a table of dates, and the brand is
+     heavy rules and square corners. The top rule is the heavy one, so the list
+     reads as a block with a lid rather than as separate boxes. */
+  .date-row {
+    display: grid; grid-template-columns: 1fr; gap: var(--space-4);
+    align-items: baseline;
+    border-top: 4px solid var(--color-ink);
+    padding-block: var(--space-6);
+  }
+  .date-row + .date-row { border-top-width: 1px; }
+
+  .date-when p { margin: 0; }
+  .date-day {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: var(--text-xl); line-height: 1.1;
+    /* The dates line up in a column, so the digits should too. */
+    font-variant-numeric: tabular-nums;
+  }
+  .date-place { font-size: var(--text-sm); color: var(--color-ink-muted); }
+
+  .date-what h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+  .date-what h3 a { color: var(--color-ink); }
+  .date-what h3 a:hover { color: var(--color-brand); }
+  .date-terms { margin: 0; font-size: var(--text-sm); color: var(--color-ink-muted); font-variant-numeric: tabular-nums; }
+
+  /* Not a button. A control that cannot be used is worse than a line of text
+     saying why it cannot. */
+  .date-sold {
+    margin: 0; font-family: var(--font-body); font-size: var(--text-button);
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-ink-muted);
+  }
+
+  .dates-private { margin: var(--space-8) 0 0; font-size: var(--text-sm); }
+
+  @media (min-width: 800px) {
+    /* when | what | act. The date column is fixed so every row starts its
+       workshop title at the same place, which is what makes a list of dates
+       scannable rather than ragged. */
+    .date-row { grid-template-columns: 16rem 1fr auto; gap: var(--space-8); align-items: center; }
+    .date-act { justify-self: end; }
+  }
+</style>

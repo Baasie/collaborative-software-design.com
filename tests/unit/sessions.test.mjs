@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { lastDay, upcoming, upcomingFor, dateRange, where } from '../../src/lib/sessions.ts';
+import { lastDay, upcoming, upcomingFor, dateRange, shortDate, where } from '../../src/lib/sessions.ts';
 
 const run = (over = {}) => ({
   slug: 'collaborative-software-design', name: 'A run',
@@ -53,6 +53,10 @@ test('a date range prints the month once when it does not cross one', () => {
   assert.equal(dateRange(run({ start: '2026-11-17' })), '17 November 2026');
   assert.equal(dateRange(run({ start: '2026-11-30', end: '2026-12-01' })), '30 November to 1 December 2026');
   assert.equal(dateRange(run({ start: '2026-12-31', end: '2027-01-01' })), '31 December 2026 to 1 January 2027');
+});
+
+test('the short date is the start day, for scanning a list', () => {
+  assert.equal(shortDate(run({ start: '2026-11-17', end: '2026-11-18' })), '17 Nov 2026');
 });
 
 test('where reads as a place, not as two fields', () => {

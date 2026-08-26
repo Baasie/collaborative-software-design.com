@@ -18,9 +18,10 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactSection from '../../components/ContactSection.astro';
+import PublicDates from '../../components/PublicDates.astro';
 import heroWoman from '../../assets/home/hero-woman.png';
 import { sessions, trainingsByFormat, trainings } from '../../lib/collections';
-import { dateRange, todayISO, upcoming, upcomingFor, where } from '../../lib/sessions';
+import { shortDate, todayISO, upcoming, upcomingFor } from '../../lib/sessions';
 import { pageTitle, organisation, mailto, AUTHORS } from '../../lib/seo';
 
 const groups = await trainingsByFormat();
@@ -30,19 +31,8 @@ const all = await trainings();
 const today = todayISO();
 const runs = await sessions();
 const nextFor = (slug: string) => upcomingFor(runs, slug, today)[0];
-
-/** The next date as one string.
- *
- *  Built here rather than in the markup because JSX keeps the newlines an
- *  indented template introduces, and the first version rendered as
- *  "2026 , Amsterdam": a space before the comma and none after it. */
-function nextLine(slug: string): string | undefined {
-  const run = nextFor(slug);
-  if (!run) return undefined;
-  const place = where(run);
-  return `Next: ${dateRange(run)}${place ? `, ${place}` : ''}`;
-}
-const anyUpcoming = upcoming(runs, today).length;
+const open = upcoming(runs, today);
+const titles = Object.fromEntries(all.map((t) => [t.id, t.data.title]));
 
 const description =
   'Hands-on workshops in the facilitation discipline behind good domain modelling '
@@ -90,9 +80,9 @@ const jsonLd = {
         </p>
         {/* Only claim there are public dates when there are. An empty list is
             not a state to design around; it is the normal one between runs. */}
-        {anyUpcoming > 0 && (
+        {open.length > 0 && (
           <p class="hire-count">
-            {anyUpcoming === 1 ? 'One public date is open.' : `${anyUpcoming} public dates are open.`}
+            {open.length === 1 ? 'One public date is open.' : `${open.length} public dates are open.`}
           </p>
         )}
         <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
@@ -102,6 +92,11 @@ const jsonLd = {
     <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
+
+  {/* Above the list, because somebody who already knows which workshop they
+      want is here for a date, and somebody who does not is about to read five
+      teasers anyway. Renders nothing when no run is open. */}
+  <PublicDates runs={open} titles={titles} enquiry={enquiry} variant="paper" />
 
   <div class="section section--paper">
     <div class="wrap">
@@ -113,7 +108,11 @@ const jsonLd = {
               {items.map((t) => (
                 <li class="workshop">
                   <h3><a class="workshop-link" href={`/training/${t.id}/`}>{t.data.title}</a></h3>
-                  {nextLine(t.id) && <p class="workshop-next">{nextLine(t.id)}</p>}
+                  {/* A flag, not a repeat. The full range and the ticket link
+                      are in the band at the top of the page; this is here so a
+                      reader scanning five titles can see which one has a date
+                      without leaving the row. */}
+                  {nextFor(t.id) && <p class="workshop-next">Next: {shortDate(nextFor(t.id)!)}</p>}
                   {t.data.teaser && <p class="workshop-teaser">{t.data.teaser}</p>}
                   <p class="workshop-more" aria-hidden="true">See this workshop →</p>
                 </li>

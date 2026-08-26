@@ -32,8 +32,11 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactSection from '../components/ContactSection.astro';
+import PublicDates from '../components/PublicDates.astro';
 import { CHAPTERS } from '../lib/nav';
-import { AUTHORS, pageTitle, organisation, bookJsonLd } from '../lib/seo';
+import { sessions, trainings } from '../lib/collections';
+import { todayISO, upcoming } from '../lib/sessions';
+import { AUTHORS, pageTitle, organisation, bookJsonLd, mailto } from '../lib/seo';
 
 import heroWoman from '../assets/home/hero-woman.png';
 import whatsInsideTitle from '../assets/home/whats-inside-title.png';
@@ -59,6 +62,20 @@ const jsonLd = {
 };
 
 const [lead, ...pair] = CHAPTERS;
+
+/* The scheduled public runs. The live WordPress home page had no such band,
+   and this is the one addition to it: a date is the only thing on this site
+   that expires, and burying it two clicks in was what let the old page keep
+   advertising a workshop that had already happened. It renders nothing at all
+   when no run is open, which is the normal state between dates. */
+const openRuns = upcoming(await sessions(), todayISO());
+const workshopTitles = Object.fromEntries(
+  (await trainings()).map((t) => [t.id, t.data.title]),
+);
+const trainingEnquiry = mailto(
+  'Booking enquiry: training',
+  'Hi,\n\nI would like to talk about a training.\n\nWhich workshop:\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n',
+);
 
 /** The four icons under "What you will learn". The second line of a title is a
  *  `<br />` on the live page, so it is a separate field rather than a newline
@@ -200,6 +217,13 @@ const TALK = {
       </div>
     </div>
   </section>
+
+  {/* Between the talk and the bookings band: after the reader knows what this
+      is, and immediately before the section that asks them to book. On the
+      grey, so it reads as part of that quieter run of the page rather than
+      interrupting the coloured bands. */}
+  <PublicDates runs={openRuns} titles={workshopTitles} enquiry={trainingEnquiry}
+               variant="grey" eyebrow="Bookings" heading="Next public dates" />
 
   <section class="section section--pink bookings" data-test="bookings">
     <div class="wrap">
