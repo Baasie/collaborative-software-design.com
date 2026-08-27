@@ -198,6 +198,16 @@ monospace on a phone is about twenty characters a line.
 A pair of columns takes the whole row rather than the 46rem reading measure,
 which is what the live page does with its two 510px columns inside a 1080 row.
 
+**No column ships empty.** The lede is lifted out of the body wherever it is,
+and on the Systems Design page it was the whole of the left column of the
+teaser: the opening line beside a picture of the two books. Removing it left
+the picture beside nothing, with the paragraph that belonged next to it
+sitting under the block, and the page looked nothing like the page in Notion.
+So the paragraph that follows the block moves up into the column the lede
+left. If nothing prose follows, the empty column goes instead, and a block
+down to its last column is unwrapped rather than left as a half-width track.
+`tidyColumns` does this, and a build test holds it.
+
 Markdown has no columns, so the sync emits the wrappers as HTML. The blank line
 around every tag is load-bearing: a CommonMark HTML block ends at one, so the
 content between the wrappers is still parsed as markdown. Written any tighter,

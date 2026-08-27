@@ -210,6 +210,23 @@ test('a long workshop page carries its contents and a following booking bar', ()
   }
 });
 
+test('no page ships an empty column', () => {
+  // A column with nothing in it is a hole: the Systems Design teaser had a
+  // picture beside one, because the lede that used to fill it is lifted into
+  // the hero. Half a row of nothing, and the paragraph that belonged there
+  // sitting underneath the block.
+  let checked = 0;
+  for (const f of pages) {
+    const html = read(f);
+    if (!html.includes('class="col"')) continue;
+    checked += 1;
+    const empty = [...html.matchAll(/<div class="col">([\s\S]*?)<\/div>/g)]
+      .filter((m) => !m[1].replace(/<[^>]+>/g, '').trim() && !/<img|<svg/.test(m[1]));
+    assert.equal(empty.length, 0, `${urlOf(f)} has ${empty.length} empty column(s)`);
+  }
+  assert.ok(checked >= 2, `only ${checked} pages use columns; the reader stopped matching`);
+});
+
 test('no workshop page opens by saying the same thing twice', () => {
   // The lede is lifted out of the body and printed under the title, so a copy
   // left behind in the body is read twice by anybody who reads the page. That
