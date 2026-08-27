@@ -6,11 +6,13 @@ teaser: "Are software teams constantly hitting roadblocks, architecture decision
 cardImage: "./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-1.jpg"
 ---
 
+## Teaser
+
 <div class="cols" style="--tracks: 50fr 50fr">
 
 <div class="col">
 
-Uncover the power of sociotechnical system design, a holistic approach that optimises teams, architecture, and value streams in harmony. This workshop seamlessly integrates Strategic Domain-Driven Design (DDD) to design resilient, adaptable software architectures with Team Topologies, enabling teams to self-organise for fast flow and embrace full ownership of the software they create. Learn to collaboratively design systems that not only survive but thrive on change, bridging the gap between business needs, software design, and team flow.
+Are software teams constantly hitting roadblocks, architecture decisions creating bottlenecks, or team structures failing to align with the software products they're building?
 
 </div>
 
@@ -21,6 +23,8 @@ Uncover the power of sociotechnical system design, a holistic approach that opti
 </div>
 
 </div>
+
+Uncover the power of sociotechnical system design, a holistic approach that optimises teams, architecture, and value streams in harmony. This workshop seamlessly integrates Strategic Domain-Driven Design (DDD) to design resilient, adaptable software architectures with Team Topologies, enabling teams to self-organise for fast flow and embrace full ownership of the software they create. Learn to collaboratively design systems that not only survive but thrive on change, bridging the gap between business needs, software design, and team flow.
 
 ---
 

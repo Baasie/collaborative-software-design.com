@@ -5,6 +5,10 @@ format: "1 day or less"
 teaser: "Are your collaborative modeling sessions often dominated by a few voices? Do you notice that some individuals are consistently believed more than others, or that decisions face unspoken resistance later on? This 3-hour online class dives into the heart of these group interactions by exploring power dynamics, including the powerful, and often unconscious, influence of ranking."
 ---
 
+## Teaser
+
+Are your collaborative modeling sessions often dominated by a few voices? Do you notice that some individuals are consistently believed more than others, or that decisions face unspoken resistance later on? This 3-hour online class dives into the heart of these group interactions by exploring power dynamics, including the powerful, and often unconscious, influence of ranking.
+
 Gain a model to understand why people behave the way they do in group settings when decisions are made. You'll learn why visible (and invisible) power dynamics lead to some talking, some staying silent, and why resistance emerges.
 
 ## About the workshop
