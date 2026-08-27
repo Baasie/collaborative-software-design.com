@@ -217,6 +217,51 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test('the contents sit at the foot of the section they open', async () => {
+  // The contents were in the hero, above everything the page opens with, and
+  // that read as two beginnings: chips, and then more of the same pink band
+  // underneath them. They belong at the end of the opening section, as the
+  // way in to what follows.
+  //
+  // The body cannot be split to put them there, so they are placed with flex
+  // `order`. Nothing in the DOM says where they are: in the source they are
+  // the first thing in the body, and only the rendered page knows they are
+  // the last. Which is why this is measured here.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/training/collaborative-software-design-how-to-facilitate-domain-modelling-decisions/',
+    { waitUntil: 'load' });
+
+  const seen = await page.evaluate(() => {
+    const y = (el) => el.getBoundingClientRect().top + window.scrollY;
+    const toc = document.querySelector('.workshop-body > .toc');
+    if (!toc) return null;
+    const hr = document.querySelector('.workshop-body > hr');
+    const opening = [...document.querySelectorAll('.workshop-body > *')]
+      .filter((el) => el !== toc && el !== hr
+        && (hr.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING) !== 0);
+    return {
+      toc: y(toc),
+      tocBottom: toc.getBoundingClientRect().bottom + window.scrollY,
+      firstSeam: hr ? y(hr) : null,
+      lastOpening: Math.max(...opening.map((el) => el.getBoundingClientRect().bottom + window.scrollY)),
+      rows: new Set([...toc.querySelectorAll('li')].map((li) => Math.round(li.getBoundingClientRect().top))).size,
+      chips: toc.querySelectorAll('li').length,
+    };
+  });
+
+  assert.ok(seen, 'the workshop body has no contents in it at all');
+  assert.ok(seen.firstSeam !== null, 'the page has no seam to sit above');
+  assert.ok(seen.toc >= seen.lastOpening,
+    `the contents are at ${seen.toc}px, above the opening section which ends at ${seen.lastOpening}px`);
+  assert.ok(seen.tocBottom <= seen.firstSeam + 1,
+    `the contents end at ${seen.tocBottom}px, below the first seam at ${seen.firstSeam}px`);
+  // A map that takes two rows is a list. Five chips are 758px and the reading
+  // measure is 736, so this only holds while the row is wider than the text.
+  assert.equal(seen.rows, 1, `${seen.chips} chips wrapped onto ${seen.rows} rows`);
+  await ctx.close();
+});
+
 test('one page has one left edge', async () => {
   // The workshop body draws full-width bands, so its text is positioned with
   // padding rather than by a wrapper. The first version centred a 46rem column

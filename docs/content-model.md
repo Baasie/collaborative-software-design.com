@@ -116,10 +116,18 @@ page:
 3. **A divider goes directly above every `##` that starts a section**, and
    directly above a column block that starts one without a heading of its own.
    Before the workshop and Audience are one section carrying two headings.
-4. **A `##` is a navigation chip.** The row under the hero is built from the
-   page's own h2s, including the ones inside columns. Five or six is what fits
-   on one line at 1440px. A `###` is not a chip, which is why the days of the
-   agenda are `###`.
+4. **A `##` is a navigation chip.** The row of them is built from the page's
+   own h2s, including the ones inside columns. Five or six is what fits on one
+   line at 1440px. A `###` is not a chip, which is why the days of the agenda
+   are `###`.
+
+   The row sits **at the foot of the opening section**, above the first
+   divider, so it reads as the way in to what follows. In the hero it read as
+   two beginnings: chips, and then more of the same pink band underneath them.
+   A page with no dividers keeps them in the hero, because it has no foot to
+   put them at. Because the body cannot be split, they are placed with flex
+   `order` rather than by where they sit in the source, and nothing in the
+   markup says so. A browser test measures it.
 5. **Colour comes from position**, so the order of the sections is what picks
    the palette. Adding a divider recolours everything below it. This is the
    next section.

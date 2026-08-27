@@ -75,6 +75,12 @@ const image = entry.data.cardImage ? await socialCard(Astro.site, entry.data.car
    one column then, and the button sits under the lede where it belongs. */
 const heroIsSplit = runs.length > 0 || !!entry.data.featuredImage;
 
+/* Where the contents go. At the foot of the opening section when the page has
+   sections, so it reads as the way in to what follows; in the hero when it
+   does not, because then there is no foot to put it at and the body is one
+   pink stretch to the end. */
+const tocInBody = seams > 0 && contents.length > 1;
+
 const enquiry = mailto(
   `Booking enquiry: ${entry.data.title}`,
   `Hi,\n\nI would like to talk about running "${entry.data.title}".\n\nGroup size:\nOnline or in person:\nRough timing:\n\nThanks,\n`,
@@ -104,10 +110,7 @@ const jsonLd = courseJsonLd({
         <h1>{entry.data.title}</h1>
         {entry.data.teaser && <p class="hire-lede">{entry.data.teaser}</p>}
 
-        {/* What is on this page, and how much of it there is. Seven screens
-            with no contents is a page you scroll rather than read. Built from
-            the body's own h2s, so it cannot drift from what follows. */}
-        {contents.length > 1 && (
+        {!tocInBody && contents.length > 1 && (
           <nav class="toc" aria-label="On this page">
             <ul>
               {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
@@ -168,7 +171,23 @@ const jsonLd = courseJsonLd({
 
   {/* No `.wrap`: the bands span the viewport and each child carries the text
       measure as padding. See the band rules in the stylesheet below. */}
-  <article class="prose workshop-body"><Content /></article>
+  <article class="prose workshop-body">
+    {/* What is on this page, and how much of it there is. Seven screens with
+        no contents is a page you scroll rather than read. Built from the
+        body's own h2s, so it cannot drift from what follows.
+
+        First in the source and last in its band: a reader meets the map
+        before the sections it maps, and the keyboard reaches it before them
+        too. See the `order` rules in the stylesheet. */}
+    {tocInBody && (
+      <nav class="toc" aria-label="On this page">
+        <ul>
+          {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ul>
+      </nav>
+    )}
+    <Content />
+  </article>
 
   <section class:list={['section', `section--${closingBand}`]} data-test="more-workshops">
     <div class="wrap more-grid">
@@ -331,8 +350,36 @@ const jsonLd = courseJsonLd({
      workshop" beside "Audience" does. */
   .workshop-body :global(> hr + *) { padding-top: var(--space-12); margin-top: 0; }
   .workshop-body :global(> *:has(+ hr)) { padding-bottom: var(--space-12); }
-  .workshop-body :global(> :first-child) { padding-top: var(--space-12); }
+  .workshop-body :global(> :first-child), .workshop-body :global(> .toc + *) {
+    padding-top: var(--space-12);
+  }
   .workshop-body :global(> :last-child) { padding-bottom: var(--space-16); }
+
+  /* THE CONTENTS, at the foot of the opening band rather than in the hero.
+     In the hero they cut the opening in half: chips, and then more of the
+     same pink band underneath them, which reads as two beginnings.
+
+     Order rather than position in the source, because the body cannot be
+     split. Astro resolves the pictures in it through `Content` at build
+     time, and the stored HTML still holds the paths Notion wrote.
+
+     Everything the page opens with is 0, the contents are 1, and the first
+     divider and everything after it is 2. So the contents land between the
+     opening and the first seam whatever the opening turns out to be. */
+  .workshop-body { display: flex; flex-direction: column; }
+  .workshop-body :global(> *) { order: 0; }
+  .workshop-body :global(> hr:nth-of-type(1)),
+  .workshop-body :global(> hr:nth-of-type(1) ~ *) { order: 2; }
+  .workshop-body > .toc {
+    order: 1;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: var(--space-12);
+    /* The row, not the reading measure. Five chips are 758px and the measure
+       is 736, so the last one dropped to a line of its own, and a map that
+       takes two rows is a list. */
+    padding-right: var(--edge);
+  }
 
   /* A link in this body can land on any of the four grounds, and the accent is
      only legible on three of them: 21:1 on the white, 12.3 on the blue, 17.6
