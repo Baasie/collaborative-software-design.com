@@ -217,6 +217,42 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test('the dates on /training/ are in the hero, not in with the workshops', async () => {
+  // They used to be a band of their own directly above the list, on the same
+  // white ground the list uses, so the two blocks ran together and neither
+  // said what it was. Somebody looking for a date is looking top right, which
+  // is where every workshop page puts its own.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/training/', { waitUntil: 'load' });
+
+  const where = await page.evaluate(() => {
+    const dates = document.querySelector('[data-test="public-dates"]');
+    if (!dates) return null;
+    const hero = document.querySelector('[data-test="training-hero"]');
+    return {
+      inHero: !!dates.closest('[data-test="training-hero"]'),
+      x: Math.round(dates.getBoundingClientRect().x),
+      heroRight: Math.round(hero.getBoundingClientRect().right),
+      bands: document.querySelectorAll('.dates[data-test="public-dates"]').length,
+    };
+  });
+
+  // No open run means no plate, and that is the normal state between dates.
+  if (where === null) {
+    const runs = await page.evaluate(() => document.querySelectorAll('.workshop-next').length);
+    assert.equal(runs, 0, 'the list flags a next date but the hero shows none');
+    await ctx.close();
+    return;
+  }
+
+  assert.ok(where.inHero, '/training/ shows its dates outside the hero');
+  assert.equal(where.bands, 0, '/training/ still carries the old dates band as well');
+  assert.ok(where.x > where.heroRight / 2,
+    `the dates start at ${where.x}px, which is not the right of the hero`);
+  await ctx.close();
+});
+
 test('one page has one inner edge', async () => {
   // The hero ran 1.58fr beside 1fr, the columns under it run even, and the
   // band that closes the page ran 1.4fr, so the two halves of a workshop page

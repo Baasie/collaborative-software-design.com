@@ -22,17 +22,47 @@ interface Props {
   titles: Record<string, string>;
   /** The mailto for "no date that suits you". */
   enquiry: string;
-  /** `--paper` on a coloured band, `--grey` on the white ones. */
+  /** `--paper` on a coloured band, `--grey` on the white ones. Band only. */
   variant?: 'paper' | 'grey';
+  /** A band across the page, or a white plate for a hero's right column.
+   *  Same rows either way: a date cannot read one way here and another there. */
+  as?: 'band' | 'plate';
   eyebrow?: string;
   heading?: string;
 }
 const {
-  runs, titles, enquiry, variant = 'paper',
+  runs, titles, enquiry, variant = 'paper', as = 'band',
   eyebrow = 'Bookings', heading = 'Next public dates',
 } = Astro.props;
+
+/** The terms of one run as a single line, so the markup does not decide where
+ *  a separator goes. */
+const terms = (r: Session) => [
+  where(r),
+  r.price != null ? `\u20ac${r.price.toLocaleString('en-GB')}` : null,
+  r.language && r.language !== 'English' ? `in ${r.language}` : null,
+].filter(Boolean).join(' \u00b7 ');
 ---
-{runs.length > 0 && (
+{runs.length > 0 && as === 'plate' && (
+  <div class="runs" data-test="public-dates">
+    <h2 class="runs-head">{heading}</h2>
+    <ul>
+      {runs.map((r) => (
+        <li class="run">
+          <p class="run-when">{dateRange(r)}</p>
+          <p class="run-what"><a href={`/training/${r.slug}/`}>{titles[r.slug] ?? r.slug}</a></p>
+          {terms(r) && <p class="run-where">{terms(r)}</p>}
+          {r.status === 'Sold out'
+            ? <p class="run-sold">Sold out</p>
+            : r.tickets
+              ? <p><a class="btn btn--ink" href={r.tickets} rel="noopener">Book a place</a></p>
+              : <p><a class="btn btn--ink" href={enquiry}>Ask about this date</a></p>}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+{runs.length > 0 && as === 'band' && (
   <section class:list={['dates', `dates--${variant}`]} data-test="public-dates">
     <div class="wrap">
       <p class="eyebrow">{eyebrow}</p>
@@ -74,6 +104,32 @@ const {
 )}
 
 <style>
+  /* THE PLATE, for a hero's right column. White, because on a pink ground it
+     is the block somebody came here looking for. The same shape the workshop
+     pages use for their own dates, so arriving at one from here is a
+     continuation rather than a jump. */
+  .runs { background: var(--color-paper); padding: var(--space-5); }
+  .runs-head { margin: 0 0 var(--space-4); font-size: var(--text-lg); }
+  .runs ul { list-style: none; margin: 0; padding: 0; }
+  .run + .run { margin-top: var(--space-6); padding-top: var(--space-6); border-top: 2px solid var(--color-ink); }
+  .run p { margin: 0 0 var(--space-3); }
+  .run-when {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: var(--text-xl); line-height: 1.1; font-variant-numeric: tabular-nums;
+  }
+  /* The title, because this list carries more than one workshop. On a
+     workshop's own page the h1 is two inches above and the plate leaves it
+     out. */
+  .run-what { font-size: var(--text-base); }
+  .run-what a { color: var(--color-ink); }
+  .run-what a:hover { color: var(--color-brand); }
+  .run-where { font-size: var(--text-sm); color: var(--color-ink-muted); font-variant-numeric: tabular-nums; }
+  .run-sold {
+    font-family: var(--font-body); text-transform: uppercase;
+    letter-spacing: 0.07em; font-size: var(--text-button);
+  }
+
+  /* THE BAND, across the page. */
   .dates { padding-block: var(--space-16); }
   .dates--paper { background: var(--color-paper); }
   .dates--grey { background: var(--color-ground-grey); }

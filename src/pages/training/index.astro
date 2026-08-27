@@ -72,31 +72,28 @@ const jsonLd = {
           is a skill, and skills are not acquired from slides. All formats run online or
           in person, in-house or open enrolment.
         </p>
-      </div>
-      <div class="hire-aside">
         <p class="hire-count">
           {all.length} workshops, run by the authors of the book:
           {AUTHORS.map((a) => a.name).join(', ')}.
         </p>
-        {/* Only claim there are public dates when there are. An empty list is
-            not a state to design around; it is the normal one between runs. */}
-        {open.length > 0 && (
-          <p class="hire-count">
-            {open.length === 1 ? 'One public date is open.' : `${open.length} public dates are open.`}
-          </p>
-        )}
-        <p><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
+      </div>
+      <div class="hire-aside">
+        {/* The dates, where somebody looking for one expects to find them:
+            top right, beside the title, on the white plate the workshop pages
+            use for the same thing. They used to sit in a band below, on the
+            same white ground as the list of workshops, where the two blocks
+            ran together and neither said what it was.
+
+            Renders nothing when no run is open. That is the normal state
+            between dates, not an empty state to design around. */}
+        <PublicDates runs={open} titles={titles} enquiry={enquiry} as="plate" />
+        <p class="hire-ask"><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
       </div>
     </div>
 
     <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
-
-  {/* Above the list, because somebody who already knows which workshop they
-      want is here for a date, and somebody who does not is about to read five
-      teasers anyway. Renders nothing when no run is open. */}
-  <PublicDates runs={open} titles={titles} enquiry={enquiry} variant="paper" />
 
   <div class="section section--paper">
     <div class="wrap">
@@ -156,7 +153,12 @@ const jsonLd = {
   .hire-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: var(--space-10); align-items: start; }
   .hire h1 { font-size: clamp(2.25rem, 5.5vw, 3.5rem); line-height: 1.1; margin: 0 0 var(--space-8); }
   .hire-lede { font-size: var(--text-lg); line-height: 1.6; margin: 0; }
-  .hire-count { margin: 0 0 var(--space-6); font-size: var(--text-sm); }
+  /* Under the lede now, where it reads as a fact about the list rather than
+     as a caption on the dates. */
+  .hire-count { margin: var(--space-6) 0 0; font-size: var(--text-sm); }
+  /* The other door: no date that suits you, ask for one. Under the plate when
+     there is a plate, on its own when there is not. */
+  .hire-ask { margin: var(--space-8) 0 0; }
   .hire-figure {
     position: absolute; top: 0; right: 0; z-index: 0;
     width: 280px; height: auto; mix-blend-mode: lighten; pointer-events: none;

@@ -394,6 +394,26 @@ positions, and it would turn `Workshop` above into a relation, so a rename
 could not put the two out of step. It is worth doing on a day with nothing else
 in flight, because every workshop URL depends on that slug.
 
+### Where a date is shown
+
+Three places, and they are not the same shape:
+
+| Where | Shape |
+|---|---|
+| A workshop page | A white plate top right, for that workshop's runs only. The title is the h1 two inches above, so the plate leaves it out. |
+| `/training/` | The same white plate top right, carrying every open run with its workshop's title. |
+| The home page | A band across the page, between the talk and the bookings. |
+
+The plate and the band are one component, `PublicDates`, with an `as` prop.
+One component because a run that reads one way here and another way there is
+a run somebody has to check twice.
+
+On `/training/` the dates used to be a band directly above the list of
+workshops, on the same white ground the list uses. The two blocks ran into
+each other and neither said what it was. Top right is where somebody looking
+for a date is already looking, because that is where every workshop page puts
+its own.
+
 ## What is deliberately *not* in Notion
 
 The three authors and their bios, the book's URL, the contact address and the

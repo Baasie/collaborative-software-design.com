@@ -88,8 +88,6 @@ test('a divider that is a real seam survives', () => {
 
 
 
-
-
 test('the Teaser section stops at the next heading of any depth', () => {
   assert.equal(teaserOf('## Teaser\n\nPitch.\n\n### Deeper\n\nAlso prose.'), 'Pitch.');
 });
@@ -158,13 +156,6 @@ test('a nested child page is skipped, not published', async () => {
   const blocks = [{ type: 'child_page', child_page: { title: 'Old draft' } }, heading(2, 'Real')];
   assert.equal(await md().blocksToMd(blocks, null), '## Real');
 });
-
-/** The wrappers the sync emits, with a null for a column the lede emptied. */
-const colBlock = (...cols) => [
-  '<div class="cols" style="--tracks: 50fr 50fr">', '',
-  ...cols.flatMap((c) => ['<div class="col">', '', ...(c ? [c, ''] : []), '</div>', '']),
-  '</div>',
-].join('\n');
 
 test('the teaser is read from the body and not taken out of it', () => {
   // The one rule the workshop pages rest on: the body a reader sees is the
