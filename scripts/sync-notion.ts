@@ -19,7 +19,7 @@ import sharp from 'sharp';
 import { normaliseTags } from '../src/lib/tags';
 import {
   createBlocksToMd, assetRefs, fileUrl, imageExt, isAssetFor, kebab, plainTitle,
-  statusOf, teaserOf, tidyDividers, yamlList, yamlStr,
+  statusOf, teaserOf, tidyDividers, withoutTeaserHeading, yamlList, yamlStr,
   type AssetCtx, type StatusKind,
 } from './lib/notion-md';
 // Whether Notion is still shaped the way the readers below assume. Every typed
@@ -611,7 +611,7 @@ async function runTrainings(outRoot: string, write: boolean, full: boolean) {
       // body too would make every workshop open by saying the same thing
       // twice. The rest of the Teaser section stays where the author put it.
       teaser = teaserOf(full);
-      body = tidyDividers(full);
+      body = tidyDividers(withoutTeaserHeading(full));
       const cover = page.cover ? fileUrl(page.cover) : '';
       featured = cover ? await downloadImage(cover, ctx, 'featured') : null;
       process.stdout.write('.');

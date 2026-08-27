@@ -258,6 +258,25 @@ export function createBlocksToMd(deps: MdDeps) {
   return { blocksToMd, seenUnhandled };
 }
 
+/** A heading that says `Teaser` and nothing else.
+ *
+ *  The one thing the template takes out of a body, and it is a marker rather
+ *  than content: it names the section for whoever is writing it, and on the
+ *  page it would be a heading a reader has to skip and a chip in the contents
+ *  pointing at it. Deleting it in Notion has exactly the same effect, and the
+ *  Collaborative Software Design page has already done that.
+ *
+ *  Nothing else is removed. The paragraphs, pictures, columns and dividers
+ *  reach the page in the order and the shape somebody put them in. */
+export function withoutTeaserHeading(body: string): string {
+  return body
+    .split('\n')
+    .filter((l) => !/^#{2,6}\s*Teaser\s*$/.test(l.trim()))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 /** Dividers, tidied.
  *
  * A divider is a SEAM: the workshop page draws a heavy rule and opens the next

@@ -6,8 +6,6 @@ teaser: "Are software teams constantly hitting roadblocks, architecture decision
 cardImage: "./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-1.jpg"
 ---
 
-## Teaser
-
 <div class="cols" style="--tracks: 50fr 50fr">
 
 <div class="col">

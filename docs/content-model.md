@@ -73,7 +73,7 @@ structure:
 | *the filename* | `kebab()` of the title. |
 | `format` | The nearest heading above it, "2-day", "1 day or less". |
 | `order` | Its position on the Workshops page. **Dragging in Notion re-orders the site.** |
-| `teaser` | The first paragraph of prose, looked for inside the `Teaser` section when the page has one and anywhere in the body when it does not. **It is then removed from the body**, along with the `Teaser` heading itself, because the page prints it as the lede and would otherwise open by saying the same thing twice. Reading it and removing it go through one function for exactly that reason: when only the reading fell back to the whole body, a page that renamed its heading printed its opening paragraph in the hero and again underneath. |
+| `teaser` | The first paragraph of prose, looked for inside a `Teaser` section when the page has one and anywhere in the body when it does not. **Read, not moved.** It stays where the author wrote it and the page prints it there. |
 | `featuredImage` | The Notion page's **cover**, if it has one. Only the hero plate uses it. |
 | `cardImage` | The cover, or the **first picture in the body** when there is no cover. This is the social card, and nothing else reads it. |
 
@@ -140,6 +140,41 @@ is talking and why, About says what the two days are, What you will learn is
 the part people forward to whoever signs the invoice, Before the workshop and
 Audience answer "is this me", and the Agenda answers "what will I actually
 do". Which is roughly the order the questions arrive in.
+
+### The body is Notion's
+
+**The template does not edit the body.** It wraps it: a hero above it, coloured
+bands behind it, a booking bar under it. What is between those is the blocks
+somebody wrote, in the order and the shape they wrote them in.
+
+That rule is here because breaking it cost four bugs in a row. The hero used
+to print a lede, and to get one the converter cut the opening paragraph out of
+the body:
+
+- it was lifted and left behind, so the page said the same thing twice;
+- it was taken out of a column, so the picture beside it stood next to nothing;
+- the paragraph under the block was moved up to fill the hole, so the page
+  stopped saying what the page in Notion said;
+- and the shape a reader met had no relationship to the shape the author had
+  arranged.
+
+Each fix was reasonable on its own and the pile of them was not. A body the
+template edits is a body nobody can predict from looking at Notion, which is
+the one thing the authors have to be able to do.
+
+So the hero has no lede. The opening paragraph is printed where it was
+written, next to the picture it was written next to. `teaser` is still read
+out of the body for the meta description and the card on `/training/`, and
+reading is all it does.
+
+**The one exception** is a heading whose whole text is `Teaser`. That is a
+marker rather than content: it names the section for whoever is writing it,
+and on the page it would be a heading to skip and a chip in the contents
+pointing at it. Deleting it in Notion has the same effect.
+
+If the hero ever needs a lede again, the sustainable way to give it one is a
+field the author fills in, not a cut in the body. That means making Workshops
+a database with a `Teaser` property, the way `Public trainings` already is.
 
 ### Dividers are seams
 
