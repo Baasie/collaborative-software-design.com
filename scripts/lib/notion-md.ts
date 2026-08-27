@@ -258,11 +258,6 @@ export function createBlocksToMd(deps: MdDeps) {
   return { blocksToMd, seenUnhandled };
 }
 
-/** The opening pitch, lifted from the body so a card, a meta description and
- *  the page itself cannot say three different things.
- *
- *  Prefers an explicit `Teaser` section; falls back to the first paragraph of
- *  prose, which is what a page that has not been given one still has. */
 /** Dividers, tidied.
  *
  * A divider is a SEAM: the workshop page draws a heavy rule and opens the next
@@ -277,70 +272,6 @@ export function createBlocksToMd(deps: MdDeps) {
  * mistake worth telling somebody about. A divider that sits mid-body above a
  * paragraph IS worth reporting, and `strayDividers` in the sync does that.
  */
-/** No column ships empty.
- *
- *  The lede is lifted out of the body wherever it is, and on the Systems
- *  Design page it was the whole of the left column of the teaser: a picture on
- *  the right, the opening line on the left. Removing it left the picture
- *  beside nothing, and the paragraph that was written under the block stayed
- *  under it, so the page looked nothing like the page in Notion.
- *
- *  So the paragraph that follows the block moves up into the column the lede
- *  left. That is the shape Notion shows and the shape the other two-day page
- *  already has: prose on one side, a picture on the other. If nothing prose
- *  follows, the empty column goes, and a block down to one column is unwrapped
- *  rather than left as a half-width track. */
-export function tidyColumns(body: string): string {
-  let blocks = body.split(/\n{2,}/);
-
-  for (let guard = 0; guard < 20; guard += 1) {
-    const at = blocks.findIndex(
-      (b, i) => b.trim() === '<div class="col">' && blocks[i + 1]?.trim() === '</div>',
-    );
-    if (at === -1) break;
-
-    // The block this column sits in, and the first block after it. One level
-    // of nesting is all the converter emits, but count anyway.
-    let open = at;
-    while (open >= 0 && !blocks[open].trim().startsWith('<div class="cols"')) open -= 1;
-    if (open < 0) break;
-    let depth = 0;
-    let close = open;
-    for (; close < blocks.length; close += 1) {
-      const t = blocks[close].trim();
-      if (t.startsWith('<div')) depth += 1;
-      else if (t === '</div>') depth -= 1;
-      if (depth === 0) break;
-    }
-
-    const next = blocks[close + 1]?.trim() ?? '';
-    if (next && !/^[#!|<-]/.test(next) && next !== '---') {
-      blocks.splice(close + 1, 1);
-      blocks.splice(at + 1, 0, next);
-      continue;
-    }
-
-    blocks.splice(at, 2);
-    const cols = blocks.slice(open, close - 1).filter((b) => b.trim() === '<div class="col">').length;
-    if (cols > 1) {
-      blocks[open] = blocks[open].replace(
-        /--tracks: [^"]*/,
-        `--tracks: ${Array.from({ length: cols }, () => `${Math.round(100 / cols)}fr`).join(' ')}`,
-      );
-      continue;
-    }
-    // One column left, which is not a column. Take the wrappers off.
-    blocks = blocks.filter((b, i) => {
-      if (i === open || i === close - 2) return false;
-      if (i === open + 1 && b.trim() === '<div class="col">') return false;
-      if (i === close - 3 && b.trim() === '</div>') return false;
-      return true;
-    });
-  }
-
-  return blocks.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
-}
-
 export function tidyDividers(body: string): string {
   const lines = body.split('\n');
   const out: string[] = [];
@@ -388,61 +319,22 @@ function firstProse(blocks: string[]): number {
   return blocks.findIndex((b) => { const t = b.trim(); return t !== '' && !/^[#!|<]/.test(t); });
 }
 
-/** The body with the ONE paragraph that became the lede taken out.
+/** The paragraph the page opens with.
  *
- * That paragraph is lifted into the frontmatter by `teaserOf`, and the page
- * prints it as the lede above everything else, which is what the live training
- * page does. Printing it again at the top of the body would make every
- * workshop open by saying the same thing twice.
+ *  Read for the description and for the card on `/training/`, and read only.
  *
- * EVERYTHING ELSE IN THE SECTION STAYS, where the author put it. This used to
- * remove the whole section, which was fine while a teaser was one paragraph
- * and silently threw the rest away as soon as it was not: the Collaborative
- * Software Design teaser grew a pair of columns under its hook, and they never
- * reached the site at all.
- *
- * The `Teaser` heading goes with the paragraph, because the hero above IS the
- * teaser, and a section headed "Teaser" underneath it labels something the
- * reader has just finished.
- */
-
-/** Where the lede is. The first block of prose, looked for inside the Teaser
- *  section when the page has one and anywhere in the body when it does not.
- *
- *  Reading the lede and removing it both go through here, and they have to:
- *  when only the reading fell back to the whole body, a page that dropped its
- *  Teaser heading had its opening paragraph lifted into the hero AND left in
- *  place, and printed it twice. */
-function ledeAt(body: string) {
+ *  It used to be cut out of the body and printed as the hero's lede, and all
+ *  four of the bugs that followed were consequences of that cut: it was
+ *  lifted and left behind, so the page said it twice; it was taken out of a
+ *  column, so the picture beside it stood next to nothing; the paragraph
+ *  under the block was moved up to fill the hole, so the page stopped
+ *  matching the page in Notion. A body the template edits is a body nobody
+ *  can predict from looking at Notion. */
+export function teaserOf(body: string): string | undefined {
   const range = teaserRange(body);
   const lines = body.split('\n');
-  const start = range ? range.start + 1 : 0;
-  const end = range ? range.end : lines.length;
-  const blocks = lines.slice(start, end).join('\n').split(/\n{2,}/);
+  const scope = range ? lines.slice(range.start + 1, range.end).join('\n') : body;
+  const blocks = scope.split(/\n{2,}/).map((b) => b.trim());
   const i = firstProse(blocks);
-  return i < 0 ? null : { range, lines, start, end, blocks, i };
-}
-
-/** The paragraph the page opens with, which the site prints as its lede. */
-export function teaserOf(body: string): string | undefined {
-  const at = ledeAt(body);
-  return at ? at.blocks[at.i].trim().replace(/\s+/g, ' ') : undefined;
-}
-
-/** The body with that paragraph taken out, and with the Teaser heading itself
- *  taken out when there was one: the page prints the lede above the body, and
- *  would otherwise open by saying the same thing twice. */
-export function withoutLede(body: string): string {
-  const at = ledeAt(body);
-  if (!at) return body;
-
-  const blocks = [...at.blocks];
-  blocks.splice(at.i, 1);
-  const head = at.range ? at.lines.slice(0, at.range.start) : at.lines.slice(0, at.start);
-
-  return [
-    head.join('\n'),
-    blocks.join('\n\n').trim(),
-    at.lines.slice(at.end).join('\n'),
-  ].filter((part) => part.trim()).join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+  return i >= 0 ? blocks[i].replace(/\s+/g, ' ') : undefined;
 }

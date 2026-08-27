@@ -108,7 +108,11 @@ const jsonLd = courseJsonLd({
             paragraph anyway. */}
         {entry.data.format && <p class="eyebrow">{entry.data.format}</p>}
         <h1>{entry.data.title}</h1>
-        {entry.data.teaser && <p class="hire-lede">{entry.data.teaser}</p>}
+        {/* No lede here. The opening paragraph belongs to the block the
+            author wrote it in, next to the picture it was written next to,
+            and the page prints it there. `teaser` is still read from the
+            body for the description and the card on /training/, but nothing
+            is taken out of the body to make it. */}
 
         {!tocInBody && contents.length > 1 && (
           <nav class="toc" aria-label="On this page">

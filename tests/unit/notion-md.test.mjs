@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  kebab, richText, teaserOf, tidyColumns, tidyDividers, withoutLede, imageExt, isAssetFor, createBlocksToMd,
+  kebab, richText, teaserOf, tidyDividers, imageExt, isAssetFor, createBlocksToMd,
 } from '../../scripts/lib/notion-md.ts';
 
 const md = () => createBlocksToMd({ childrenOf: async () => [], downloadImage: async () => null });
@@ -86,59 +86,12 @@ test('a divider that is a real seam survives', () => {
   assert.equal(tidyDividers(body), body);
 });
 
-test('withoutLede removes the one paragraph the frontmatter carries', () => {
-  const body = '## Teaser\n\nThe pitch.\n\n## About the Workshop\n\nThe rest.';
-  assert.equal(withoutLede(body), '## About the Workshop\n\nThe rest.');
-  // The lede is still extractable from the ORIGINAL, which is the order the
-  // sync uses: read it out, then take it away.
-  assert.equal(teaserOf(body), 'The pitch.');
-});
 
-test('withoutLede KEEPS the rest of the teaser section', () => {
-  // The thing the old `withoutTeaser` threw away. The Collaborative Software
-  // Design teaser is a hook followed by two columns expanding on it, and the
-  // columns never reached the site at all.
-  const body = [
-    '## Teaser', '', 'The hook.', '',
-    '<div class="cols" style="--tracks: 50fr 50fr">', '',
-    '<div class="col">', '', 'Left.', '', '</div>', '',
-    '<div class="col">', '', 'Right.', '', '</div>', '',
-    '</div>', '', '---', '', '## About the workshop', '', 'Body.',
-  ].join('\n');
 
-  assert.equal(teaserOf(body), 'The hook.');
-  const out = withoutLede(body);
-  assert.ok(!out.includes('The hook.'), 'the lede is not printed twice');
-  assert.ok(!out.includes('## Teaser'), 'and the section keeps no heading of its own');
-  assert.ok(out.includes('Left.') && out.includes('Right.'), 'the columns survive');
-  assert.ok(out.startsWith('<div class="cols"'), 'and they are still the first thing on the page');
-});
 
-test('withoutLede still takes the lede when there is no Teaser section', () => {
-  // This used to leave the body alone, and that was the bug: `teaserOf` reads
-  // the lede from anywhere in the body, so a page with no `Teaser` heading had
-  // its opening paragraph printed in the hero and left in place underneath.
-  // The Collaborative Software Design page renamed its heading in Notion and
-  // opened by saying the same thing twice.
-  const body = '<div class="col">\n\nThe pitch.\n\nThe rest.\n\n</div>';
-  assert.equal(teaserOf(body), 'The pitch.');
-  const out = withoutLede(body);
-  assert.ok(!out.includes('The pitch.'), 'the lede is not printed twice');
-  assert.ok(out.includes('The rest.'), 'and the paragraph under it survives');
-  assert.ok(out.startsWith('<div class="col">'), 'inside the column it was written in');
-});
 
-test('withoutLede leaves a body with no prose in it alone', () => {
-  const body = '## Agenda\n\n![](./_assets/one.png)\n\n### Day one';
-  assert.equal(teaserOf(body), undefined);
-  assert.equal(withoutLede(body), body);
-});
-
-test('withoutLede stops at the next heading of any depth', () => {
-  assert.equal(
-    withoutLede('## Teaser\n\nPitch.\n\n### Deeper\n\nKept.'),
-    '### Deeper\n\nKept.',
-  );
+test('the Teaser section stops at the next heading of any depth', () => {
+  assert.equal(teaserOf('## Teaser\n\nPitch.\n\n### Deeper\n\nAlso prose.'), 'Pitch.');
 });
 
 test('a teaser that opens with columns does not hand back a div as its pitch', () => {
@@ -213,28 +166,25 @@ const colBlock = (...cols) => [
   '</div>',
 ].join('\n');
 
-test('a column the lede left is filled by the paragraph under the block', () => {
-  // The Systems Design teaser in Notion is the opening line beside a picture.
-  // The line goes to the hero, and what was left was a picture beside nothing,
-  // with the paragraph that belonged next to it sitting underneath it. The
-  // page looked nothing like the page in Notion.
-  const body = colBlock('', '![](./_assets/two-books.jpg)')
-    + '\n\nUncover the power of it.\n\n---\n\n## About';
-  const out = tidyColumns(body);
+test('the teaser is read from the body and not taken out of it', () => {
+  // The one rule the workshop pages rest on: the body a reader sees is the
+  // body Notion has. `teaserOf` reads the opening paragraph for the card and
+  // the description; nothing removes it, so the page reads the way the page
+  // in Notion reads, and no template rule can reach inside a block somebody
+  // composed.
+  const body = [
+    '<div class="cols" style="--tracks: 50fr 50fr">', '',
+    '<div class="col">', '', 'The hook.', '', 'And the pitch under it.', '', '</div>', '',
+    '<div class="col">', '', '![](./_assets/book.jpg)', '', '</div>', '',
+    '</div>', '', '---', '', '## About the workshop', '', 'Body.',
+  ].join('\n');
 
-  assert.ok(!/<div class="col">\s*<\/div>/.test(out), 'no column ships empty');
-  assert.ok(out.indexOf('Uncover the power of it.') < out.indexOf('two-books.jpg'),
-    'the paragraph is in the column the lede left, beside the picture');
-  assert.ok(out.includes('## About'), 'and the rest of the page is where it was');
+  assert.equal(teaserOf(body), 'The hook.');
+  assert.equal(tidyDividers(body), body, 'and the body comes through untouched');
 });
 
-test('with nothing prose to move up, the empty column goes and one column is unwrapped', () => {
-  const out = tidyColumns(colBlock('', '![](./_assets/two-books.jpg)') + '\n\n## About');
-  assert.equal(out, '![](./_assets/two-books.jpg)\n\n## About');
-});
-
-test('tidyColumns leaves a block whose columns are all full alone', () => {
-  // The Collaborative Software Design teaser: prose one side, book the other.
-  const body = colBlock('The pitch.', '![](./_assets/book.jpg)') + '\n\n---\n\n## About';
-  assert.equal(tidyColumns(body), body);
+test('a Teaser heading only says where to look for the teaser', () => {
+  const body = '## Teaser\n\nThe hook.\n\n## About\n\nThe rest.';
+  assert.equal(teaserOf(body), 'The hook.');
+  assert.equal(tidyDividers(body), body);
 });
