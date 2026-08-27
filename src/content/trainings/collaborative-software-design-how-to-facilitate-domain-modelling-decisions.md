@@ -2,7 +2,7 @@
 title: "Collaborative Software Design: How to facilitate domain modelling decisions"
 order: 1
 format: "2-day"
-teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made — maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
+teaser: "Your domain expert stayed quiet the entire session. So did the engineers who actually knew the codebase. A decision was made, maybe yours. Everyone nodded. You took the silence as agreement. Weeks later, it quietly falls apart."
 cardImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-modelling-decisions-body-1.jpg"
 ---
 
@@ -10,9 +10,9 @@ cardImage: "./_assets/collaborative-software-design-how-to-facilitate-domain-mod
 
 <div class="col">
 
-This training tackles that. Based on the book *Collaborative Software Design* by Kenny Baas-Schwegler, Evelyn van Kelle, and Gien Verschatse, it teaches you the facilitation discipline to make the invisible dynamics in the room visible — and to turn them into better decisions.
+This training tackles that. Based on the book *Collaborative Software Design* by  Evelyn van Kelle, Gien Verschatse, and Kenny Baas-Schwegler, it teaches you the facilitation discipline to make the invisible dynamics in the room visible, and to turn them into better decisions.
 
-This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping — they all do their job. The problem is what happens between the people holding the markers.
+This isn't a tools problem. EventStorming, Domain Storytelling, Wardley Mapping, they all do their job. The problem is what happens between the people holding the markers.
 
 </div>
 
