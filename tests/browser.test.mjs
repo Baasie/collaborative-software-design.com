@@ -217,6 +217,48 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test('a picture in a column starts where the text beside it starts', async () => {
+  // `.prose img` carries a 32px block margin, and the `<p>` markdown wraps a
+  // lone image in has no padding or border of its own, so the margin collapses
+  // straight out of it: every picture in a column began a line below the text
+  // it was paired with. A 32px slip is small enough to read as sloppiness
+  // rather than as a bug, which is why it stood for so long.
+  const WORKSHOPS = [
+    'collaborative-software-design-how-to-facilitate-domain-modelling-decisions',
+    'systems-design-with-strategic-domain-driven-design-and-team-topologies',
+  ];
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await ctx.newPage();
+
+  for (const slug of WORKSHOPS) {
+    await page.goto(`${base}/training/${slug}/`, { waitUntil: 'load' });
+    await page.evaluate(async () => {
+      document.querySelectorAll('img').forEach((i) => { i.loading = 'eager'; });
+      await Promise.all([...document.images].map((i) => i.decode().catch(() => {})));
+    });
+
+    const rows = await page.evaluate(() => [...document.querySelectorAll('.workshop-body .cols')]
+      .map((row) => [...row.children].map((col) => {
+        const first = col.firstElementChild;
+        const box = first.getBoundingClientRect();
+        const inner = col.getBoundingClientRect();
+        return { top: Math.round(box.top), fills: Math.round(inner.width - box.width) };
+      })));
+
+    assert.ok(rows.length >= 4, `${slug} renders ${rows.length} column rows`);
+    for (const [i, cols] of rows.entries()) {
+      const tops = cols.map((c) => c.top);
+      assert.equal(new Set(tops).size, 1,
+        `${slug} row ${i}: the columns start at ${tops.join(' and ')}`);
+      for (const c of cols) {
+        assert.equal(c.fills, 0,
+          `${slug} row ${i}: something in a column is ${c.fills}px narrower than the column`);
+      }
+    }
+  }
+  await ctx.close();
+});
+
 test('the contents sit at the foot of the section they open', async () => {
   // The contents were in the hero, above everything the page opens with, and
   // that read as two beginnings: chips, and then more of the same pink band

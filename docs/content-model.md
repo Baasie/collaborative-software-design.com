@@ -244,17 +244,25 @@ hero plate still reads `featuredImage`.
 dates and no cover the right column held a single button, which reads as a
 hole rather than as a layout.
 
-**A picture in a column is capped at 26rem tall**, and is scaled rather than
-cropped. Left uncapped, a portrait fills the column's width and then keeps
-going: the 755x1599 one in Systems Design's Audience rendered 1122px tall,
-took that row to 1597px, and left a thousand pixels of nothing beside the text
-next to it. The cap only bites on a portrait. Anything wider than about 1.3:1
-was already under it.
+**A picture in a column takes the column**, which is what the page in Notion
+shows. Two earlier versions capped it at 26rem instead, and both were worse.
+Cropping to the cap cut the authors' names off the bottom of the book cover:
+a photograph survives losing its edges and a cover does not, and the
+stylesheet cannot tell which one it is holding. Scaling to the cap left the
+picture narrower than its column, floating in the middle of it, which reads as
+misplaced rather than as a column.
 
-Cropping to the cap was the first version of that, and it cut the authors'
-names off the bottom of the book cover in the Collaborative Software Design
-teaser. A photograph survives losing its edges and a cover does not, and the
-stylesheet cannot tell which one it is holding.
+A very tall picture makes a very tall row: the 755x1599 photograph in Systems
+Design's Audience is 1127px at the column's width and takes that row to
+1681px. That is the author's call to make in Notion, by cropping it wider. It
+is visible there.
+
+**And it starts where the text beside it starts.** `.prose img` carries a 32px
+block margin, and the `<p>` markdown wraps a lone image in has no padding or
+border of its own, so that margin collapsed straight out of it and put every
+picture in a column a line below the text it was paired with. At the ends of a
+column there is nothing for it to separate, so it goes. A browser test holds
+the tops of a row together.
 
 Two of these pages hold an older draft of themselves as a *nested* page. The
 converter skips `child_page` blocks, so the draft is not published underneath
