@@ -198,11 +198,18 @@ monospace on a phone is about twenty characters a line.
 A pair of columns takes the whole row rather than the 46rem reading measure,
 which is what the live page does with its two 510px columns inside a 1080 row.
 
-**The hero splits where the columns split.** It used to run 1.58fr beside 1fr,
-so the two halves of the page met at 806px in the hero and at 696px in the
-body: the picture in the teaser sat 113px to the left of the dates plate above
-it, on a page whose left and right edges line up everywhere else. The hero is
-an even split now, with the same gap. This holds while a Notion column block
+**Everything on a training page splits where the columns split**, at 744px in
+a 1440px window. Three grids disagreed: the hero ran 1.58fr beside 1fr and met
+at 806, the columns from Notion meet at 744, and the band that closes the page
+ran 1.4fr and met at 839. Every one of those edges is straight and every one
+sits 164px from the side, so what it looked like was a step down the middle of
+the page: the picture in the teaser stood to the left of the dates plate above
+it. The same 1.58fr hero sat over the workshop list on `/training/` itself.
+They are all even splits now, with one gap.
+
+The browser test sweeps every two-column grid on all four training pages and
+wants one number, rather than checking the two the bug was first seen in. The
+closing band was found by the sweep. This holds while a Notion column block
 is an even split, which is what Notion makes by default and what both two-day
 pages use. A page that drags its columns off centre gets its own inner edge,
 and that is the author saying so.

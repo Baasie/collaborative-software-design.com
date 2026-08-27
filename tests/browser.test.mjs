@@ -218,34 +218,44 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
 });
 
 test('one page has one inner edge', async () => {
-  // The hero ran 1.58fr beside 1fr and the body columns run even, so the two
-  // halves of the page met at 806px up top and at 696px below it. Both edges
-  // are straight, both are 164 from the left and 164 from the right, and the
-  // 113px step between them is the kind of thing you see before you can say
-  // what you are seeing.
-  const WORKSHOPS = [
-    'collaborative-software-design-how-to-facilitate-domain-modelling-decisions',
-    'systems-design-with-strategic-domain-driven-design-and-team-topologies',
+  // The hero ran 1.58fr beside 1fr, the columns under it run even, and the
+  // band that closes the page ran 1.4fr, so the two halves of a workshop page
+  // met at 806px, then 696, then 839. Every one of those edges is straight,
+  // every one sits 164px from the side, and the steps between them are the
+  // kind of thing you see before you can say what you are seeing.
+  //
+  // This sweeps every two-column grid on the page rather than the two the bug
+  // was found in, because the third one was found by the sweep.
+  const PAGES = [
+    '/training/',
+    '/training/collaborative-software-design-how-to-facilitate-domain-modelling-decisions/',
+    '/training/systems-design-with-strategic-domain-driven-design-and-team-topologies/',
+    '/training/technical-leadership-for-architectural-decision-making/',
   ];
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await ctx.newPage();
 
-  for (const slug of WORKSHOPS) {
-    await page.goto(`${base}/training/${slug}/`, { waitUntil: 'load' });
-    const edges = await page.evaluate(() => {
-      const right = (el) => (el ? Math.round(el.getBoundingClientRect().x) : null);
-      const hero = document.querySelector('.hire-grid:not(.hire-grid--single)');
-      return {
-        hero: hero ? right(hero.children[1]) : null,
-        body: [...document.querySelectorAll('.workshop-body .cols')]
-          .map((row) => right(row.children[1])),
-      };
-    });
+  for (const path of PAGES) {
+    await page.goto(base + path, { waitUntil: 'load' });
+    const splits = await page.evaluate(() => [...document.querySelectorAll('*')]
+      .filter((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.display !== 'grid') return false;
+        if (cs.gridTemplateColumns.split(' ').length !== 2) return false;
+        return [...el.children].filter((k) => getComputedStyle(k).display !== 'none').length >= 2;
+      })
+      .map((el) => {
+        const kids = [...el.children].filter((k) => getComputedStyle(k).display !== 'none');
+        return {
+          what: (el.className || el.tagName).toString().split(' ')[0],
+          at: Math.round(kids[1].getBoundingClientRect().x),
+        };
+      }));
 
-    assert.ok(edges.body.length >= 4, `${slug} renders ${edges.body.length} column rows`);
-    const all = [...edges.body, ...(edges.hero === null ? [] : [edges.hero])];
-    assert.equal(new Set(all).size, 1,
-      `${slug} splits its columns at ${[...new Set(all)].join(' and ')}px`);
+    if (!splits.length) continue;
+    const seen = [...new Set(splits.map((s) => s.at))];
+    assert.equal(seen.length, 1,
+      `${path} splits its columns at ${splits.map((s) => `${s.what}@${s.at}`).join(', ')}`);
   }
   await ctx.close();
 });

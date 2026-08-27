@@ -198,7 +198,10 @@ const jsonLd = {
   .more-grid p { max-width: 42rem; }
 
   @media (min-width: 900px) {
-    .hire-grid { grid-template-columns: 1.58fr 1fr; gap: var(--space-16); }
+    /* The split the workshop list under it uses. At 1.58fr the hero met
+       at 870px and the list at 744, a 113px step down the middle of a
+       page whose left and right edges are straight. */
+    .hire-grid { grid-template-columns: 1fr 1fr; gap: var(--space-12); }
     .hire-figure { width: 557px; }
     .workshop-list { grid-template-columns: 1fr 1fr; gap: var(--space-10) var(--space-12); }
   }

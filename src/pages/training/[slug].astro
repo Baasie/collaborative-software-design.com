@@ -487,6 +487,8 @@ const jsonLd = courseJsonLd({
     .hire-grid { grid-template-columns: 1fr 1fr; gap: var(--space-12); }
     .hire-grid--single { grid-template-columns: 1fr; }
     .hire-figure { width: 557px; }
-    .more-grid { grid-template-columns: 1.4fr 1fr; gap: var(--space-16); }
+    /* The same split again. This band closes a page whose halves meet at
+       744px the whole way down; at 1.4fr it met at 839. */
+    .more-grid { grid-template-columns: 1fr 1fr; gap: var(--space-12); }
   }
 </style>
