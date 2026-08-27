@@ -217,6 +217,39 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test('one page has one inner edge', async () => {
+  // The hero ran 1.58fr beside 1fr and the body columns run even, so the two
+  // halves of the page met at 806px up top and at 696px below it. Both edges
+  // are straight, both are 164 from the left and 164 from the right, and the
+  // 113px step between them is the kind of thing you see before you can say
+  // what you are seeing.
+  const WORKSHOPS = [
+    'collaborative-software-design-how-to-facilitate-domain-modelling-decisions',
+    'systems-design-with-strategic-domain-driven-design-and-team-topologies',
+  ];
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await ctx.newPage();
+
+  for (const slug of WORKSHOPS) {
+    await page.goto(`${base}/training/${slug}/`, { waitUntil: 'load' });
+    const edges = await page.evaluate(() => {
+      const right = (el) => (el ? Math.round(el.getBoundingClientRect().x) : null);
+      const hero = document.querySelector('.hire-grid:not(.hire-grid--single)');
+      return {
+        hero: hero ? right(hero.children[1]) : null,
+        body: [...document.querySelectorAll('.workshop-body .cols')]
+          .map((row) => right(row.children[1])),
+      };
+    });
+
+    assert.ok(edges.body.length >= 4, `${slug} renders ${edges.body.length} column rows`);
+    const all = [...edges.body, ...(edges.hero === null ? [] : [edges.hero])];
+    assert.equal(new Set(all).size, 1,
+      `${slug} splits its columns at ${[...new Set(all)].join(' and ')}px`);
+  }
+  await ctx.close();
+});
+
 test('a picture in a column starts where the text beside it starts', async () => {
   // `.prose img` carries a 32px block margin, and the `<p>` markdown wraps a
   // lone image in has no padding or border of its own, so the margin collapses

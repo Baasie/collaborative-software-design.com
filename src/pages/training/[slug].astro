@@ -474,7 +474,17 @@ const jsonLd = courseJsonLd({
   .more-format { display: block; font-size: var(--text-sm); color: var(--color-ink-muted); }
 
   @media (min-width: 900px) {
-    .hire-grid { grid-template-columns: 1.58fr 1fr; gap: var(--space-16); }
+    /* The same split as the body, and the same gap. The hero used to run
+       1.58fr beside 1fr, which put its inner edge at 806px while the columns
+       under it split at 696: the picture in the teaser sat 113px to the left
+       of the dates plate above it, on a page whose left and right edges line
+       up everywhere else. One inner edge or none.
+
+       This holds while a Notion column block is an even split, which is what
+       Notion makes by default and what both two-day pages use. A page that
+       drags its columns off centre gets its own inner edge, and that is the
+       author saying so. */
+    .hire-grid { grid-template-columns: 1fr 1fr; gap: var(--space-12); }
     .hire-grid--single { grid-template-columns: 1fr; }
     .hire-figure { width: 557px; }
     .more-grid { grid-template-columns: 1.4fr 1fr; gap: var(--space-16); }

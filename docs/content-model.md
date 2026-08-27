@@ -198,6 +198,15 @@ monospace on a phone is about twenty characters a line.
 A pair of columns takes the whole row rather than the 46rem reading measure,
 which is what the live page does with its two 510px columns inside a 1080 row.
 
+**The hero splits where the columns split.** It used to run 1.58fr beside 1fr,
+so the two halves of the page met at 806px in the hero and at 696px in the
+body: the picture in the teaser sat 113px to the left of the dates plate above
+it, on a page whose left and right edges line up everywhere else. The hero is
+an even split now, with the same gap. This holds while a Notion column block
+is an even split, which is what Notion makes by default and what both two-day
+pages use. A page that drags its columns off centre gets its own inner edge,
+and that is the author saying so.
+
 **No column ships empty.** The lede is lifted out of the body wherever it is,
 and on the Systems Design page it was the whole of the left column of the
 teaser: the opening line beside a picture of the two books. Removing it left
