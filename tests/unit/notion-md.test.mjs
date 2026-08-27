@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  kebab, richText, teaserOf, tidyDividers, withoutLede, imageExt, isAssetFor, createBlocksToMd,
+  kebab, richText, teaserOf, tidyColumns, tidyDividers, withoutLede, imageExt, isAssetFor, createBlocksToMd,
 } from '../../scripts/lib/notion-md.ts';
 
 const md = () => createBlocksToMd({ childrenOf: async () => [], downloadImage: async () => null });
@@ -204,4 +204,37 @@ test('a nested child page is skipped, not published', async () => {
   // Two workshops hold an older draft of themselves as a nested page.
   const blocks = [{ type: 'child_page', child_page: { title: 'Old draft' } }, heading(2, 'Real')];
   assert.equal(await md().blocksToMd(blocks, null), '## Real');
+});
+
+/** The wrappers the sync emits, with a null for a column the lede emptied. */
+const colBlock = (...cols) => [
+  '<div class="cols" style="--tracks: 50fr 50fr">', '',
+  ...cols.flatMap((c) => ['<div class="col">', '', ...(c ? [c, ''] : []), '</div>', '']),
+  '</div>',
+].join('\n');
+
+test('a column the lede left is filled by the paragraph under the block', () => {
+  // The Systems Design teaser in Notion is the opening line beside a picture.
+  // The line goes to the hero, and what was left was a picture beside nothing,
+  // with the paragraph that belonged next to it sitting underneath it. The
+  // page looked nothing like the page in Notion.
+  const body = colBlock('', '![](./_assets/two-books.jpg)')
+    + '\n\nUncover the power of it.\n\n---\n\n## About';
+  const out = tidyColumns(body);
+
+  assert.ok(!/<div class="col">\s*<\/div>/.test(out), 'no column ships empty');
+  assert.ok(out.indexOf('Uncover the power of it.') < out.indexOf('two-books.jpg'),
+    'the paragraph is in the column the lede left, beside the picture');
+  assert.ok(out.includes('## About'), 'and the rest of the page is where it was');
+});
+
+test('with nothing prose to move up, the empty column goes and one column is unwrapped', () => {
+  const out = tidyColumns(colBlock('', '![](./_assets/two-books.jpg)') + '\n\n## About');
+  assert.equal(out, '![](./_assets/two-books.jpg)\n\n## About');
+});
+
+test('tidyColumns leaves a block whose columns are all full alone', () => {
+  // The Collaborative Software Design teaser: prose one side, book the other.
+  const body = colBlock('The pitch.', '![](./_assets/book.jpg)') + '\n\n---\n\n## About';
+  assert.equal(tidyColumns(body), body);
 });

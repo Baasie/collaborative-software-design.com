@@ -277,6 +277,70 @@ export function createBlocksToMd(deps: MdDeps) {
  * mistake worth telling somebody about. A divider that sits mid-body above a
  * paragraph IS worth reporting, and `strayDividers` in the sync does that.
  */
+/** No column ships empty.
+ *
+ *  The lede is lifted out of the body wherever it is, and on the Systems
+ *  Design page it was the whole of the left column of the teaser: a picture on
+ *  the right, the opening line on the left. Removing it left the picture
+ *  beside nothing, and the paragraph that was written under the block stayed
+ *  under it, so the page looked nothing like the page in Notion.
+ *
+ *  So the paragraph that follows the block moves up into the column the lede
+ *  left. That is the shape Notion shows and the shape the other two-day page
+ *  already has: prose on one side, a picture on the other. If nothing prose
+ *  follows, the empty column goes, and a block down to one column is unwrapped
+ *  rather than left as a half-width track. */
+export function tidyColumns(body: string): string {
+  let blocks = body.split(/\n{2,}/);
+
+  for (let guard = 0; guard < 20; guard += 1) {
+    const at = blocks.findIndex(
+      (b, i) => b.trim() === '<div class="col">' && blocks[i + 1]?.trim() === '</div>',
+    );
+    if (at === -1) break;
+
+    // The block this column sits in, and the first block after it. One level
+    // of nesting is all the converter emits, but count anyway.
+    let open = at;
+    while (open >= 0 && !blocks[open].trim().startsWith('<div class="cols"')) open -= 1;
+    if (open < 0) break;
+    let depth = 0;
+    let close = open;
+    for (; close < blocks.length; close += 1) {
+      const t = blocks[close].trim();
+      if (t.startsWith('<div')) depth += 1;
+      else if (t === '</div>') depth -= 1;
+      if (depth === 0) break;
+    }
+
+    const next = blocks[close + 1]?.trim() ?? '';
+    if (next && !/^[#!|<-]/.test(next) && next !== '---') {
+      blocks.splice(close + 1, 1);
+      blocks.splice(at + 1, 0, next);
+      continue;
+    }
+
+    blocks.splice(at, 2);
+    const cols = blocks.slice(open, close - 1).filter((b) => b.trim() === '<div class="col">').length;
+    if (cols > 1) {
+      blocks[open] = blocks[open].replace(
+        /--tracks: [^"]*/,
+        `--tracks: ${Array.from({ length: cols }, () => `${Math.round(100 / cols)}fr`).join(' ')}`,
+      );
+      continue;
+    }
+    // One column left, which is not a column. Take the wrappers off.
+    blocks = blocks.filter((b, i) => {
+      if (i === open || i === close - 2) return false;
+      if (i === open + 1 && b.trim() === '<div class="col">') return false;
+      if (i === close - 3 && b.trim() === '</div>') return false;
+      return true;
+    });
+  }
+
+  return blocks.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
 export function tidyDividers(body: string): string {
   const lines = body.split('\n');
   const out: string[] = [];
