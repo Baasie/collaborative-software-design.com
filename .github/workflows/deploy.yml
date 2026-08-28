@@ -140,7 +140,6 @@ jobs:
           SSH_USER: ${{ secrets.KUALO_USER }}
           DOCROOT: ${{ secrets.KUALO_PATH }}
           PORT: ${{ secrets.KUALO_SSH_PORT || '22' }}
-          KNOWN_HOSTS: ${{ secrets.KUALO_KNOWN_HOSTS }}
           KEEP: 5
         run: |
           set -euo pipefail
@@ -158,20 +157,10 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          # StrictHostKeyChecking=yes against a pinned key, not `no`. Turning it
-          # off to save a secret is how a deploy quietly starts trusting
-          # whatever answers on that address. An empty secret gives a silent
-          # six-second failure, so say so here instead.
-          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-          grep -q . ~/.ssh/known_hosts || {
-            echo "::error::KUALO_KNOWN_HOSTS is empty. Set it to the output of: ssh-keyscan -p $PORT -H <host>"
-            exit 1
-          }
 
-          # Reachability first, and separately, because the two failures below
-          # look identical from inside ssh and have nothing to do with each
-          # other.
+          # Reachability first, and separately from the keyscan below, because
+          # from inside ssh a lockout and a wrong key look identical and have
+          # nothing to do with each other.
           if ! timeout 20 bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; then
             echo "::error::Cannot reach $HOST on port $PORT from this runner."
             echo "The host serves the site, so this is usually its brute-force protection"
@@ -179,6 +168,37 @@ jobs:
             echo "the next runner draws a different address."
             exit 1
           fi
+
+          # The host key is taken fresh each run rather than pinned in a
+          # secret. Be clear about what that is and is not: the key arrives
+          # over the same connection an attacker would have to control to
+          # impersonate the host, so this is trust on first use, every run. It
+          # is not a defence against a machine-in-the-middle.
+          #
+          # What it still rules out is the thing StrictHostKeyChecking=no
+          # invites, a connection to a host offering no key at all, and what
+          # is at stake is small: SSH binds the client's signature to the
+          # session, and the session hash covers the server's host key, so an
+          # impostor cannot forward this authentication to the real host. The
+          # deploy key cannot be captured. A copy of a public website can.
+          #
+          # The trade is availability: a pinned key breaks every deploy the day
+          # the host rotates it, and the failure reads as a network problem.
+          # virtualddd.com made this call first; see docs/operations.md.
+          #
+          # Say why when it fails. Swallowing ssh-keyscan's stderr cost
+          # virtualddd.com an afternoon: the deploy failed in six silent
+          # seconds with no host key to verify against, and the log said
+          # nothing at all.
+          if ! ssh-keyscan -T 15 -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts 2>/tmp/keyscan.err; then
+            echo "::error::ssh-keyscan failed:"; cat /tmp/keyscan.err; exit 1
+          fi
+          grep -q . ~/.ssh/known_hosts || {
+            echo "::error::ssh-keyscan returned no host key for $HOST:$PORT."
+            cat /tmp/keyscan.err
+            exit 1
+          }
+          chmod 600 ~/.ssh/known_hosts
 
           SSH="ssh -i $HOME/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
 

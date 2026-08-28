@@ -37,7 +37,6 @@ release this site is serving. Both sites keep their own subdirectory.
 | `KUALO_USER` | yes | SSH user, which is the cPanel user. |
 | `KUALO_PATH` | yes | The document root, as an **absolute path**. |
 | `KUALO_SSH_KEY` | yes | The private key, whole file, header lines included. |
-| `KUALO_KNOWN_HOSTS` | yes | `ssh-keyscan -p <port> -H <host>`. |
 | `KUALO_SSH_PORT` | no | Defaults to 22. Kualo usually is not 22. |
 | `SITE_URL` | no | Only for the check after the deploy. Without it the release ships unverified. |
 
@@ -47,10 +46,26 @@ fail at the very last step with `ln: failed to create symbolic link: No such
 file or directory`, after a green build and a complete upload. The workflow
 rejects it up front now.
 
-**`KUALO_KNOWN_HOSTS` must not be empty.** The alternative to pinning the key
-is `StrictHostKeyChecking=no`, which is how a deploy quietly starts trusting
-whatever answers on that address. An empty secret used to give a silent
-six-second failure; the workflow now says which secret and what to put in it.
+**There is no `KUALO_KNOWN_HOSTS`, and that is a decision rather than an
+oversight.** The host key is taken fresh with `ssh-keyscan` on every run, the
+same as `virtualddd.com`. This repository pinned it in a secret until 28 August
+and then deliberately stopped.
+
+Be clear about what the two do. A fresh keyscan is trust on first use, every
+run: the key arrives over the same connection somebody would have to control
+to impersonate the host, so it is not a defence against a
+machine-in-the-middle. Pinning is.
+
+What is at stake is small, which is why the trade is worth taking. SSH binds
+the client's signature to the session and the session hash covers the server's
+host key, so an impostor cannot forward this deploy's authentication to the
+real host: **the deploy key cannot be captured or replayed.** What an impostor
+would get is a copy of `dist/`, which is a public website, and production would
+silently not update, which the verification a minute later catches.
+
+What pinning costs is availability. The day the host rotates its key, every
+deploy fails until somebody regenerates the secret, and the failure reads as a
+network problem rather than as what it is.
 
 ## Cutting the domain over
 
