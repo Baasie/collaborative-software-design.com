@@ -25,7 +25,7 @@
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/pt-sans-narrow": "^5.2.5",
     "@notionhq/client": "^5.25.2",
-    "astro": "^5.13.0",
+    "astro": "^7.2.6",
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
