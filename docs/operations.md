@@ -133,6 +133,43 @@ ln -sfn ~/releases/collaborative-software-design.com/<older-sha> ~/collaborative
 
 No deploy, no rebuild. Then purge the LiteSpeed cache.
 
+## Watching it, once a week
+
+`watch.yml`, Mondays at 06:40. It asks the live server the two questions the
+build cannot:
+
+- **Is every inherited address still answered?** `verify:live --all` reads all
+  48 entries in `data/live-urls.txt`, follows redirects and requires a 200 or a
+  410 at the end. The redirects live in `public/.htaccess`, which only the real
+  server executes, so a host config change, a restore that drops the file or a
+  document root pointed somewhere new breaks them without failing any build.
+- **How long has the certificate got?** Under 21 days fails the run, which is
+  two renewal attempts' worth of warning. Renewal is somebody else's
+  automation, and its failure mode is silence until the day it expires.
+
+Weekly rather than daily because 48 requests is a real load on shared hosting
+and neither failure is one you would fix within the hour. There is no
+notification step: a failed scheduled run emails the account that owns the
+repository, and a weekly "still fine" is a message people learn to skip.
+
+## What is synced, and when
+
+| | When | What |
+|---|---|---|
+| Hourly sync | :17, late by 2 to 20 minutes | Incremental. Asks Notion what changed and believes the answer. |
+| Nightly sync | 02:43 | `--full`. Every body re-fetched, `data/sync-state.json` ignored. |
+| Daily rebuild | 03:20 | No sync. Rebuilds so an expired public date leaves the site. |
+
+The nightly full pass exists because some changes do not register as an edit to
+the page that carries them. A picture replaced in place is the one that has
+already happened here, and an incremental sync can be correct while the site is
+still behind. It deploys nothing unless it produced a diff, so the cost is a
+few minutes of CI.
+
+It runs at 02:43 rather than nearer the rebuild on purpose: a full sync that
+finds something deploys, and 37 minutes is enough for that deploy to finish
+before 03:20 asks for another.
+
 ## When a deploy fails
 
 **"Cannot reach the host on port N."** Kualo's brute-force protection (cPHulk)
@@ -168,14 +205,14 @@ at all, then entirely correct). That is what `Let the release settle` is for.
 
 Worth knowing before relying on either:
 
-- **`verify:live` checks six addresses**, not the URL contract. Over there it
-  samples every URL family from a list of 967 and checks that redirects really
-  redirect. Ours would not notice a broken `.htaccess`.
-- **No weekly watch.** The URL contract and the certificate both rot without
-  anybody touching this repository, and nothing here would see it.
-- **No notification.** A deploy that skips, fails or ships is silent. The
+- **No notification.** A deploy that skips, fails or ships is silent, and the
   skipping case has already misled once: a green run that deployed nothing.
-  virtualddd.com posts to n8n on both ship and failure.
-- **No weekly `watch.yml`** and **no `review.yml`**. The first checks the URL
-  contract and the certificate against the live host; the second reads a diff
-  against the brief and needs an `ANTHROPIC_API_KEY`.
+  virtualddd.com posts to n8n; this site has nowhere to post to yet. A failed
+  scheduled run does email the account, which is what `watch.yml` relies on.
+- **No `review.yml`.** Over there, every push touching `src/`, `scripts/`,
+  `tests/` or the workflows is read against the brief by a language model, for
+  the half a test cannot see. It never blocks publishing. It needs an
+  `ANTHROPIC_API_KEY` and bills per push, so it is a spending decision rather
+  than a technical one.
+- **No `refresh-feed.yml`**, which is theirs alone: their home page fetches
+  Bluesky at build time and goes stale between deploys. Nothing here does.

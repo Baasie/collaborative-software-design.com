@@ -15,6 +15,15 @@ on:
     # Hourly. GitHub drops and delays scheduled runs on a quiet repository, so
     # treat this as a backstop rather than a clock: it is expected to run late.
     - cron: '17 * * * *'
+    # And once a night, everything, ignoring data/sync-state.json.
+    #
+    # The hourly run is incremental: it asks Notion what changed and believes
+    # the answer. Some changes do not register as an edit to the page that
+    # carries them — a picture replaced in place is the one that has already
+    # happened here — so an incremental sync can be correct and the site still
+    # be behind. A nightly full pass costs a few minutes of CI and closes that,
+    # and it deploys nothing unless it produced a diff.
+    - cron: '43 2 * * *'
   workflow_dispatch:
     inputs:
       full:
@@ -75,8 +84,19 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: |
+          # `inputs.full` on a dispatch, the nightly cron otherwise. A
+          # scheduled run carries no inputs, so the cron expression is the only
+          # thing that can say which of the two fired.
+          #
+          # Written as an `if` rather than `[ … ] && …`: with `set -e` the
+          # latter is only safe because a failing test is a non-final command
+          # of an AND-OR list, and a rule nobody should have to remember is a
+          # rule that eventually gets broken by an edit.
           FLAGS=""
-          [ "${{ inputs.full }}" = "true" ] && FLAGS="--full"
+          if [ "${{ inputs.full }}" = "true" ] || [ "${{ github.event.schedule }}" = "43 2 * * *" ]; then
+            FLAGS="--full"
+            echo "Full sync: every body re-fetched, ignoring data/sync-state.json." >> "$GITHUB_STEP_SUMMARY"
+          fi
           npx tsx scripts/sync-notion.ts content --write $FLAGS
           npx tsx scripts/sync-notion.ts trainings --write $FLAGS
           # After trainings, not beside it: a public run names the workshop it

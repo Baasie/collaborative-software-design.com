@@ -1,0 +1,69 @@
+# Ask the live site, once a week, whether it is still keeping its promises.
+#
+# Every deploy checks that the release landed, and the blocking suite proves the
+# *build* is right. Neither can see the two things that rot on their own,
+# without anybody touching this repository:
+#
+#   - the URL contract. Every address the WordPress site answered is redirected
+#     by `public/.htaccess`, which only the real server ever executes. A host
+#     config change, an `.htaccess` lost to a restore, a document root pointed
+#     somewhere new: none of those is a commit, so none of them fails a build.
+#   - the certificate. Its renewal is somebody else's automation and its failure
+#     mode is silence until the day it expires.
+#
+# Weekly rather than daily on purpose. It is a real load to put on shared
+# hosting, and neither failure is one you would fix within the hour.
+name: Watch the live site
+
+on:
+  schedule:
+    - cron: '40 6 * * 1'   # Mondays, early, so there is a week to act
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Is every inherited address still answered?
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          [ -n "$SITE_URL" ] || { echo "No SITE_URL secret, so there is nothing to check." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          # `--all` reads data/live-urls.txt and follows redirects, so a legacy
+          # address whose rule went missing lands on a 404 and fails here.
+          node scripts/verify-live.mjs "$SITE_URL" --all | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: How long has the certificate got?
+        if: always()
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          [ -n "$SITE_URL" ] || exit 0
+          host=$(echo "$SITE_URL" | sed -E 's#^https?://##; s#/.*##')
+          end=$(echo | openssl s_client -connect "$host:443" -servername "$host" 2>/dev/null \
+                | openssl x509 -noout -enddate | cut -d= -f2)
+          days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
+          echo "Certificate for $host expires in $days days ($end)." >> "$GITHUB_STEP_SUMMARY"
+          # Three weeks is two renewal attempts' worth of warning. Under that,
+          # fail: a certificate nobody renewed is the one failure on this list
+          # that takes the whole site down at a stroke.
+          if [ "$days" -lt 21 ]; then
+            echo "::error::The certificate for $host expires in $days days."
+            exit 1
+          fi
+
+# There is no notification step, and that is deliberate rather than missing.
+# A failed scheduled run emails the account that owns the repository, which is
+# the signal, and a weekly "still fine" is a message people learn to skip.
+# virtualddd.com posts to n8n because it already has the webhook; this site has
+# nowhere to post to yet.
