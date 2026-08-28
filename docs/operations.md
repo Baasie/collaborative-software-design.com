@@ -65,16 +65,20 @@ WordPress site. Switching over is a deliberate, one-time human step.
 echo $HOME
 ls -d ~/*/ ; ls ~/releases 2>/dev/null
 
-# 3. Let CI publish a release while WordPress is still serving. The deploy
-#    fails at the symlink guard, and that is the point: the release is on disk.
-#    (Set every secret except KUALO_PATH's final value first, or set
-#    KUALO_PATH to a directory that does not exist yet.)
-
-# 4. Swap, keeping the old site.
+# 3. Move WordPress aside. The document root now does not exist, which is the
+#    state the deploy needs: the guard only refuses to replace a REAL
+#    directory, and it creates the symlink itself when there is nothing there.
 mv ~/collaborative-software-design.com ~/collaborative-software-design.com.wordpress
-ln -sfn ~/releases/collaborative-software-design.com/<sha> ~/collaborative-software-design.com
+
+# 4. Run the deploy. It lands the release and points the document root at it.
+#    The site is down between 3 and 4, so keep the gap short.
 
 # 5. Purge the LiteSpeed cache in cPanel, or the old pages keep answering.
+
+# To avoid any gap at all, stage a release first: set KUALO_PATH to a scratch
+# path that does not exist (~/staging.csd), run the deploy, then do 3 and point
+# the real document root at the release it made, and set KUALO_PATH back.
+ln -sfn ~/releases/collaborative-software-design.com/<sha> ~/collaborative-software-design.com
 ```
 
 **Do not delete the parked WordPress directory** on the strength of the site
