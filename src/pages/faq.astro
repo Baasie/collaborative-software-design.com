@@ -6,12 +6,14 @@
  * archive of the column, and the h1 says so, so that somebody arriving from a
  * "FAQ" link is not confused about what they are looking at.
  */
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LetterRow from '../components/LetterRow.astro';
 import TagFilter from '../components/TagFilter.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { letters, tagCounts } from '../lib/collections';
 import { pageTitle, organisation, mailto } from '../lib/seo';
+import como from '../assets/dear-como.png';
 
 const entries = await letters();
 const tags = tagCounts(entries);
@@ -32,7 +34,19 @@ const jsonLd = {
 ---
 <BaseLayout title={pageTitle('Dear CoMo')} description={description} jsonLd={jsonLd}>
   <section class="hero section--blue">
-    <div class="wrap hero-inner">
+    <div class="wrap hero-inner faq-hero">
+      {/* The column's own mark, the one the live page stamps above its title.
+          First in the source so it opens the page on a phone the way it does
+          there, and in the right column on a desktop, where it fills a half
+          of the band that was otherwise empty blue.
+
+          `alt=""` because the h1 beside it says Dear CoMo. A screen reader
+          being told "drawing of a woman in a bonnet" learns nothing it can
+          use. */}
+      <Image class="como" src={como} alt="" widths={[160, 260, 520]}
+             sizes="(min-width: 900px) 260px, 140px" loading="eager" />
+
+      <div class="faq-hero-text">
       <p class="eyebrow eyebrow--ink">Questions and answers</p>
       <h1>Dear CoMo</h1>
       <p class="hero-lede">
@@ -46,6 +60,7 @@ const jsonLd = {
           'A question for Dear CoMo',
           'Dear CoMo,\n\n',
         )}>Ask CoMo a question</a>
+      </div>
       </div>
     </div>
   </section>
@@ -75,6 +90,25 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
+  .faq-hero { display: grid; gap: var(--space-8); }
+  /* A stamp, not a photograph: the drawing has a white ground of its own, so
+     the ring is what makes it a mark rather than a picture that failed to
+     load a background. */
+  .como {
+    width: 140px; height: auto;
+    border-radius: 50%;
+    border: 3px solid var(--color-ink);
+    background: var(--color-paper);
+  }
+
+  @media (min-width: 900px) {
+    /* `auto` rather than an even split: the lede keeps its measure and the
+       mark keeps its size, and its right edge lands on the page's. */
+    .faq-hero { grid-template-columns: 1fr auto; gap: var(--space-12); align-items: start; }
+    .como { grid-column: 2; grid-row: 1; width: 260px; }
+    .faq-hero-text { grid-column: 1; grid-row: 1; }
+  }
+
   /* A ruled list, not a grid of boxes. The heavy rule is the lid: the rows
      under it read as one block somebody can run an eye down, which is the
      whole job of this page. */

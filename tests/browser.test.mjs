@@ -217,6 +217,39 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
+test("the Dear CoMo mark is on its index and is not the letters' picture", async () => {
+  // The column has a face, the one the live page stamps above its title, and
+  // dropping the cards took it off the page along with the fifteen copies of
+  // it that were the problem. One is a mark; fifteen are wallpaper.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/faq/', { waitUntil: 'load' });
+
+  const seen = await page.evaluate(() => {
+    const hero = document.querySelector('.hero');
+    const mark = hero.querySelector('img');
+    if (!mark) return null;
+    const r = mark.getBoundingClientRect();
+    const cs = getComputedStyle(mark);
+    return {
+      size: Math.round(r.width),
+      round: cs.borderRadius,
+      right: Math.round(r.right),
+      edge: Math.round(document.querySelector('.letters').getBoundingClientRect().right),
+      alt: mark.getAttribute('alt'),
+      inRows: document.querySelectorAll('[data-test="letter-card"] img').length,
+    };
+  });
+
+  assert.ok(seen, '/faq/ has no mark in its hero');
+  assert.ok(seen.size >= 200, `the mark renders at ${seen.size}px, which is a favicon`);
+  assert.match(seen.round, /50%|9999px/, 'the mark is not a circle, so it reads as a picture');
+  assert.equal(seen.right, seen.edge, `the mark ends at ${seen.right}px and the list at ${seen.edge}px`);
+  assert.equal(seen.alt, '', 'the mark repeats the h1 beside it to a screen reader');
+  assert.equal(seen.inRows, 0, `${seen.inRows} letters carry the same drawing again in the list`);
+  await ctx.close();
+});
+
 test('the dates on /training/ belong to neither band they sit between', async () => {
   // They were a band of their own directly above the list of workshops, on
   // the same white ground the list uses: two blocks with nothing between them,
