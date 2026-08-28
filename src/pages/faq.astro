@@ -2,9 +2,9 @@
 /** The Dear CoMo index.
  *
  * At `/faq/` because that is where the WordPress site put it, and an address
- * is a promise. It is not a list of questions about the book. It is the
- * archive of the column, and the h1 says so, so that somebody arriving from a
- * "FAQ" link is not confused about what they are looking at.
+ * is a promise. The menu used to say "FAQ" too, which promised a page this is
+ * not: none of the fifteen letters is a question about the book, the training
+ * or the price. The label is the column's own name now; the address is not.
  */
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -50,10 +50,10 @@ const jsonLd = {
       <p class="eyebrow eyebrow--ink">Questions and answers</p>
       <h1>Dear CoMo</h1>
       <p class="hero-lede">
-        Somebody writes in with a question about a room that is not working. CoMo
-        writes back. No framework to adopt and no maturity model to climb. Just what is
-        actually happening between the people in the session, and what you can do about
-        it on Monday.
+        Somebody writes in with a question about a room that is not working. CoMo,
+        short for collaborative modelling, writes back. No framework to adopt and no
+        maturity model to climb. Just what is actually happening between the people in
+        the session, and what you can do about it on Monday.
       </p>
       <div class="hero-actions">
         <a class="btn btn--ink" href={mailto(

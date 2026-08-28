@@ -279,23 +279,28 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       }
       .nav-toggle span { display: block; width: 22px; height: 3px; background: var(--color-ink); }
 
-      /* The header switches to the hamburger at 1100px, not at the 800px the
+      /* The header switches to the hamburger at 1180px, not at the 800px the
          rest of the site uses, and that is a measured number rather than a
-         taste. Laid out on one row the flat menu needs 570px, the wordmark
-         240px and BUY BOOK 130px, 988px of content, which at `width: 90%` is
-         a 1098px viewport. Below that it wrapped to two rows and made the
-         sticky header 177px tall, which is a lot of chrome to carry down a
+         taste. Laid out on one row the flat menu needs 630px, the wordmark
+         240px and BUY BOOK 130px, which at `width: 90%` first fits in a 1180px
+         viewport. Below that it wraps to two rows and makes the sticky header
+         177px tall against 133px, which is a lot of chrome to carry down a
          tablet. Six items and a 320px wordmark simply do not fit; no amount of
          tightening gets there, since fitting at 800px would need about a 10px
          menu.
-         Between 1100 and 1400 the wordmark comes down to 240px to buy the
+
+         It was 1100 until the menu called this column FAQ. `Dear CoMo` is the
+         page's own name and 55px wider, and 55px is the whole margin: measured
+         at 20px steps, 1160 still wrapped and 1180 did not.
+
+         Between 1180 and 1400 the wordmark comes down to 240px to buy the
          room. Above that it is 320px with 228px to spare. */
-      @media (min-width: 1100px) and (max-width: 1399.98px) {
+      @media (min-width: 1180px) and (max-width: 1399.98px) {
         .brand :global(.logo) { width: 240px; }
         .nav-list { gap: var(--space-4); }
       }
 
-      @media (max-width: 1099.98px) {
+      @media (max-width: 1179.98px) {
         .header-inner { flex-wrap: wrap; }
         /* 320px of wordmark plus a 48px button does not fit a 390px phone, and
            wrapping the button under the logo costs a whole row of height on

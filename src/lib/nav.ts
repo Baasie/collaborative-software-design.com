@@ -33,7 +33,16 @@ export const NAV: NavItem[] = [
   { href: '/#whatsinside', label: "What's inside" },
   { href: '/training/', label: 'Training' },
   { href: '/facilitation/', label: 'Consulting' },
-  { href: '/faq/', label: 'FAQ', section: true },
+  // The column's own name, not "FAQ". Fifteen letters, and not one of them is
+  // a question about the book, the training or the price: they are a
+  // facilitator's problems, answered by the authors. "FAQ" promised the wrong
+  // thing to somebody looking for practical answers, and buried the thing that
+  // is actually a draw under the dullest word available.
+  //
+  // The ADDRESS stays `/faq/`. That is what WordPress gave the column and what
+  // eighteen legacy redirects land on, and a label is not a promise the way an
+  // address is.
+  { href: '/faq/', label: 'Dear CoMo', section: true },
   { href: '/#contact', label: 'Contact' },
 ];
 
