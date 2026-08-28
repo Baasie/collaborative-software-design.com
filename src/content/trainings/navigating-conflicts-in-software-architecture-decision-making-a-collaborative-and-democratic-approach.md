@@ -22,15 +22,11 @@ Are you struggling with complex architectural decisions in software design? Ever
 
 </div>
 
----
-
 ## About the workshop
 
 Software architecture forms the backbone to building successful software systems, but the decision-making process can be a hassle to navigate due to complexity and conflicts. These conflicts can originate from a lack of complete information to emotionally charged personal preferences, leading to decisions that may not fully align with the system's overall objectives. This misalignment can result in a less than ideal software architecture for the business and it also can leave the team members unhappy and resist the decision. Our goal should be to ensure decisions are sustainable – benefiting both the technical needs and the human needs involved.
 
 Drawing from our co-authored book “Collaborative Software Design”, this concise one-day workshop is an expert deep dive focused on understanding conflict resolution during collaborative modelling and architectural decision-making and navigating them effectively. Within this interactive session, you will experience a democratic approach to resolving conflicts that often arise from the complex interplay of incomplete information, personal preference, and emotional charge.
-
----
 
 ## What you will learn
 
@@ -46,21 +42,11 @@ Drawing from our co-authored book “Collaborative Software Design”, this conc
 
 ![](./_assets/navigating-conflicts-in-software-architecture-decision-making-a-collaborative-and-democratic-approach-body-2.png)
 
----
-
-<div class="cols" style="--tracks: 50fr 50fr">
-
-<div class="col">
-
 ## Before the workshop
 
 To maximise your experience in this workshop, having done collaborative modelling before is useful. For those eager to advance their preparation, you can prepare by starting by reading our book on [Collaborative Software design](https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d). Before the workshop we will provide you with some introduction material on what collaborative modelling is.
 
 Our workshop is designed to be interactive, immersing you in hands-on learning. For online sessions, we utilize Miro, a digital whiteboard platform, for collaborative activities. If you're not familiar with Miro, we recommend the self-paced Miro Academy: [Miro Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding). This brief course will give you the essential skills to actively engage in the workshop.
-
-</div>
-
-<div class="col">
 
 ## Audience
 
@@ -79,7 +65,3 @@ This workshop is designed for anyone who is involved in creating and maintaining
 - Agile coaches & Scrum Masters
 
 - Anyone interested in learning how to facilitate better decisions to improve their software design process.
-
-</div>
-
-</div>

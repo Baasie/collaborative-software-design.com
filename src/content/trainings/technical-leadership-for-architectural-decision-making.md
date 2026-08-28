@@ -24,8 +24,6 @@ If you answered yes to some of these questions, this training is designed for yo
 
 </div>
 
----
-
 ## About the workshop
 
 <div class="cols" style="--tracks: 50fr 50fr">
@@ -47,8 +45,6 @@ We'll equip you with proven techniques to guide your team through complex design
 </div>
 
 This immersive two-day workshop provides both the theory and hands-on practice you need to master leading collaborative modeling and architectural design sessions. You'll leave with a practical toolkit of strategies and facilitation techniques specifically tailored for Tech Leads to foster inclusive decision-making, manage differing viewpoints constructively, proactively address and mitigate resistance, and ultimately guide your team in building high-quality, sustainable software that everyone is proud to own. Stop facing resistance to your decisions and start facilitating true team ownership of your architecture.
-
----
 
 ## What you will learn
 
@@ -80,17 +76,15 @@ This immersive two-day workshop provides both the theory and hands-on practice y
 
 ![](./_assets/technical-leadership-for-architectural-decision-making-body-3.png)
 
----
-
 <div class="cols" style="--tracks: 50fr 50fr">
 
 <div class="col">
 
 ## Before the workshop
 
-To get the most out of this workshop, prior experience with collaborative modelling is beneficial. If you're looking to prepare further, consider reading our book on [Collaborative Software Design](https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d). We will also provide introductory materials on collaborative modelling before the workshop begins.
+To get the most out of this workshop, prior experience with collaborative modelling is beneficial. If you're looking to prepare further, consider reading our book on[ Collaborative Software Design](https://www.manning.com/books/collaborative-software-design?utm_source=baas&utm_medium=affiliate&utm_campaign=book_baas_collaborative_2_1_23&a_aid=baas&a_bid=2f174b8d). We will also provide introductory materials on collaborative modelling before the workshop begins.
 
-Our workshop is highly interactive, emphasizing hands-on learning. For online sessions, we use Miro, a digital whiteboard platform, for collaborative exercises. If you are new to Miro, we suggest taking the self-paced Miro Academy: [Miro Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding). This brief course will equip you with the necessary skills to actively participate in the workshop.
+Our workshop is highly interactive, emphasizing hands-on learning. For online sessions, we use Miro, a digital whiteboard platform, for collaborative exercises. If you are new to Miro, we suggest taking the self-paced Miro Academy:[ Miro Participant Onboarding Course](https://academy.miro.com/courses/participant-onboarding). This brief course will equip you with the necessary skills to actively participate in the workshop.
 
 </div>
 
@@ -109,8 +103,6 @@ This two-day workshop empowers Tech leads or those wishing to become or make tec
 </div>
 
 </div>
-
----
 
 ## Agenda
 
