@@ -201,18 +201,30 @@ part of a minute afterwards every address answers 200 from the document root
 (measured on virtualddd.com: 105 of 105 sampled URLs, no redirects and no 410s
 at all, then entirely correct). That is what `Let the release settle` is for.
 
-## What is still thinner here than on virtualddd.com
+## How this compares with virtualddd.com
 
-Worth knowing before relying on either:
+The same host, the same account, the same stack, and since 28 August the same
+pipeline. Everything that runs there runs here: the deploy with its guards, the
+retry for a cPHulk lockout, the weekly watch, dependabot with its automerge,
+CODEOWNERS, and Plausible behind two repository variables.
 
-- **No notification.** A deploy that skips, fails or ships is silent, and the
-  skipping case has already misled once: a green run that deployed nothing.
-  virtualddd.com posts to n8n; this site has nowhere to post to yet. A failed
-  scheduled run does email the account, which is what `watch.yml` relies on.
-- **No `review.yml`.** Over there, every push touching `src/`, `scripts/`,
-  `tests/` or the workflows is read against the brief by a language model, for
-  the half a test cannot see. It never blocks publishing. It needs an
-  `ANTHROPIC_API_KEY` and bills per push, so it is a spending decision rather
-  than a technical one.
-- **No `refresh-feed.yml`**, which is theirs alone: their home page fetches
-  Bluesky at build time and goes stale between deploys. Nothing here does.
+Three files exist there and not here, and none of them is a gap:
+
+- **`review.yml`** reads a diff against the brief with a language model. It is
+  present there and **has never run its review**: it needs an
+  `ANTHROPIC_API_KEY`, no such secret exists on either repository, so every
+  push hits its gate and writes "no reviewer configured". Adding the file here
+  without a key would reproduce that exactly. If it is ever wanted it is a
+  spending decision, and it would want to be made for both.
+- **The n8n notifications** on ship and on failure. There is nowhere to post to
+  from this site and it is not wanted. A failed scheduled run emails the
+  account, which is what the watch relies on.
+- **`refresh-feed.yml`** rebuilds when Bluesky has something their home page
+  does not. Nothing here fetches a feed at build time.
+
+Two differences remain in *timing* rather than in machinery. Their sync is
+triggered by n8n the moment something is published, so their content is live
+within a minute; ours waits for the hourly cron, which GitHub fires two to
+twenty minutes late. And this repository rebuilds daily at 03:20 where theirs
+does not, because a public training date has to leave the site on the day it
+passes and nothing pushes on that day.
