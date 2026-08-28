@@ -116,7 +116,7 @@ const TALK = {
     {/* Decorative: the engraved figure the book cover is drawn from. `lighten`
         is the live page's own `background-blend-mode`, which is what makes her
         read as a tint of the orange rather than a photo stuck on top of it. */}
-    <Image class="hero-figure" src={heroWoman} alt="" widths={[280, 557]}
+    <Image class="hero-figure" src={heroWoman} alt="" role="presentation" widths={[280, 557]}
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
 
@@ -134,7 +134,7 @@ const TALK = {
         {/* Decorative: a photograph of a modelling session. The live page tilts
             it 357deg and hides it below 980px, where it would be a 480px-tall
             image between a reader and the words. */}
-        <Image class="chapter-figure" src={chapterPhoto} alt="" widths={[483]} sizes="483px" />
+        <Image class="chapter-figure" src={chapterPhoto} alt="" role="presentation" widths={[483]} sizes="483px" />
         <div class="chapter-copy">
           <p class="eyebrow">Chapter #{lead.number}</p>
           <h3>{lead.heading}</h3>
@@ -190,7 +190,7 @@ const TALK = {
       <div class="grid grid--4">
         {LEARN.map((l) => (
           <div class="learn">
-            <Image class="learn-icon" src={l.icon} alt="" width={103} height={103} />
+            <Image class="learn-icon" src={l.icon} alt="" role="presentation" width={103} height={103} />
             <h3>{l.title}{l.second && <><br />{l.second}</>}</h3>
           </div>
         ))}
@@ -208,7 +208,7 @@ const TALK = {
       <div class="video" data-test="video">
         <button class="js-video-play video-play" type="button"
                 data-video={TALK.id} aria-label={`Play: ${TALK.title}`}>
-          <Image src={talkPoster} alt="" widths={[640, 1080]} sizes="(min-width: 900px) 1080px, 100vw" />
+          <Image src={talkPoster} alt="" role="presentation" widths={[640, 1080]} sizes="(min-width: 900px) 1080px, 100vw" />
           <span class="video-icon" aria-hidden="true">▶</span>
         </button>
         <p class="video-caption">

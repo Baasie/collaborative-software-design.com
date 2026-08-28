@@ -24,7 +24,7 @@ const summary = entry.data.metaDescription ?? excerpt(entry.body ?? '', '', 150)
          data-tags={allTags.map(tagSlug).join(' ')}>
   {entry.data.featuredImage && (
     <div class="card-media">
-      <Image src={entry.data.featuredImage} alt="" width={640} height={360} />
+      <Image src={entry.data.featuredImage} alt="" role="presentation" width={640} height={360} />
     </div>
   )}
   <div class="card-body">

@@ -162,14 +162,14 @@ const jsonLd = courseJsonLd({
              alt is empty because the picture illustrates the workshop rather
              than saying anything the page does not. */
           <figure class="hire-figure-plate">
-            <Image src={entry.data.featuredImage} alt="" widths={[396, 792]}
+            <Image src={entry.data.featuredImage} alt="" role="presentation" widths={[396, 792]}
                    sizes="(min-width: 900px) 396px, 90vw" />
           </figure>
         )}
       </div>
     </div>
 
-    <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
+    <Image class="hire-figure" src={heroWoman} alt="" role="presentation" widths={[280, 557]}
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
 

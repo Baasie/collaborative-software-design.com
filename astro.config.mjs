@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
+import { rehypeEmptyAlt } from './src/lib/rehype-alt.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,6 +10,11 @@ export default defineConfig({
   // Every URL ends in a slash, which is what WordPress served. A link that
   // worked yesterday must not 301 today just to gain a slash.
   trailingSlash: 'always',
+  markdown: {
+    // A Notion image with no caption renders without an `alt` attribute at
+    // all, and a screen reader then reads the file name. See the plugin.
+    rehypePlugins: [rehypeEmptyAlt],
+  },
   integrations: [
     sitemap({
       // /search/ is a tool for people already here, and an empty results page

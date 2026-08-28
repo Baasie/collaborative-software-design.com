@@ -210,6 +210,25 @@ test('a long workshop page carries its contents and a following booking bar', ()
   }
 });
 
+test('no image reaches a reader as a file name', () => {
+  // Astro drops `alt=""` from a markdown image on the way to the page, so an
+  // image with no caption in Notion shipped with no alt attribute at all and
+  // a screen reader read the hashed file name aloud. Every `<img>` has to
+  // carry an alt or be marked presentational.
+  let checked = 0;
+  const bare = [];
+  for (const f of pages) {
+    for (const tag of read(f).match(/<img\b[^>]*>/g) ?? []) {
+      checked += 1;
+      if (!/\salt=/.test(tag) && !/role="(presentation|none)"/.test(tag)) {
+        bare.push(`${urlOf(f)}: ${tag.slice(0, 90)}`);
+      }
+    }
+  }
+  assert.ok(checked > 40, `only ${checked} images checked; the reader stopped matching`);
+  assert.deepEqual(bare, []);
+});
+
 test('no page ships an empty column', () => {
   // A column with nothing in it is a hole: the Systems Design teaser had a
   // picture beside one, because the lede that used to fill it is lifted into

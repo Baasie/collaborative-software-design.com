@@ -39,7 +39,7 @@ interface Props {
 const { width = 260, alt = SITE_NAME, variant = 'ink', class: cls } = Astro.props;
 const src = variant === 'diap' ? logoDiap : logoInk;
 ---
-<Image src={src} alt={alt} width={width} height={Math.round((width / 500) * 82)}
+<Image src={src} alt={alt} role={alt === '' ? 'presentation' : undefined} width={width} height={Math.round((width / 500) * 82)}
        densities={[1, 2]} class:list={['logo', cls]} loading="eager" />
 
 <style>

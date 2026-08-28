@@ -91,7 +91,7 @@ const jsonLd = {
 
         <div class="chapter-body">
           {figurePlacement === 'inset' && (
-            <Image class="chapter-inset" src={figure} alt={figureAlt}
+            <Image class="chapter-inset" src={figure} alt={figureAlt} role={figureAlt === '' ? 'presentation' : undefined}
                    widths={[320, 640]} sizes="320px" />
           )}
           <slot />
@@ -103,7 +103,7 @@ const jsonLd = {
 
       {figurePlacement === 'full' && (
         <figure class="chapter-figure">
-          <Image src={figure} alt={figureAlt} widths={[640, 980, figure.width]}
+          <Image src={figure} alt={figureAlt} role={figureAlt === '' ? 'presentation' : undefined} widths={[640, 980, figure.width]}
                  sizes="(min-width: 1200px) 1080px, 100vw" />
         </figure>
       )}

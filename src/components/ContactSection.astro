@@ -91,7 +91,7 @@ const ICONS: Record<string, ImageMetadata> = {
         {SOCIALS.map((s) => (
           <li>
             <a href={s.url} rel="noopener" aria-label={s.name}>
-              <Image src={ICONS[s.name]} alt="" width={50} height={50} />
+              <Image src={ICONS[s.name]} alt="" role="presentation" width={50} height={50} />
             </a>
           </li>
         ))}
