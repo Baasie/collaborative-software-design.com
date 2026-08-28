@@ -1,0 +1,117 @@
+---
+/** One Dear CoMo letter, as a row in the index.
+ *
+ * A card and not a row until now, and the cards were the problem: every letter
+ * carries the same drawing of the woman in the bonnet, so fifteen cards were
+ * fifteen copies of one picture, 180px each, and the page was four and a half
+ * screens of it. A picture that is the same on every item is not information,
+ * it is wallpaper with a scrollbar.
+ *
+ * This page is a lookup. Somebody arrives with a problem and wants the
+ * question that matches it. So the question is the whole design: set large, one
+ * per row, with the answer under it and the topics beside it.
+ *
+ * It is not much shorter than the grid was, 4,523px against 4,439: three cards
+ * across is vertically efficient, and one column is not. Length was never the
+ * complaint. Fifteen questions in one column can be read down; fifteen copies
+ * of one drawing have to be read around.
+ *
+ * `data-test="letter-card"` is kept: the filter tests address rows by it, and
+ * renaming a hook to match a new shape is how a test stops testing.
+ */
+import { formatDate, isoDate } from '../lib/dates';
+import { hrefOf, INDEX_PATH, type Letter } from '../lib/collections';
+import { normaliseTags, tagSlug } from '../lib/tags';
+import { excerpt } from '../lib/excerpt';
+
+interface Props {
+  entry: Letter;
+  /** The heading level. A row inside a section that already has an h2 needs an
+   *  h3, or the outline skips a level. */
+  level?: 2 | 3;
+}
+const { entry, level = 2 } = Astro.props;
+const Title = `h${level}` as 'h2' | 'h3';
+const allTags = normaliseTags(entry.data.tags);
+const tags = allTags.slice(0, 3);
+// The meta description wins: an editor wrote it *to be* the summary. The body
+// is the fallback, not the first choice.
+const summary = entry.data.metaDescription ?? excerpt(entry.body ?? '', '', 150);
+---
+<li class="letter js-filter-item" data-test="letter-card" data-pagefind-ignore
+    data-tags={allTags.map(tagSlug).join(' ')}>
+  <div class="letter-q">
+    <Title><a class="letter-link" href={hrefOf(entry)}>{entry.data.title}</a></Title>
+    {summary && <p class="letter-summary">{summary}</p>}
+  </div>
+
+  <div class="letter-meta">
+    {tags.length > 0 && (
+      <ul class="letter-tags">
+        {tags.map((t) => (
+          <li><a href={`${INDEX_PATH}#tag=${tagSlug(t)}`}>{t}</a></li>
+        ))}
+      </ul>
+    )}
+    {entry.data.publishDate && (
+      <p class="letter-date">
+        <time datetime={isoDate(entry.data.publishDate)}>{formatDate(entry.data.publishDate)}</time>
+      </p>
+    )}
+  </div>
+</li>
+
+<style>
+  /* Position is for the overlay below, not for layout. */
+  .letter {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding-block: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .letter-q h2, .letter-q h3 {
+    margin: 0;
+    font-size: var(--text-xl);
+    line-height: 1.2;
+    /* The questions are long. Ragged is fine; a lone word on the last line is
+       not, and these wrap to two and three lines. */
+    text-wrap: pretty;
+  }
+  .letter-link { color: var(--color-ink); text-decoration: none; }
+  /* The row is the target, not the words. A question set over three lines is a
+     small thing to hit, and the summary beside it is dead space that reads as
+     part of the same object. The tags stay separately clickable below. */
+  .letter-link::after { content: ''; position: absolute; inset: 0; }
+  .letter:hover .letter-link { text-decoration: underline; text-underline-offset: 4px; }
+  .letter-link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
+
+  .letter-summary {
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-muted);
+    max-width: 44rem;
+  }
+
+  .letter-tags { list-style: none; margin: 0; padding: 0; }
+  .letter-tags li + li { margin-top: var(--space-2); }
+  .letter-tags a {
+    position: relative; z-index: 1;
+    font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--color-ink); text-decoration: none;
+  }
+  .letter-tags a:hover { text-decoration: underline; }
+  .letter-date {
+    margin: var(--space-4) 0 0;
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 800px) {
+    /* The topics keep a column of their own so every question starts and ends
+       in the same place, which is what makes fifteen of them scannable. */
+    .letter { grid-template-columns: 1fr 15rem; gap: var(--space-8); align-items: start; }
+  }
+</style>

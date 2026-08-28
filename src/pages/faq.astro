@@ -7,7 +7,7 @@
  * "FAQ" link is not confused about what they are looking at.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LetterCard from '../components/LetterCard.astro';
+import LetterRow from '../components/LetterRow.astro';
 import TagFilter from '../components/TagFilter.astro';
 import ContactSection from '../components/ContactSection.astro';
 import { letters, tagCounts } from '../lib/collections';
@@ -31,7 +31,7 @@ const jsonLd = {
 };
 ---
 <BaseLayout title={pageTitle('Dear CoMo')} description={description} jsonLd={jsonLd}>
-  <section class="hero">
+  <section class="hero section--blue">
     <div class="wrap hero-inner">
       <p class="eyebrow eyebrow--ink">Questions and answers</p>
       <h1>Dear CoMo</h1>
@@ -42,7 +42,7 @@ const jsonLd = {
         it on Monday.
       </p>
       <div class="hero-actions">
-        <a class="btn btn--primary" href={mailto(
+        <a class="btn btn--ink" href={mailto(
           'A question for Dear CoMo',
           'Dear CoMo,\n\n',
         )}>Ask CoMo a question</a>
@@ -55,9 +55,9 @@ const jsonLd = {
       <TagFilter tags={tags} allLabel="All letters" />
       {entries.length > 0 ? (
         <>
-          <div class="grid grid--3">
-            {entries.map((e) => <LetterCard entry={e} level={2} />)}
-          </div>
+          <ol class="letters">
+            {entries.map((e) => <LetterRow entry={e} level={2} />)}
+          </ol>
           {/* Reachable from a legacy /tag/ redirect for a tag no live letter
               carries any more, so it has to say something useful. */}
           <p class="empty js-filter-empty" hidden>
@@ -73,3 +73,15 @@ const jsonLd = {
 
   <ContactSection />
 </BaseLayout>
+
+<style>
+  /* A ruled list, not a grid of boxes. The heavy rule is the lid: the rows
+     under it read as one block somebody can run an eye down, which is the
+     whole job of this page. */
+  .letters {
+    list-style: none;
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    border-top: 4px solid var(--color-ink);
+  }
+</style>

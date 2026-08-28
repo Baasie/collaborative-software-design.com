@@ -18,15 +18,38 @@ interface Props {
   allLabel?: string;
 }
 const { tags, allLabel = 'Everything' } = Astro.props;
+
+/* A topic that names one letter does not group anything: picking it is the
+ * same as clicking the letter, and twenty of them made a filter bar three rows
+ * deep in which the seven that do group were impossible to find. The ones that
+ * group stay out; the long tail goes behind a toggle, because a legacy
+ * `/tag/{slug}/` redirect can still land on any of them and the button has to
+ * exist for the script to switch it on. */
+const grouping = tags.filter((t) => t.count > 1);
+const single = grouping.length > 0 ? tags.filter((t) => t.count <= 1) : [];
+const shown = grouping.length > 0 ? grouping : tags;
 ---
 {tags.length > 0 && (
   <nav class="filters js-filter" aria-label="Filter by topic" data-test="tag-filter" data-pagefind-ignore>
     <button class="chip js-filter-btn is-on" type="button" data-tag="" aria-pressed="true">{allLabel}</button>
-    {tags.map(({ tag, count }) => (
+    {shown.map(({ tag, count }) => (
       <button class="chip js-filter-btn" type="button" data-tag={tagSlug(tag)} aria-pressed="false">
         {tag} <span class="count">{count}</span>
       </button>
     ))}
+
+    {single.length > 0 && (
+      <details class="more">
+        <summary class="chip">{single.length} more topics</summary>
+        <div class="more-list">
+          {single.map(({ tag }) => (
+            <button class="chip js-filter-btn" type="button" data-tag={tagSlug(tag)} aria-pressed="false">
+              {tag}
+            </button>
+          ))}
+        </div>
+      </details>
+    )}
   </nav>
 )}
 
@@ -37,4 +60,19 @@ const { tags, allLabel = 'Everything' } = Astro.props;
   .js-filter-btn { cursor: pointer; font: inherit; font-family: var(--font-heading); font-weight: 700; font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.04em; }
   .js-filter-btn.is-on { background: var(--color-brand); color: var(--on-brand); border-color: var(--color-brand); }
   .count { opacity: 0.7; margin-left: var(--space-1); font-variant-numeric: tabular-nums; }
+
+  /* Closed it is one more chip in the row. Open it takes a row of its own, so
+     the long tail wraps under the bar rather than inside a box in the middle
+     of it. */
+  .more { flex: 0 0 auto; }
+  .more[open] { flex: 1 0 100%; }
+  .more > summary {
+    cursor: pointer; list-style: none; display: inline-flex; align-items: center;
+    font-family: var(--font-heading); font-weight: 700; font-size: var(--text-sm);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .more > summary::-webkit-details-marker { display: none; }
+  .more > summary::after { content: ' \25be'; margin-left: var(--space-2); }
+  .more[open] > summary::after { content: ' \25b4'; }
+  .more-list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
 </style>
