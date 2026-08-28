@@ -42,23 +42,45 @@ const inventory = () => readFileSync('data/live-urls.txt', 'utf8')
 const paths = all ? inventory() : MUST_ANSWER;
 console.log(`checking ${paths.length} address(es) against ${base}\n`);
 
-// One at a time, with a pause. This runs against shared hosting, and the host
-// firewalls an address that asks too fast: half an afternoon of requests from
-// one laptop was enough to have it drop connections for minutes.
+// One at a time, with a pause, and three attempts each.
+//
+// The retries are not belt and braces, they are the difference between this
+// being useful and being ignored. The host rate-limits a burst: the first full
+// run refused eleven CONSECUTIVE addresses in the middle and answered
+// everything on either side of them, from a GitHub runner and from a laptop
+// alike. Reported as failures that is a weekly false alarm, and a weekly false
+// alarm is a check nobody reads by the third week.
+//
+// A page that is genuinely gone fails all three attempts a second apart, which
+// is the thing worth waking up for.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const ATTEMPTS = 3;
+
+const ask = async (url) => {
+  let last;
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+    try {
+      return await fetch(url, { redirect: 'follow' });
+    } catch (e) {
+      last = e;
+      if (attempt < ATTEMPTS) await sleep(attempt * 2000);
+    }
+  }
+  throw last;
+};
 
 const problems = [];
 for (const path of paths) {
   const url = `${base}${path}`;
   try {
-    const res = await fetch(url, { redirect: 'follow' });
+    const res = await ask(url);
     // 410 is a promise too: a retired address says gone rather than 404.
     if (res.ok || res.status === 410) console.log(`  ${res.status} ${path}`);
     else problems.push(`${res.status} ${path}`);
   } catch (e) {
     problems.push(`no answer ${path} (${e.message})`);
   }
-  if (all) await sleep(250);
+  if (all) await sleep(400);
 }
 
 if (problems.length) {
