@@ -62,7 +62,10 @@ const jsonLd = {
 ---
 <BaseLayout title={pageTitle('Training')} description={description} jsonLd={jsonLd}>
   <section class="hire section--pink" data-test="training-hero">
-    <div class="wrap hire-grid">
+    {/* One column. The right half held the dates and then a button, and it
+        ran out halfway down the band; a hero with a hole in it is worse than
+        a hero with one column. The dates are the strip below. */}
+    <div class="wrap hire-grid hire-grid--single">
       <div>
         <p class="eyebrow">Bookings</p>
         <h1>Practise the moments that break a design session</h1>
@@ -77,23 +80,22 @@ const jsonLd = {
           {AUTHORS.map((a) => a.name).join(', ')}.
         </p>
       </div>
-      <div class="hire-aside">
-        {/* The dates, where somebody looking for one expects to find them:
-            top right, beside the title, on the white plate the workshop pages
-            use for the same thing. They used to sit in a band below, on the
-            same white ground as the list of workshops, where the two blocks
-            ran together and neither said what it was.
-
-            Renders nothing when no run is open. That is the normal state
-            between dates, not an empty state to design around. */}
-        <PublicDates runs={open} titles={titles} enquiry={enquiry} as="plate" />
+      {/* Only when there is no date to book. With a date, the strip below
+          carries both the booking and the in-house route, and two black
+          buttons in view at once read as two equal choices. */}
+      {open.length === 0 && (
         <p class="hire-ask"><a class="btn btn--ink" href={enquiry}>Ask about a date</a></p>
-      </div>
+      )}
     </div>
 
     <Image class="hire-figure" src={heroWoman} alt="" widths={[280, 557]}
            sizes="(min-width: 900px) 557px, 280px" loading="eager" />
   </section>
+
+  {/* On the seam, on its own ground, so it belongs to neither the pink above
+      nor the white below. Renders nothing when no run is open, which is the
+      normal state between dates. */}
+  <PublicDates runs={open} titles={titles} enquiry={enquiry} as="strip" />
 
   <div class="section section--paper">
     <div class="wrap">
@@ -156,6 +158,9 @@ const jsonLd = {
   /* Under the lede now, where it reads as a fact about the list rather than
      as a caption on the dates. */
   .hire-count { margin: var(--space-6) 0 0; font-size: var(--text-sm); }
+  /* The hero is one column across the whole row now, so the measure has to
+     come from the text rather than from a column that used to hold it. */
+  .hire h1, .hire-lede, .hire-count { max-width: 46rem; }
   /* The other door: no date that suits you, ask for one. Under the plate when
      there is a plate, on its own when there is not. */
   .hire-ask { margin: var(--space-8) 0 0; }
@@ -204,6 +209,7 @@ const jsonLd = {
        at 870px and the list at 744, a 113px step down the middle of a
        page whose left and right edges are straight. */
     .hire-grid { grid-template-columns: 1fr 1fr; gap: var(--space-12); }
+    .hire-grid--single { grid-template-columns: 1fr; }
     .hire-figure { width: 557px; }
     .workshop-list { grid-template-columns: 1fr 1fr; gap: var(--space-10) var(--space-12); }
   }

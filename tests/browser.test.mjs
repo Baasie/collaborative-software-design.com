@@ -217,39 +217,53 @@ test('a portrait that zooms in on scroll is still there when it cannot', async (
   await ctx.close();
 });
 
-test('the dates on /training/ are in the hero, not in with the workshops', async () => {
-  // They used to be a band of their own directly above the list, on the same
-  // white ground the list uses, so the two blocks ran together and neither
-  // said what it was. Somebody looking for a date is looking top right, which
-  // is where every workshop page puts its own.
+test('the dates on /training/ belong to neither band they sit between', async () => {
+  // They were a band of their own directly above the list of workshops, on
+  // the same white ground the list uses: two blocks with nothing between them,
+  // so neither said what it was. Then they were a white plate in the hero's
+  // right column, which ran out halfway down and left a slab of dead pink.
+  //
+  // Now they are an ink strip on the seam. It has to be its own ground, or it
+  // reads as the bottom of the pink or the top of the white, which is the
+  // whole bug.
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await ctx.newPage();
   await page.goto(base + '/training/', { waitUntil: 'load' });
 
-  const where = await page.evaluate(() => {
+  const seen = await page.evaluate(() => {
     const dates = document.querySelector('[data-test="public-dates"]');
-    if (!dates) return null;
     const hero = document.querySelector('[data-test="training-hero"]');
+    const list = document.querySelector('.section--paper');
+    const bg = (el) => getComputedStyle(el).backgroundColor;
+    const y = (el) => Math.round(el.getBoundingClientRect().top + window.scrollY);
+    if (!dates) {
+      return { none: true, ask: !!hero.querySelector('a.btn'), flags: document.querySelectorAll('.workshop-next').length };
+    }
     return {
       inHero: !!dates.closest('[data-test="training-hero"]'),
-      x: Math.round(dates.getBoundingClientRect().x),
-      heroRight: Math.round(hero.getBoundingClientRect().right),
-      bands: document.querySelectorAll('.dates[data-test="public-dates"]').length,
+      inList: !!dates.closest('.section--paper'),
+      grounds: [bg(hero), bg(dates), bg(list)],
+      order: [y(hero), y(dates), y(list)],
+      full: Math.round(dates.getBoundingClientRect().width),
+      width: window.innerWidth,
     };
   });
 
-  // No open run means no plate, and that is the normal state between dates.
-  if (where === null) {
-    const runs = await page.evaluate(() => document.querySelectorAll('.workshop-next').length);
-    assert.equal(runs, 0, 'the list flags a next date but the hero shows none');
+  // No open run means no strip, and that is the normal state between dates.
+  // The hero has to carry the only way in then.
+  if (seen.none) {
+    assert.ok(seen.ask, 'no date is open and the hero offers no way to ask for one');
+    assert.equal(seen.flags, 0, 'the list flags a next date but the page shows none');
     await ctx.close();
     return;
   }
 
-  assert.ok(where.inHero, '/training/ shows its dates outside the hero');
-  assert.equal(where.bands, 0, '/training/ still carries the old dates band as well');
-  assert.ok(where.x > where.heroRight / 2,
-    `the dates start at ${where.x}px, which is not the right of the hero`);
+  assert.ok(!seen.inHero && !seen.inList, '/training/ nests its dates inside another band');
+  assert.equal(new Set(seen.grounds).size, 3,
+    `the hero, the dates and the list are painted ${[...new Set(seen.grounds)].join(' and ')}`);
+  assert.deepEqual([...seen.order].sort((x, z) => x - z), seen.order,
+    'the dates are not between the hero and the list');
+  assert.equal(seen.full, seen.width, `the strip is ${seen.full}px in a ${seen.width}px window`);
   await ctx.close();
 });
 

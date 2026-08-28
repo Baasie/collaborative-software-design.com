@@ -56,6 +56,11 @@
    * component's own gradient are a shape, not a token. */
   --on-colour: #ffffff;
   --on-colour-muted: rgba(255, 255, 255, 0.9);
+  /* A second, quieter step down for a label or a terms line on ink. 12.6:1
+   * on black, so it is quiet rather than faint. */
+  --on-colour-soft: rgba(255, 255, 255, 0.72);
+  /* A rule between rows on ink. Not a text colour: nothing reads it. */
+  --on-colour-rule: rgba(255, 255, 255, 0.35);
   --overlay-white-strong: rgba(255, 255, 255, 0.92);
   --scrim-weak: rgba(0, 0, 0, 0.25);
   --scrim: rgba(0, 0, 0, 0.55);

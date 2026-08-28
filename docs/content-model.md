@@ -401,18 +401,27 @@ Three places, and they are not the same shape:
 | Where | Shape |
 |---|---|
 | A workshop page | A white plate top right, for that workshop's runs only. The title is the h1 two inches above, so the plate leaves it out. |
-| `/training/` | The same white plate top right, carrying every open run with its workshop's title. |
+| `/training/` | An ink strip on the seam between the pink hero and the white list, carrying every open run with its workshop's title. |
 | The home page | A band across the page, between the talk and the bookings. |
 
 The plate and the band are one component, `PublicDates`, with an `as` prop.
 One component because a run that reads one way here and another way there is
 a run somebody has to check twice.
 
-On `/training/` the dates used to be a band directly above the list of
-workshops, on the same white ground the list uses. The two blocks ran into
-each other and neither said what it was. Top right is where somebody looking
-for a date is already looking, because that is where every workshop page puts
-its own.
+`/training/` took two goes. The dates began as a band directly above the list
+of workshops, on the same white ground the list uses: two blocks with nothing
+between them, so neither said what it was. Moving them to a white plate in the
+hero's right column fixed that and broke something else, because the column
+ran out halfway down the band and left a slab of dead pink under it.
+
+The strip works because it is its own ground. Pink above, ink, white below, so
+it can be read as the bottom of neither and the top of neither. It also puts
+the one thing somebody came here to do on a full-width line they cannot scroll
+past, and it carries the in-house route on the same line, so there are never
+two black buttons in view competing to be the next click.
+
+With no run open it renders nothing and the hero carries a single
+`Ask about a date` button instead. There is always exactly one way in.
 
 ## What is deliberately *not* in Notion
 
