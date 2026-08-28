@@ -110,7 +110,7 @@ This workshop is specifically designed for technical leaders deeply involved in 
 
 - CTOs, VPs of Engineering, and Engineering Managers
 
-![](./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-3.jpg)
+![](./_assets/systems-design-with-strategic-domain-driven-design-and-team-topologies-body-3.png)
 
 </div>
 

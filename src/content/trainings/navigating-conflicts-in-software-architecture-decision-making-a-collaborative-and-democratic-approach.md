@@ -3,11 +3,24 @@ title: "Navigating Conflicts in Software Architecture Decision Making: A Collabo
 order: 4
 format: "1 day or less"
 teaser: "Are you struggling with complex architectural decisions in software design? Ever faced a standstill due to differing opinions on architecture choices? Want to make decisions that everyone on the team can support and that align with both the technical and human needs of your projects? Join us in this 1-day expert deep dive workshop where you will learn to navigate conflicts in software architectural decision making."
+cardImage: "./_assets/navigating-conflicts-in-software-architecture-decision-making-a-collaborative-and-democratic-approach-body-1.jpg"
 ---
 
-## Teaser
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
 
 Are you struggling with complex architectural decisions in software design? Ever faced a standstill due to differing opinions on architecture choices? Want to make decisions that everyone on the team can support and that align with both the technical and human needs of your projects? Join us in this 1-day expert deep dive workshop where you will learn to navigate conflicts in software architectural decision making.
+
+</div>
+
+<div class="col">
+
+![](./_assets/navigating-conflicts-in-software-architecture-decision-making-a-collaborative-and-democratic-approach-body-1.jpg)
+
+</div>
+
+</div>
 
 ## About the workshop
 
@@ -26,6 +39,8 @@ Drawing from our co-authored book “Collaborative Software Design”, this conc
 - **An introduction to "role theory"** as advocated by Deep Democracy to foster inclusive and sustainable decision-making.
 
 - **Hands-on strategies for managing disagreements** and integrating minority opinions to achieve a comprehensive, unified approach to architecture design.
+
+![](./_assets/navigating-conflicts-in-software-architecture-decision-making-a-collaborative-and-democratic-approach-body-2.png)
 
 ## Before the workshop
 
