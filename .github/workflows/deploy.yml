@@ -124,10 +124,15 @@ jobs:
             echo "go=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # Releases are atomic. Each deploy is rsynced into its own directory and a
-      # symlink is moved when it is complete, so a visitor never meets a
-      # half-copied site and a rollback is one `ln -sfn` away.
+      # Releases are atomic. Each release is rsynced into a directory of its own
+      # and the document root is a SYMLINK, swapped once the copy is complete,
+      # so nobody meets a half-written site and a rollback is one `ln -sfn`.
+      #
+      # The shape, and every guard below it, is ported from virtualddd.com,
+      # which has been deploying to this host since 28 July 2026. Each guard is
+      # a failure that happened there.
       - name: Deploy
+        id: release
         if: steps.gate.outputs.go == 'true'
         env:
           SSH_KEY: ${{ secrets.KUALO_SSH_KEY }}
@@ -136,39 +141,103 @@ jobs:
           DOCROOT: ${{ secrets.KUALO_PATH }}
           PORT: ${{ secrets.KUALO_SSH_PORT || '22' }}
           KNOWN_HOSTS: ${{ secrets.KUALO_KNOWN_HOSTS }}
+          KEEP: 5
         run: |
           set -euo pipefail
-          mkdir -p ~/.ssh
+
+          # `KUALO_PATH` is interpolated inside single quotes in a shell on the
+          # host, so `~` is never expanded. A value starting with `~` fails at
+          # the very last step, after a green build and a complete upload, with
+          # the host looking for a directory literally called "~".
+          case "$DOCROOT" in
+            /*) ;;
+            "~"*) echo "::error::KUALO_PATH starts with ~, which is never expanded. Use the absolute path, e.g. /home/<user>/collaborative-software-design.com."; exit 1 ;;
+            *) echo "::error::KUALO_PATH must be an absolute path beginning with /."; exit 1 ;;
+          esac
+
+          install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          # StrictHostKeyChecking=yes with a pinned key, not `no`. Turning it off
-          # to save a secret is how a deploy quietly starts trusting whatever
-          # answers on that address.
+          # StrictHostKeyChecking=yes against a pinned key, not `no`. Turning it
+          # off to save a secret is how a deploy quietly starts trusting
+          # whatever answers on that address. An empty secret gives a silent
+          # six-second failure, so say so here instead.
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          grep -q . ~/.ssh/known_hosts || {
+            echo "::error::KUALO_KNOWN_HOSTS is empty. Set it to the output of: ssh-keyscan -p $PORT -H <host>"
+            exit 1
+          }
 
-          SSH="ssh -i $HOME/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
-
-          # Fail here, loudly, rather than four minutes later mid-rsync.
-          if ! $SSH "$SSH_USER@$HOST" true; then
-            echo "::error::Cannot reach the host. If this is the first failure it is usually the host's brute-force protection blocking this runner's shared IP; re-run on another runner."
+          # Reachability first, and separately, because the two failures below
+          # look identical from inside ssh and have nothing to do with each
+          # other.
+          if ! timeout 20 bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; then
+            echo "::error::Cannot reach $HOST on port $PORT from this runner."
+            echo "The host serves the site, so this is usually its brute-force protection"
+            echo "blocking a GitHub runner's shared IP. Kualo calls it cPHulk. Re-run:"
+            echo "the next runner draws a different address."
             exit 1
           fi
 
-          RELEASE="releases/$(date -u +%Y%m%dT%H%M%SZ)-${GITHUB_SHA::7}"
-          $SSH "$SSH_USER@$HOST" "mkdir -p '$DOCROOT/$RELEASE'"
-          rsync -az --delete -e "$SSH" dist/ "$SSH_USER@$HOST:$DOCROOT/$RELEASE/"
+          SSH="ssh -i $HOME/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
 
-          # The swap, and the tidy-up. `ln -sfn` is atomic; keeping five releases
-          # means a rollback needs no deploy at all.
+          # The commit that was BUILT, which is not github.sha when the sync
+          # called this workflow: a called workflow runs at the caller's commit
+          # and the sync commits after its run began. A release directory named
+          # after anything else makes a rollback pick the wrong site.
+          SHA="$(git rev-parse HEAD)"
+          # Namespaced by site. virtualddd.com prunes `~/releases/*` on the same
+          # account, and an unnamespaced directory here would be deleted by its
+          # next deploy, possibly the one this site is serving.
+          RELEASE="releases/collaborative-software-design.com/$SHA"
+
           $SSH "$SSH_USER@$HOST" "
             set -e
-            ln -sfn '$DOCROOT/$RELEASE' '$DOCROOT/current.tmp'
-            mv -Tf '$DOCROOT/current.tmp' '$DOCROOT/current'
-            cd '$DOCROOT/releases' && ls -1t | tail -n +6 | xargs -r rm -rf
+            # Never replace a real directory. If the document root is not
+            # already a symlink it may be the WordPress site, or somebody
+            # else's, and a deploy job is not the place to find that out.
+            # Switching a domain over is a deliberate, one-time human step;
+            # see docs/operations.md.
+            if [ -e '$DOCROOT' ] && [ ! -L '$DOCROOT' ]; then
+              echo '$DOCROOT exists and is a real directory, not a symlink.'
+              echo 'Refusing to touch it. See docs/operations.md for the cutover.'
+              exit 1
+            fi
+            # Said here rather than at the swap, where it arrives as one opaque
+            # line from ln at the end of a deploy that otherwise worked.
+            if [ ! -d \"\$(dirname '$DOCROOT')\" ]; then
+              echo \"KUALO_PATH's parent directory does not exist on this host:\"
+              echo \"  \$(dirname '$DOCROOT')\"
+              echo 'Check the value against \$HOME on the host: the cPanel user is often not what the domain suggests.'
+              exit 1
+            fi
+            mkdir -p '$RELEASE'
+          "
+
+          rsync --archive --compress --delete --human-readable \
+            -e "$SSH" dist/ "$SSH_USER@$HOST:$RELEASE/"
+
+          # The swap, and the tidy-up. `ln -sfn` is atomic; keeping five
+          # releases means a rollback needs no deploy at all.
+          $SSH "$SSH_USER@$HOST" "
+            set -e
+            ln -sfn \"\$HOME/$RELEASE\" '$DOCROOT'
+            ls -1dt \"\$HOME\"/releases/collaborative-software-design.com/*/ \
+              | tail -n +\$(( $KEEP + 1 )) | xargs -r rm -rf
+            echo \"live: \$(readlink '$DOCROOT')\"
           "
           echo "Published $RELEASE" >> "$GITHUB_STEP_SUMMARY"
           rm -f ~/.ssh/deploy_key
+
+      # Apache does not pick the new release up the instant the symlink moves.
+      # Measured on virtualddd.com: for the best part of a minute afterwards
+      # every address answers 200 from the document root, 105 of 105 sampled
+      # URLs, no redirects and no 410s, and then it is entirely correct.
+      # Verifying inside that window fails a deploy that shipped perfectly.
+      - name: Let the release settle
+        if: steps.gate.outputs.go == 'true'
+        run: sleep 60
 
       # A deploy that rsyncs successfully and serves the previous release is the
       # failure this catches: everything green, site stale. `secrets` is not

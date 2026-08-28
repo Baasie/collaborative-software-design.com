@@ -131,6 +131,7 @@ calls it used. It is visible in a diff, by a reader, and nowhere else.
 | [docs/content-model.md](docs/content-model.md) | Add a field, add a collection, or wonder why the trainings are pages and the letters are rows |
 | [docs/urls.md](docs/urls.md) | Rename a slug, retire a page, or touch redirects |
 | [docs/pipeline.md](docs/pipeline.md) | Change the sync, debug a missing page, or ask why nothing deployed |
+| [docs/operations.md](docs/operations.md) | Deploy by hand, cut the domain over, roll back, or read why a deploy was refused |
 | [docs/testing.md](docs/testing.md) | Add or change a test, or find out what one is protecting |
 | [docs/brand-and-code.md](docs/brand-and-code.md) | Write CSS or add a component |
 | [reference/brand/BRAND.md](reference/brand/BRAND.md) | Question any colour, face or logo. Every value there names its source in the live CSS |
