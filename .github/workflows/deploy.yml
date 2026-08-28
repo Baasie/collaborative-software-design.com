@@ -248,20 +248,31 @@ jobs:
             # Switching a domain over is a deliberate, one-time human step;
             # see docs/operations.md.
             if [ -e '$DOCROOT' ] && [ ! -L '$DOCROOT' ]; then
-              echo '$DOCROOT exists and is a real directory, not a symlink.'
-              echo 'Refusing to touch it. See docs/operations.md for the cutover.'
-              # Say what is actually there. Refusing without showing the layout
-              # sends somebody back to cPanel to find out whether the path is
-              # wrong or the rename did not take, and the two look identical
-              # from here. The names are not secret; the path is, and Actions
-              # masks it.
-              echo
-              echo 'What that path holds (first 12):'
-              ls -A1 '$DOCROOT' 2>/dev/null | head -12 | sed 's/^/  /'
-              echo
-              echo 'What the home directory holds:'
-              ls -A1 \"\$HOME\" 2>/dev/null | head -30 | sed 's/^/  /'
-              exit 1
+              # An EMPTY directory is nobody's site. cPanel puts one back the
+              # moment a document root is renamed away, so refusing it stopped
+              # the cutover with the domain already 404ing. `rmdir` cannot
+              # remove a directory with anything in it, which is what keeps
+              # this safe: the refusal below is still the only path for a
+              # directory that holds something.
+              if [ -d '$DOCROOT' ] && [ -z "$(ls -A '$DOCROOT' 2>/dev/null)" ]; then
+                echo 'Document root is an empty directory. Removing it so the release symlink can take its place.'
+                rmdir '$DOCROOT'
+              else
+                echo '$DOCROOT exists and is not a symlink, and it is not empty.'
+                echo 'Refusing to touch it. See docs/operations.md for the cutover.'
+                # Say what is actually there. Refusing without showing the
+                # layout sends somebody back to cPanel to find out whether the
+                # path is wrong or the rename did not take, and the two look
+                # identical from here. The names are not secret; the path is,
+                # and Actions masks it.
+                echo
+                echo 'What that path holds (first 12):'
+                ls -A1 '$DOCROOT' 2>/dev/null | head -12 | sed 's/^/  /'
+                echo
+                echo 'Directories in the home directory:'
+                ls -1 \"\$HOME\" 2>/dev/null | head -30 | sed 's/^/  /'
+                exit 1
+              fi
             fi
             # Said here rather than at the swap, where it arrives as one opaque
             # line from ln at the end of a deploy that otherwise worked.
