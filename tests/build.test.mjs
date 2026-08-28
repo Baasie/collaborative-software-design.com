@@ -210,6 +210,25 @@ test('a long workshop page carries its contents and a following booking bar', ()
   }
 });
 
+test('no page skips a heading level', () => {
+  // A screen reader user navigates by headings, and a jump from h1 to h3 says
+  // there is a section they missed. `/training/` did it for weeks: the dates
+  // strip labelled itself with a paragraph and then put h3s under it.
+  const bad = [];
+  let checked = 0;
+  for (const f of pages) {
+    let prev = null;
+    for (const m of read(f).matchAll(/<h([1-6])\b/g)) {
+      const level = Number(m[1]);
+      checked += 1;
+      if (prev !== null && level - prev > 1) bad.push(`${urlOf(f)}: h${prev} then h${level}`);
+      prev = level;
+    }
+  }
+  assert.ok(checked > 100, `only ${checked} headings checked; the reader stopped matching`);
+  assert.deepEqual([...new Set(bad)], []);
+});
+
 test('no image reaches a reader as a file name', () => {
   // Astro drops `alt=""` from a markdown image on the way to the page, so an
   // image with no caption in Notion shipped with no alt attribute at all and

@@ -47,7 +47,10 @@ const terms = (r: Session) => [
 {runs.length > 0 && as === 'strip' && (
   <section class="strip" data-test="public-dates">
     <div class="wrap">
-      <p class="strip-label">{runs.length === 1 ? 'Next public date' : heading}</p>
+      {/* A heading, not a label: the rows under it carry h3s, and with a
+          paragraph here the page went h1 then h3. It is set at label size
+          because the strip is a line, not a section. */}
+      <h2 class="strip-label">{runs.length === 1 ? 'Next public date' : heading}</h2>
 
       <ul class="strip-list">
         {runs.map((r) => (
@@ -126,6 +129,7 @@ const terms = (r: Session) => [
   .strip a { color: var(--color-paper); }
   .strip-label {
     margin: 0 0 var(--space-6);
+    font-family: var(--font-body); font-weight: 400;
     font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--on-colour-soft);
   }
