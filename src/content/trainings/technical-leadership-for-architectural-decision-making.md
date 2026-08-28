@@ -24,6 +24,8 @@ If you answered yes to some of these questions, this training is designed for yo
 
 </div>
 
+---
+
 ## About the workshop
 
 <div class="cols" style="--tracks: 50fr 50fr">
@@ -45,6 +47,8 @@ We'll equip you with proven techniques to guide your team through complex design
 </div>
 
 This immersive two-day workshop provides both the theory and hands-on practice you need to master leading collaborative modeling and architectural design sessions. You'll leave with a practical toolkit of strategies and facilitation techniques specifically tailored for Tech Leads to foster inclusive decision-making, manage differing viewpoints constructively, proactively address and mitigate resistance, and ultimately guide your team in building high-quality, sustainable software that everyone is proud to own. Stop facing resistance to your decisions and start facilitating true team ownership of your architecture.
+
+---
 
 ## What you will learn
 
@@ -76,6 +80,8 @@ This immersive two-day workshop provides both the theory and hands-on practice y
 
 ![](./_assets/technical-leadership-for-architectural-decision-making-body-3.png)
 
+---
+
 <div class="cols" style="--tracks: 50fr 50fr">
 
 <div class="col">
@@ -103,6 +109,8 @@ This two-day workshop empowers Tech leads or those wishing to become or make tec
 </div>
 
 </div>
+
+---
 
 ## Agenda
 

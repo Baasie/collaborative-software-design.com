@@ -24,9 +24,13 @@ Gain a model to understand why people behave the way they do in group settings w
 
 </div>
 
+---
+
 ## About the workshop
 
 Strong collaboration and the integration of all available knowledge are essential for effective software design and decision-making. However, subtle social and power dynamics can significantly affect group interactions, the flow of ideas, and ultimately, the success of the software product. Understanding how power dynamics, including both conscious and unconscious rank, shape participation and determine whose contributions are valued and heard, is crucial for anyone involved in group decision-making processes. This workshop provides a fundamental understanding of theories that explain these power dynamics, such as ranking theory, offering a fresh perspective for observing and interpreting team interactions. By acknowledging these influences and acquiring tactics to navigate and lessen their negative impact, you can cultivate more balanced, inclusive, and ultimately more successful collaborative design processes.
+
+---
 
 ## What you will learn
 
@@ -40,9 +44,19 @@ Strong collaboration and the integration of all available knowledge are essentia
 
 ![](./_assets/navigating-power-dynamics-in-software-decision-making-body-2.png)
 
+---
+
+<div class="cols" style="--tracks: 50fr 50fr">
+
+<div class="col">
+
 ## Before the workshop
 
 To ensure a smooth and interactive online experience, we may use a digital whiteboard platform for any collaborative exercises. Details and links to any preparatory materials or platform introductions will be provided before the workshop begins, ensuring you are comfortable and ready to participate fully.
+
+</div>
+
+<div class="col">
 
 ## Audience
 
@@ -59,3 +73,7 @@ This 3.5-hour online workshop is designed for anyone involved in team-based deci
 - Business Analysts & Quality Assurance Professionals
 
 - Anyone looking to enhance their software design process through improved facilitation skills.
+
+</div>
+
+</div>
