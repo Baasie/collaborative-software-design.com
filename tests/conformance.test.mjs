@@ -92,6 +92,21 @@ test('rule 5: tests select [data-test] and js-* hooks, never a styling class', (
   assert.deepEqual(offenders, []);
 });
 
+/** Hooks on a block that renders only when there is content for it.
+ *
+ *  `public-dates` is the whole list: the dates block renders nothing when no
+ *  run is open, which is the normal state between dates and not an empty state
+ *  to design around. On 28 August the last scheduled run came out of Notion
+ *  and this rule failed on a site that was working exactly as intended.
+ *
+ *  The tests that use it handle the absence themselves, which is where that
+ *  belongs: `the dates on /training/ belong to neither band they sit between`
+ *  checks the hero offers a way to ask for a date instead, and `a public
+ *  training date that has passed is not on the site` derives what should show
+ *  from `sessions.json` and would catch a hook that stopped rendering while
+ *  runs existed. */
+const CONDITIONAL = new Set(['public-dates']);
+
 test('rule 5: every [data-test] hook a test uses actually exists in the build', () => {
   // The half of the rule that rots silently: a hook renamed in a component
   // leaves a test selecting nothing, which passes.
@@ -100,8 +115,17 @@ test('rule 5: every [data-test] hook a test uses actually exists in the build', 
   for (const f of walk('tests').filter((f) => f.endsWith('.test.mjs'))) {
     for (const [, hook] of read(f).matchAll(/\[data-test="([\w-]+)"\]/g)) used.add(hook);
   }
-  const missing = [...used].filter((h) => !html.includes(`data-test="${h}"`));
+  const missing = [...used]
+    .filter((h) => !CONDITIONAL.has(h))
+    .filter((h) => !html.includes(`data-test="${h}"`));
   assert.deepEqual(missing, [], `tests select hooks nothing renders: ${missing.join(', ')}`);
+
+  // The exemption is not a free pass: a hook listed above that no test uses
+  // any more is a stale entry, and this rule is the only thing that would say
+  // so.
+  for (const h of CONDITIONAL) {
+    assert.ok(used.has(h), `${h} is exempt from this rule and no test selects it`);
+  }
 });
 
 test('rule 1: Notion is the source of truth, so content carries the sync’s shape', () => {
