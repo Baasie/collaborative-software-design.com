@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
+import { unified } from '@astrojs/markdown-remark';
 import { rehypeEmptyAlt } from './src/lib/rehype-alt.mjs';
 
 // https://astro.build/config
@@ -11,9 +12,20 @@ export default defineConfig({
   // worked yesterday must not 301 today just to gain a slash.
   trailingSlash: 'always',
   markdown: {
-    // A Notion image with no caption renders without an `alt` attribute at
-    // all, and a screen reader then reads the file name. See the plugin.
-    rehypePlugins: [rehypeEmptyAlt],
+    // Astro 7 made Sätteri the default Markdown processor and deprecated
+    // `markdown.rehypePlugins`, which belongs to the remark/rehype one. Naming
+    // that processor is not a change of behaviour: passing rehypePlugins at
+    // all already selected it, so this says out loud what the build was
+    // silently doing. Verified by diffing all 31 rendered pages before and
+    // after: identical.
+    //
+    // `gfm` and `smartypants` default to true here, which is what Astro
+    // applied before, so neither is set.
+    //
+    // The plugin gives an image with no caption in Notion an alt attribute.
+    // Without one Astro emits no `alt` at all and a screen reader reads the
+    // hashed file name. See src/lib/rehype-alt.mjs.
+    processor: unified({ rehypePlugins: [rehypeEmptyAlt] }),
   },
   integrations: [
     sitemap({
