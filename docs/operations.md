@@ -67,6 +67,30 @@ What pinning costs is availability. The day the host rotates its key, every
 deploy fails until somebody regenerates the secret, and the failure reads as a
 network problem rather than as what it is.
 
+## Counting page views
+
+Plausible, and only in a production build. Two repository **variables**, not
+secrets, because both end up in the page source:
+
+| Variable | Value |
+|---|---|
+| `PUBLIC_ANALYTICS_SRC` | `https://plausible.io/js/script.js` |
+| `PUBLIC_ANALYTICS_DOMAIN` | `collaborative-software-design.com` |
+
+`BaseLayout` emits the tag only when **both** are set and only under
+`import.meta.env.PROD`, so a fork, a local build and a pull request are silent
+rather than polluting the real numbers. `deploy.yml` passes them to the step
+that builds, which here is `Test`, because `npm test` is what produces `dist`.
+
+The script URL is a variable rather than a constant because Plausible's hosted
+and self-hosted builds serve the identical tag from different hosts. Moving the
+analytics onto our own machine later is one value, not a re-instrumentation.
+
+It sets no cookie and creates no cross-site identifier, which is what lets
+`/privacy-policy/` say there is nothing here needing a consent banner. That
+page has to keep being able to say that: anything that changes it is a change
+to the policy first.
+
 ## Cutting the domain over
 
 **CI will not touch a document root that is a real directory.** It checks and
@@ -118,9 +142,21 @@ did. The same commit on the next runner goes straight through. Re-run the job.
 
 This one does not heal on its own: nothing deploys unless there is a diff, so
 when a sync's deploy is blocked the content is already committed and every
-later sync correctly decides there is nothing to publish. The site stays stale
-until somebody re-runs it. `virtualddd.com` automates this in
-`retry-blocked-deploy.yml`; this repository does not, yet.
+later sync correctly decides there is nothing to publish. The site would stay
+stale until somebody re-ran it.
+
+`retry-blocked-deploy.yml` does that re-run, once, and only for this. It reads
+the failure **annotation**, never the log, because the step prints its own
+script first and the log therefore contains the text of every error message in
+it whether or not it fired. And it matches on the word `Retryable:`, which
+`deploy.yml` writes into exactly two error lines: the probe timing out, and
+ssh timing out between the key scan and the session. Matching on ssh's exit
+code would be wrong, and it is worth knowing why: **255 is a lockout, a key
+nobody authorised, and a wrong user alike**, and two of those three fail
+identically on every runner there is.
+
+On 28 August, the day this site went live, three of seven attempts were
+refused and the same commit went through on the next runner.
 
 **Verified but stale.** The site is checked a minute after the symlink moves,
 not immediately. Apache does not pick the new release up at once: for the best
@@ -139,3 +175,7 @@ Worth knowing before relying on either:
   anybody touching this repository, and nothing here would see it.
 - **No notification.** A deploy that skips, fails or ships is silent. The
   skipping case has already misled once: a green run that deployed nothing.
+  virtualddd.com posts to n8n on both ship and failure.
+- **No weekly `watch.yml`** and **no `review.yml`**. The first checks the URL
+  contract and the certificate against the live host; the second reads a diff
+  against the brief and needs an `ANTHROPIC_API_KEY`.

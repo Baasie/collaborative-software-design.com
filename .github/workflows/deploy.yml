@@ -106,7 +106,16 @@ jobs:
       # Types, unit tests, the build, then the blocking suite. `npm test` runs
       # them in that order on purpose: `astro check` is the cheapest thing that
       # can fail, so it fails first.
+      # `npm test` is what builds `dist`, so the analytics variables belong
+      # here rather than on a build step of their own. Both are public by
+      # design, they end up in the page source, so they are repository
+      # variables and not secrets. The layout only emits the tag when both are
+      # set and only in a production build, which is what keeps a fork, a
+      # local build and a pull request out of the numbers.
       - name: Test
+        env:
+          PUBLIC_ANALYTICS_SRC: ${{ vars.PUBLIC_ANALYTICS_SRC }}
+          PUBLIC_ANALYTICS_DOMAIN: ${{ vars.PUBLIC_ANALYTICS_DOMAIN }}
         run: npm test
 
       - name: Is there anywhere to deploy to?
@@ -184,15 +193,16 @@ jobs:
           START=$(date +%s)
           if ! timeout 20 bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; then
             WAITED=$(( $(date +%s) - START ))
-            echo "::error::Nothing accepted a connection on port $PORT after ${WAITED}s."
             if [ "$WAITED" -lt 5 ]; then
-              echo "It resolved and refused immediately, so the port is almost certainly"
-              echo "wrong. Read it off cPanel: Security > SSH Access. Kualo is not 22."
+              echo "::error::Port $PORT refused the connection immediately, so the port is wrong."
+              echo "Read it off cPanel: Security > SSH Access. Kualo is not 22."
             else
-              echo "It resolved and then hung, which is a firewall dropping packets."
-              echo "Usually the host's brute-force protection blocking a GitHub runner's"
-              echo "shared IP: Kualo calls it cPHulk. Re-run, the next runner draws a"
-              echo "different address."
+              # "Retryable:" is the word `retry-blocked-deploy.yml` matches, and
+              # it has to be inside the `::error::` line: that workflow reads
+              # annotations, not the log, and an annotation is only ever the
+              # error line itself.
+              echo "::error::Nothing accepted a connection on port $PORT after ${WAITED}s. Retryable: the host is dropping packets from this runner, which on Kualo is cPHulk."
+              echo "The next runner draws a different address."
             fi
             exit 1
           fi
@@ -229,6 +239,23 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
 
           SSH="ssh -i $HOME/.ssh/deploy_key -p $PORT -o StrictHostKeyChecking=yes -o ConnectTimeout=20"
+
+          # One connection before the work, to separate the three ways ssh
+          # exits 255. Without this a lockout, a key nobody authorised and a
+          # wrong user are one exit code and one opaque line, and the retry
+          # below cannot tell which of them is worth another runner. It is also
+          # cheaper to fail here than four minutes into an rsync.
+          if ! $SSH -o BatchMode=yes "$SSH_USER@$HOST" true 2>/tmp/ssh.err; then
+            if grep -qiE "timed out" /tmp/ssh.err; then
+              echo "::error::The host stopped answering on port $PORT. Retryable: cPHulk blocked this runner between the key scan and the connection."
+            elif grep -qi "permission denied" /tmp/ssh.err; then
+              echo "::error::The host refused the key. Import it in cPanel under Security > SSH Access > Manage SSH Keys, and then Manage > Authorize: importing alone does nothing."
+            else
+              echo "::error::ssh could not open a session:"
+              cat /tmp/ssh.err
+            fi
+            exit 1
+          fi
 
           # The commit that was BUILT, which is not github.sha when the sync
           # called this workflow: a called workflow runs at the caller's commit

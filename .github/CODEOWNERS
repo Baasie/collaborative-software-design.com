@@ -1,0 +1,11 @@
+# CODEOWNERS cannot forbid a change, but it makes one visible: any pull request
+# touching these paths needs a maintainer to look at it, and `deploy.yml`
+# refuses to ship a hand edit outright.
+#
+# `src/content/` is generated from Notion by `npm run sync`. Editing it here is
+# the one thing this repository is built to prevent, and it has been tried:
+# on 28 August three workshop pages were written by hand because the Notion
+# token was not on the machine, and the guard in the deploy is what caught it.
+/src/content/          @Baasie
+/data/sync-state.json  @Baasie
+/data/live-urls.txt    @Baasie

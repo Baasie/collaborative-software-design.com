@@ -1,0 +1,124 @@
+# Run a blocked deploy again, on a runner the host has not locked out.
+#
+# Kualo's brute-force protection (cPHulk) blocks by IP, and a GitHub runner
+# draws its address from a pool shared with the rest of Azure, so a deploy can
+# be refused for something another tenant did. On 28 August, the day this site
+# went live, three of seven attempts were refused and the *same commit* on the
+# next runner went straight through.
+#
+# That is worth automating because a failed deploy does not heal on its own.
+# Nothing deploys unless the sync produced a diff, so by the time the deploy
+# fails the content is already committed, and every later sync correctly
+# decides there is nothing to publish. The site then stays stale until somebody
+# notices. Ported from virtualddd.com, where two blocked runs one afternoon
+# left content committed and unpublished until a person intervened.
+#
+# **Only the lockout, and only once.** Every other way a deploy fails is
+# deterministic, and running it again would waste three minutes and blur the
+# signal.
+name: Retry a deploy the host locked out
+
+on:
+  workflow_run:
+    # Every workflow that can reach the deploy. `deploy.yml` is *called* by the
+    # sync rather than triggered, and a called workflow raises no workflow_run
+    # event of its own: the event belongs to the caller. Listening only for
+    # 'Deploy' would miss every block that came from a sync, which is the case
+    # this exists for.
+    workflows: ['Deploy', 'Sync from Notion', 'Merge routine dependency updates']
+    types: [completed]
+
+# Enough to read why a run failed and to press the button again. No SSH key and
+# no `contents` at all: `deploy.yml` stays the only thing holding a key, and it
+# stays read-only. Splitting the two is the whole reason this is a second file
+# rather than a step at the bottom of the deploy.
+permissions:
+  actions: write
+  checks: read
+
+jobs:
+  retry:
+    # `run_attempt` is GitHub's own counter, so nothing has to be remembered
+    # anywhere: a re-run arrives back at this same trigger as attempt 2 and is
+    # refused here. One retry, then the run stays red and a person is told.
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Was it the host, or was it us?
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          TRIGGER: ${{ github.event.workflow_run.name }}
+        run: |
+          set -euo pipefail
+          echo "$TRIGGER run $RUN_ID failed; deciding whether it is worth another runner."
+
+          # The job that ran the deploy, whether it was called or triggered.
+          # Asked for by the step that failed rather than by job name, because
+          # the name differs between the two paths: `deploy` when called,
+          # `deploy / deploy` when it is a workflow of its own.
+          job=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" \
+                  --jq '[.jobs[] | select(any(.steps[]; .name == "Deploy" and .conclusion == "failure"))][0].id // empty')
+          if [ -z "$job" ]; then
+            echo "Nothing failed at the Deploy step, so this is not ours: the build, the"
+            echo "suite and the content guard all fail for reasons a new runner cannot fix."
+            exit 0
+          fi
+
+          # Read the annotation, never the log.
+          #
+          # The step prints its own script before running it, so the log of
+          # every deploy that reaches this point contains the literal text of
+          # every error message in it, blocked or not. Grepping the log would
+          # match all of them. This endpoint returns only what was raised.
+          #
+          # Annotations are written as the job finishes and this trigger can be
+          # quicker than they are, so ask a few times. Not finding one is the
+          # safe answer: no retry, and the run stays red.
+          msg=""
+          for _ in 1 2 3 4 5; do
+            msg=$(gh api "repos/$REPO/check-runs/$job/annotations" \
+                    --jq '[.[] | select(.annotation_level == "failure") | .message] | join(" ")' 2>/dev/null || true)
+            [ -n "$msg" ] && break
+            sleep 5
+          done
+
+          # `Retryable:` is written into the `::error::` line by deploy.yml, and
+          # only by the two failures a different IP can fix: the probe that
+          # times out, and ssh timing out between the key scan and the session.
+          #
+          # Matching on the exit code instead would be wrong, and this is worth
+          # spelling out: ssh exits 255 for a lockout, for a key nobody
+          # authorised and for a wrong user alike. Both of the last two would
+          # fail identically on every runner there is.
+          case "$msg" in
+            *"Retryable:"*) ;;
+            *)
+              echo "The Deploy step failed, but not in a way another runner would fix:"
+              echo "  ${msg:-no annotation could be read}"
+              exit 0
+              ;;
+          esac
+
+          # `--failed` rather than a fresh dispatch, for the reason `ref` exists
+          # in deploy.yml at all. It re-runs only the failed job, on a new
+          # runner with a new IP, and keeps the run's inputs: the sha the sync
+          # passed is still the sha it committed. A dispatch would have to
+          # rebuild that input, and rebuilding it wrongly is how a site ships
+          # the commit before the one it was publishing.
+          gh run rerun "$RUN_ID" --failed --repo "$REPO"
+
+          {
+            echo "### The host refused the runner, so the deploy is running again"
+            echo
+            echo "Kualo's cPHulk blocks by IP, and a runner's IP is shared with the rest"
+            echo "of Azure, so this usually clears on a different one. Nothing was changed:"
+            echo "the same commit is being built by the same run, as attempt 2."
+            echo
+            echo "If that one is refused too, the run stays red and nothing else will try,"
+            echo "which means the block is wider than one address. See docs/operations.md."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,51 @@
+# Keeping current, at the cost of about zero minutes a week.
+#
+# Grouped on purpose. Ungrouped, this repository would open five pull requests
+# most weeks — Astro, playwright, @types/node, and two others — and five pull
+# requests nobody has time to read is the same as no pull requests, except that
+# it also teaches everyone to ignore the notification.
+#
+# Patch and minor arrive as one pull request and merge themselves once the
+# suite passes (see dependabot-automerge.yml). A major arrives alone and waits
+# for a person, because a major is a reading job: Astro 8 or TypeScript 7 is a
+# decision, not an update.
+#
+# What makes the automation safe is not the bot, it is `deploy.yml`: types,
+# build, contracts, redirects and the browser suite all run before the rsync,
+# and now on the pull request too. A bump that breaks the site fails there and
+# never reaches the host.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 5
+    groups:
+      # One pull request for everything that is not a major.
+      routine:
+        patterns: ['*']
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'Update'
+    labels: [dependencies]
+
+  # The actions themselves go stale silently — every run currently warns that
+  # checkout@v4 and setup-node@v4 target a deprecated Node. Nothing was
+  # watching, because nothing was asked to.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Amsterdam
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'Update'
+    labels: [dependencies]

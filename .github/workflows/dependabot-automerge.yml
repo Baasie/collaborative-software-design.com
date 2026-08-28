@@ -1,0 +1,124 @@
+# Merge a routine dependency bump once the suite has proved it, and publish it.
+#
+# The deploy is part of this workflow rather than a consequence of the merge,
+# because a merge made with GITHUB_TOKEN starts nothing at all. See the note on
+# the merge step.
+#
+# **Only after the checks pass.** This runs on `workflow_run`, so it starts when
+# the Deploy workflow — which on a pull request builds and runs the blocking
+# suite without deploying anything — has finished, and it merges only if that
+# finished green.
+#
+# `workflow_run` rather than the more obvious `pull_request` because a workflow
+# triggered by Dependabot gets a read-only token and cannot merge anything, and
+# rather than branch protection because protecting `main` would block the
+# direct pushes this project publishes by: the sync bot commits content to
+# `main` all day, and `docs/pipeline.md` promises publishing degrades to a
+# script and a commit. A required check would quietly end that.
+#
+# Majors are left alone. Dependabot puts them in their own pull request, which
+# is not in the `routine` group, so the branch name does not match below and
+# nothing here touches it.
+name: Merge routine dependency updates
+
+on:
+  workflow_run:
+    workflows: ['Deploy']
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    # What was merged, for the deploy below. Empty on every path that merges
+    # nothing, which is what keeps that job from running.
+    outputs:
+      sha: ${{ steps.merge.outputs.sha }}
+      changes: ${{ steps.merge.outputs.changes }}
+    steps:
+      - name: Merge it, if it is a routine one
+        id: merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+
+          # The run knows its own pull request; ask, rather than guessing from
+          # a branch name in the event payload.
+          pr=$(gh api "repos/$REPO/actions/runs/$RUN_ID" \
+                 --jq '.pull_requests[0].number // empty')
+          if [ -z "$pr" ]; then
+            # A fork's pull request reports no linked PR here. Nothing to do,
+            # and nothing to worry about: Dependabot does not use forks.
+            echo "No pull request attached to this run."
+            exit 0
+          fi
+
+          branch=$(gh pr view "$pr" --repo "$REPO" --json headRefName --jq .headRefName)
+          echo "PR #$pr on $branch"
+
+          # Dependabot names the branch after the group. `routine` is patch and
+          # minor only — see dependabot.yml — so a major never matches and is
+          # left for a person to read.
+          case "$branch" in
+            dependabot/*/routine-* | dependabot/*/actions-*) ;;
+            *) echo "Not a grouped routine update; leaving it for a human."; exit 0 ;;
+          esac
+
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+          echo "Merged #$pr — the suite passed on it before this ran."
+
+          # The squash commit, so the deploy below builds what actually landed.
+          #
+          # This merge is made with GITHUB_TOKEN, and GitHub deliberately does
+          # not start a workflow from a push made with it. So nothing deployed
+          # the merge: the bump sat on main until some unrelated push happened
+          # to carry it, and until then main was a tree nobody had built.
+          #
+          # Not only a freshness problem. A squash merge produces a *new* tree,
+          # and anything that landed on main since the pull request's green run
+          # is in it and was never in that run. On 2026-08-10 exactly that
+          # happened: the checks passed on 48328f8 plus the bump, and what
+          # merged was e93b75c plus the bump.
+          #
+          # Hence `ref` rather than letting the deploy pick up main by itself.
+          # It is the same input, and the same reason, as the one sync.yml
+          # passes: see the note on it in deploy.yml.
+          sha=""
+          for _ in 1 2 3 4 5; do
+            sha=$(gh pr view "$pr" --repo "$REPO" --json mergeCommit --jq '.mergeCommit.oid // empty')
+            [ -n "$sha" ] && break
+            sleep 3
+          done
+          if [ -z "$sha" ]; then
+            # Deploying late is a nuisance; deploying the wrong commit is the
+            # defect above. So say so and let the next sync publish it.
+            echo "::warning::Merged #$pr but could not read the merge commit, so nothing was deployed. The next sync will carry it."
+            exit 0
+          fi
+          title=$(gh pr view "$pr" --repo "$REPO" --json title --jq .title)
+          {
+            echo "sha=$sha"
+            echo "changes=$title (#$pr)"
+          } >> "$GITHUB_OUTPUT"
+
+  # Publish what was merged. The same call sync.yml makes, for the same reason:
+  # something landed on main, and the thing that put it there is the only thing
+  # that knows which commit to build.
+  deploy:
+    needs: merge
+    if: needs.merge.outputs.sha != ''
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      changes: ${{ needs.merge.outputs.changes }}
+      ref: ${{ needs.merge.outputs.sha }}
