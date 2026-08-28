@@ -158,14 +158,42 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-          # Reachability first, and separately from the keyscan below, because
-          # from inside ssh a lockout and a wrong key look identical and have
-          # nothing to do with each other.
+          # Reachability, in three separate questions, because they have three
+          # different answers and one message for all of them says nothing.
+          # The first deploy failed here in 19 milliseconds and the log said
+          # "cannot reach", which is true of a wrong hostname, a closed port
+          # and a firewall alike.
+          case "$PORT" in
+            ''|*[!0-9]*)
+              echo "::error::KUALO_SSH_PORT is not a plain number (${#PORT} characters)."
+              echo "A trailing newline or space from a paste is the usual cause."
+              echo "Set it with: gh secret set KUALO_SSH_PORT --body 722"
+              exit 1 ;;
+          esac
+
+          if [ -z "$(getent hosts "$HOST" || true)" ]; then
+            echo "::error::KUALO_HOST does not resolve from this runner (${#HOST} characters)."
+            echo "Check the value for a trailing newline, an https:// prefix, or a port"
+            echo "stuck on the end. It wants a bare hostname, e.g. sNN.kualo.com."
+            exit 1
+          fi
+
+          # Refused comes back at once; a firewall drop takes the full timeout.
+          # The two are worth telling apart, because only one of them is worth
+          # re-running.
+          START=$(date +%s)
           if ! timeout 20 bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; then
-            echo "::error::Cannot reach $HOST on port $PORT from this runner."
-            echo "The host serves the site, so this is usually its brute-force protection"
-            echo "blocking a GitHub runner's shared IP. Kualo calls it cPHulk. Re-run:"
-            echo "the next runner draws a different address."
+            WAITED=$(( $(date +%s) - START ))
+            echo "::error::Nothing accepted a connection on port $PORT after ${WAITED}s."
+            if [ "$WAITED" -lt 5 ]; then
+              echo "It resolved and refused immediately, so the port is almost certainly"
+              echo "wrong. Read it off cPanel: Security > SSH Access. Kualo is not 22."
+            else
+              echo "It resolved and then hung, which is a firewall dropping packets."
+              echo "Usually the host's brute-force protection blocking a GitHub runner's"
+              echo "shared IP: Kualo calls it cPHulk. Re-run, the next runner draws a"
+              echo "different address."
+            fi
             exit 1
           fi
 
