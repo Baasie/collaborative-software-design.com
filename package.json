@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@types/node": "^22.10.0",
+    "@types/node": "^26.3.0",
     "axe-core": "^4.13.0",
     "pagefind": "^1.5.2",
     "playwright": "^1.56.0",
