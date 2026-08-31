@@ -27,13 +27,13 @@
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/pt-sans-narrow": "^5.2.5",
     "@notionhq/client": "^5.25.2",
-    "astro": "^7.2.6",
+    "astro": "^7.2.9",
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@astrojs/markdown-remark": "^7.2.4",
-    "@types/node": "^26.3.0",
+    "@types/node": "^26.4.0",
     "axe-core": "^4.13.0",
     "pagefind": "^1.5.2",
     "playwright": "^1.56.0",
