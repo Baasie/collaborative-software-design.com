@@ -262,9 +262,15 @@ jobs:
           # and the sync commits after its run began. A release directory named
           # after anything else makes a rollback pick the wrong site.
           SHA="$(git rev-parse HEAD)"
-          # Namespaced by site. virtualddd.com prunes `~/releases/*` on the same
-          # account, and an unnamespaced directory here would be deleted by its
-          # next deploy, possibly the one this site is serving.
+          # Namespaced by site, because `~/releases` is shared with
+          # virtualddd.com. Note what this does and does not buy: it stops
+          # that site's prune mistaking one of our releases for one of its
+          # own, but the namespace directory is itself an entry in
+          # `~/releases`, so a prune globbing `*/` there can still take the
+          # whole thing. It did, on 9 September 2026, and this site answered
+          # 404 on every address for five hours. The prune on the other side
+          # now deletes only sha-named directories, which is what actually
+          # makes this safe; namespacing alone never did.
           RELEASE="releases/collaborative-software-design.com/$SHA"
 
           $SSH "$SSH_USER@$HOST" "
