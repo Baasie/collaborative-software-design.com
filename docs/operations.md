@@ -25,9 +25,27 @@ half-written site, and a rollback is one command.
 The last five releases are kept, so a rollback never needs a rebuild.
 
 **Releases are namespaced by site, and that matters here.** `virtualddd.com`
-deploys to the same account and prunes `~/releases/*` on every deploy. An
-unnamespaced directory would be deleted by its next deploy, possibly the very
-release this site is serving. Both sites keep their own subdirectory.
+deploys to the same account and prunes `~/releases/*` on every deploy. Both
+sites keep their own subdirectory, so that prune cannot mistake one of our
+releases for one of its own.
+
+**Namespacing alone was not enough, and it is worth knowing why.**
+`~/releases/collaborative-software-design.com/` is itself an entry in
+`~/releases/`, so it matched the neighbour's `*/` glob and competed with that
+site's release directories for a place in the newest five. Its mtime only
+advances when a *new* release directory is created inside it, and a nightly
+scheduled rebuild of an unchanged commit rsyncs into the directory that is
+already there, which does not touch the parent. So a quiet fortnight here is
+enough to sink it down a list that the neighbour refreshes several times a day.
+
+On 9 September 2026 it reached sixth place and was deleted, live release
+included, nineteen minutes after a green deploy had verified the site. Every
+address returned the host's default 404 until it was redeployed. The fix is on
+the other side: that prune now deletes only directories whose name is a commit
+sha, and it counts after that filter, so nothing of ours can be deleted or use
+up one of its slots. Anything this site puts in `~/releases/` is reachable by
+that `rm -rf` at any depth, so if the neighbour's prune ever loses that filter,
+this breaks again.
 
 ## The secrets
 
