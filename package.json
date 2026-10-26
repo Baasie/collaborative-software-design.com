@@ -26,13 +26,13 @@
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/pt-sans-narrow": "^5.2.5",
-    "@notionhq/client": "^5.27.0",
-    "astro": "^7.4.0",
+    "@notionhq/client": "^5.28.0",
+    "astro": "^7.4.2",
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@astrojs/markdown-remark": "^7.3.3",
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/markdown-remark": "^7.3.4",
     "@types/node": "^26.6.5",
     "axe-core": "^4.14.0",
     "pagefind": "^1.5.2",
