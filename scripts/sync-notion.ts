@@ -12,7 +12,12 @@
  * See docs/content-model.md and docs/pipeline.md.
  */
 import dotenv from 'dotenv';
-import { Client } from '@notionhq/client';
+// The default import, not `{ Client }`. The package is CommonJS, so Node finds
+// its named exports by reading index.js, and from 5.30.0 `Client` is written
+// in a shape that reading cannot follow: the named import fails before a line
+// of this script runs. The default import is the whole `exports` object and
+// does not depend on what Node can work out.
+import notionClient from '@notionhq/client';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import sharp from 'sharp';
@@ -34,7 +39,7 @@ if (!token) {
   console.error('NOTION_TOKEN missing (expected in local.env, or as a repository secret in CI).');
   process.exit(1);
 }
-const notion = new Client({ auth: token });
+const notion = new notionClient.Client({ auth: token });
 
 // --- what we read -----------------------------------------------------------
 //
