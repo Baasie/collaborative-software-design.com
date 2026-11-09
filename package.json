@@ -26,17 +26,17 @@
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/pt-sans-narrow": "^5.2.5",
-    "@notionhq/client": "^5.30.0",
-    "astro": "^7.4.4",
+    "@notionhq/client": "^5.31.0",
+    "astro": "^7.4.7",
     "dotenv": "^18.0.9"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "@astrojs/markdown-remark": "^7.3.5",
+    "@astrojs/markdown-remark": "^7.3.6",
     "@types/node": "^26.6.6",
     "axe-core": "^4.14.0",
-    "pagefind": "^1.5.2",
-    "playwright": "^1.64.1",
+    "pagefind": "^1.6.0",
+    "playwright": "^1.65.0",
     "sharp": "^0.35.5",
     "tsx": "^4.23.15",
     "typescript": "^5.9.0"
