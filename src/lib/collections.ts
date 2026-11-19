@@ -25,6 +25,10 @@ const LIVE = new Set(['Published', 'Done']);
 export const INDEX_PATH = '/faq/';
 export const LETTER_PATH = '/dear-como/';
 
+/** Where the articles live. New, so nothing constrains it: the index and the
+ *  articles share one prefix, the way an address should. */
+export const ARTICLES_PATH = '/articles/';
+
 /** Newest first, and undated last rather than first.
  *
  * A row with no Publish date sorts to `0` under a naive comparator, which puts
@@ -35,12 +39,50 @@ function byNewest(a: Letter, b: Letter) {
   return bd - ad;
 }
 
-/** Every published letter, newest first. */
-export async function letters(): Promise<Letter[]> {
+/** Everything published from the database, letters and articles together,
+ *  newest first. For the places that are about the writing as a whole: the
+ *  feed, and the related pieces at the foot of a page. */
+export async function writing(): Promise<Letter[]> {
   return (await getCollection('writing')).filter((e) => LIVE.has(e.data.status)).sort(byNewest);
 }
 
-export const hrefOf = (entry: Letter) => `${LETTER_PATH}${entry.id}/`;
+/** Every published Dear CoMo letter, newest first. */
+export async function letters(): Promise<Letter[]> {
+  return (await writing()).filter((e) => e.data.section === 'dear-como');
+}
+
+/** Every published article, newest first. */
+export async function articles(): Promise<Letter[]> {
+  return (await writing()).filter((e) => e.data.section === 'articles');
+}
+
+/** A piece's address, decided by its section. One function for both, so a
+ *  list that mixes them (the feed, "related") cannot link an article to
+ *  /dear-como/. */
+export const hrefOf = (entry: Letter) =>
+  `${entry.data.section === 'articles' ? ARTICLES_PATH : LETTER_PATH}${entry.id}/`;
+
+/** Minutes to read, at 230 words a minute, never less than one. Counted off
+ *  the markdown, so a table's pipes and a link's address count for nothing
+ *  worth worrying about at this precision. */
+export function readingMinutes(body: string): number {
+  const words = body.replace(/\]\([^)]*\)/g, ']').split(/\s+/).filter((w) => /\w/.test(w)).length;
+  return Math.max(1, Math.round(words / 230));
+}
+
+/** The pieces most worth reading next: most tags in common first, then
+ *  newest. Anything sharing no tag is left out rather than padded in, because
+ *  a "related" link that is not related teaches readers to skip the block. */
+export function related(entry: Letter, pool: Letter[], max = 3): Letter[] {
+  const mine = new Set(normaliseTags(entry.data.tags));
+  return pool
+    .filter((e) => e.id !== entry.id)
+    .map((e, i) => ({ e, i, shared: normaliseTags(e.data.tags).filter((t) => mine.has(t)).length }))
+    .filter((x) => x.shared > 0)
+    .sort((a, b) => b.shared - a.shared || a.i - b.i)
+    .slice(0, max)
+    .map((x) => x.e);
+}
 
 /** The trainings, in the order the Workshops page in Notion holds them. */
 export async function trainings() {

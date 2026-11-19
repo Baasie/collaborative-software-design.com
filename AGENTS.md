@@ -14,7 +14,8 @@ is *not* editing this repository, and knowing that will save you an hour.
 domain modelling decisions* (Manning). The training and the consulting hang off
 the book, and Dear CoMo (an advice column for facilitators) sits behind the
 FAQ link. The persistent header button is **Buy book**, and it carries affiliate
-parameters that are the authors' revenue. See
+parameters that are the authors' revenue. Articles, longer pieces by the
+authors, sit beside the column at `/articles/`. See
 [docs/migration-inventory.md](docs/migration-inventory.md).
 
 It replaces a WordPress site at the same address. Every one of the 42 addresses
@@ -43,7 +44,7 @@ a habit, and habits drift silently. Assume nothing is checked unless it says so.
    See [docs/brand-and-code.md](docs/brand-and-code.md).
    *How we know: **machine, mostly.** `conformance.test.mjs` keeps colour and
    font literals out of every component and stylesheet but `tokens.css`, and a
-   browser test measures real contrast on every brand fill across seven pages.
+   browser test measures real contrast on every brand fill across one page of every kind.
    Whether something still **feels** right is a person's judgement.*
 4. **Propose options, then ask.** For anything that changes what a visitor sees,
    work out what the page and the Notion data actually do, name the friction,
@@ -153,22 +154,22 @@ Commands are in the [README](./README.md#commands). What a table has no room for
 - **`npm run check:urls`** needs a build first. It checks the rules against
   `dist/`.
 
-## The open decisions
+## The open decision
 
-Two, both flagged rather than quietly settled:
+One, flagged rather than quietly settled:
 
-1. **The contact form is now a `mailto:`.** The WordPress original posts a form
-   (Name, Email, Message, and a training/consulting selector). A static site
-   cannot process that, so `ContactSection.astro` sends two pre-filled mailto
-   links instead. That is a real downgrade. A mailto exposes the address to
-   scrapers and does nothing on a machine with no mail client. If it becomes a
-   problem, a hosted form endpoint is the fix, and that component is the only
-   place that changes.
-2. **`/articles/` does not exist.** Notion's `Category` offers `Article`, four
-   rows are drafted under it, and nothing is published. The sync reports a
-   published Article as needing a decision rather than inventing an address for
-   it. Adding the section is one line in `SECTION_OF_CATEGORY`, one in the
-   schema's `section` enum, and a page.
+**The contact form is now a `mailto:`.** The WordPress original posts a form
+(Name, Email, Message, and a training/consulting selector). A static site
+cannot process that, so `ContactSection.astro` sends two pre-filled mailto
+links instead. That is a real downgrade. A mailto exposes the address to
+scrapers and does nothing on a machine with no mail client. If it becomes a
+problem, a hosted form endpoint is the fix, and that component is the only
+place that changes.
+
+`/articles/` used to be the second one. It was decided in November 2026: its
+own section, its own page template, a menu item beside Dear CoMo, one combined
+feed, and an `Authors` field in Notion for the byline. See
+[docs/content-model.md](docs/content-model.md).
 
 ## When something goes wrong
 

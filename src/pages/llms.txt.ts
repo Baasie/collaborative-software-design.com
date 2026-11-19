@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { letters, trainings, hrefOf } from '../lib/collections';
+import { letters, articles, trainings, hrefOf } from '../lib/collections';
 import { CHAPTERS } from '../lib/nav';
 import { SITE_NAME, SITE_TAGLINE, BOOK_URL_PLAIN, AUTHORS, SITE_URL } from '../lib/seo';
 
@@ -9,7 +9,7 @@ import { SITE_NAME, SITE_TAGLINE, BOOK_URL_PLAIN, AUTHORS, SITE_URL } from '../l
  * that is the point: the words, with no nav and no cards to strip. */
 export async function GET(context: APIContext) {
   const abs = (p: string) => new URL(p, context.site ?? SITE_URL).toString();
-  const [ls, ts] = [await letters(), await trainings()];
+  const [ls, as, ts] = [await letters(), await articles(), await trainings()];
 
   const lines = [
     `# ${SITE_NAME}`,
@@ -18,7 +18,7 @@ export async function GET(context: APIContext) {
     `> ${AUTHORS.map((a) => a.name).join(', ')} (Manning).`,
     '',
     `The book: ${BOOK_URL_PLAIN}`,
-    'Pages under /dear-como/ and /training/ are also available as markdown at `<url>index.md`.',
+    'Pages under /dear-como/, /articles/ and /training/ are also available as markdown at `<url>index.md`.',
     '',
     '## The book',
     '',
@@ -35,6 +35,14 @@ export async function GET(context: APIContext) {
     '',
     ...ls.map((e) => `- [${e.data.title}](${abs(`${hrefOf(e)}index.md`)})`),
     '',
+    ...(as.length ? [
+      '## Articles',
+      '',
+      `Longer pieces by the authors; the index is at ${abs('/articles/')}.`,
+      '',
+      ...as.map((e) => `- [${e.data.title}](${abs(`${hrefOf(e)}index.md`)})`),
+      '',
+    ] : []),
   ];
 
   return new Response(lines.join('\n'), {

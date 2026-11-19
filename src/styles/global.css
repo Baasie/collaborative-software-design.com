@@ -87,6 +87,12 @@ pre code { background: none; padding: 0; color: inherit; }
 table { width: 100%; border-collapse: collapse; margin: var(--space-6) 0; font-size: var(--text-sm); }
 th, td { border: 1px solid var(--color-border); padding: var(--space-2) var(--space-3); text-align: left; }
 th { background: var(--tint-ink); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; }
+/* Wrapped round every table in a body by src/lib/rehype-table-scroll.mjs. The
+   margin moves out here so the scroll edge and the table edge are the same. */
+.table-scroll { overflow-x: auto; margin: var(--space-6) 0; }
+.table-scroll > table { margin: 0; min-width: 36rem; }
+.table-scroll td { vertical-align: top; }
+.table-scroll:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
 
 /* Layout containers */
 .wrap { width: 100%; max-width: var(--wide-width); margin-inline: auto; padding-inline: var(--space-5); }

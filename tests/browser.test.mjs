@@ -9,7 +9,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { chromium } from 'playwright';
 import { createRequire } from 'node:module';
@@ -61,11 +61,20 @@ after(async () => {
 // style note: a page built and not listed shipped a magenta link on the orange
 // (the 2.74:1 pairing this file has caught five times now) and every test
 // passed, because none of them had ever loaded it.
+// An article is named by whichever is published first rather than by slug,
+// because the section shipped before any article did. Until there is one the
+// index stands in for the kind.
+const firstArticle = existsSync('dist/articles')
+  ? readdirSync('dist/articles', { withFileTypes: true }).find((d) => d.isDirectory())?.name
+  : undefined;
+
 const PAGES = [
   '/', '/faq/', '/training/', '/facilitation/',
   '/dear-como/help-quiet-members-speak-up/',
   '/training/navigating-power-dynamics-in-software-decision-making/',
   '/the-need-for-collaborative-design/',
+  '/articles/',
+  ...(firstArticle ? [`/articles/${firstArticle}/`] : []),
 ];
 
 test('no serious or critical accessibility violations', async () => {

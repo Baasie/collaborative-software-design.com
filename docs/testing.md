@@ -47,7 +47,7 @@ Two that are not generic hygiene:
 ### Browser, `tests/browser.test.mjs`
 
 Serves `dist` over http (module scripts and Pagefind do not work from `file://`)
-and drives Chromium across seven pages, one of each shape.
+and drives Chromium across one page of each shape (nine, once an article is published).
 
 - **axe**, serious and critical only. A suite that fails on every minor
   advisory gets muted, and a muted suite protects nothing.

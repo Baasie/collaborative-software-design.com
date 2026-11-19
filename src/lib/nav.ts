@@ -43,6 +43,10 @@ export const NAV: NavItem[] = [
   // eighteen legacy redirects land on, and a label is not a promise the way an
   // address is.
   { href: '/faq/', label: 'Dear CoMo', section: true },
+  // The authors' longer pieces. Beside the column, so the two kinds of writing
+  // read as neighbours, and separate from it, because the column's index
+  // promises "one question, one letter" and an article is neither.
+  { href: '/articles/', label: 'Articles', section: true },
   { href: '/#contact', label: 'Contact' },
 ];
 
