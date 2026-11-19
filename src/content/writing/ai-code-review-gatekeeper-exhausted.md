@@ -4,6 +4,7 @@ section: "dear-como"
 status: "Published"
 publishDate: 2026-11-19
 tags: ["Team Dynamics", "Power Dynamics", "Behavioural Patterns", "Organizational Change"]
+featuredImage: "./_assets/ai-code-review-gatekeeper-exhausted-featured.webp"
 focusKeyphrase: "AI code review workload"
 metaDescription: "Reviewing more code than you write since your team adopted AI? Dear CoMo explains how you became the gatekeeper, and what you can change about it."
 ---
