@@ -135,7 +135,7 @@ test('rule 1: Notion is the source of truth, so content carries the sync’s sha
     const fm = read(f).match(/^---\n([\s\S]*?)\n---\n/);
     assert.ok(fm, `${f} has no front matter`);
     assert.match(fm[1], /^title: "/m, `${f} has no title`);
-    assert.match(fm[1], /^section: "dear-como"$/m, `${f} has no known section`);
+    assert.match(fm[1], /^section: "(dear-como|articles)"$/m, `${f} has no known section`);
     assert.match(fm[1], /^status: "/m, `${f} has no status`);
   }
   for (const f of walk('src/content/trainings').filter((f) => f.endsWith('.md'))) {

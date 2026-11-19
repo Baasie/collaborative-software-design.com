@@ -136,6 +136,9 @@ const STATE_FILE = 'data/sync-state.json';
 
 interface EntryState {
   slug: string;
+  /** The section it was written under, so a Category change is seen as the
+   *  address change it is. Absent on entries from before there was a choice. */
+  section?: string;
   /** Notion's `last_edited_time` when we last rendered this body. */
   edited?: string;
   /** Digest of the body we wrote, so an edit made here rather than in Notion is
@@ -321,24 +324,29 @@ function readExisting(path: string): { featured?: string; teaser?: string; body:
   } catch { return null; }
 }
 
-// --- the content command: the Dear CoMo letters ------------------------------
+// --- the content command: the Dear CoMo letters and the articles ------------
 //
-// One database, one collection, one pass. The database also offers an `Article`
-// Category, but nothing is published under it and the site has no section for
-// one, so a published Article is reported as needing a decision rather than
-// being given an address nobody chose. Adding /articles/ later is one line
-// here, one in the schema's `section` enum, and a page.
+// One database, one collection, one pass. Two sections: the Dear CoMo letters
+// and the articles. A Category this map does not know is reported as needing a
+// decision rather than being given an address nobody chose.
 
 /** Notion's `Category` → the section the site renders it in. */
 const SECTION_OF_CATEGORY: Record<string, string> = {
   'Dear Como': 'dear-como',
+  'Article': 'articles',
 };
 
-/** Where each section's letters live. The index is at /faq/ and the letters at
- *  /dear-como/. Both the live site's addresses, not a choice. */
+/** Where each section's entries live. The letters' index is at /faq/ and the
+ *  letters at /dear-como/, both the live site's addresses, not a choice. The
+ *  articles are new, so their index and their pages share /articles/. */
 const SECTION_PATH: Record<string, string> = {
   'dear-como': '/dear-como/',
+  'articles': '/articles/',
 };
+
+/** The section a state entry was last written under. Entries written before
+ *  articles existed carry no section, and every one of them was a letter. */
+const sectionOf = (e: EntryState | undefined) => e?.section ?? 'dear-como';
 
 const WRITING_DIR = 'writing';
 
@@ -420,7 +428,7 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
       if (before && readExisting(`${outDir}/${before.slug}.md`)) {
         unpublishedButLive.push({
           kind: 'unpublished-but-live', title,
-          url: `${SECTION_PATH['dear-como']}${before.slug}/`,
+          url: `${SECTION_PATH[sectionOf(before)]}${before.slug}/`,
           detail: `Status is now "${status}". The page is still served. Retire it or re-publish it.`,
         });
         now[page.id] = before;
@@ -454,11 +462,14 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
     }
 
     const before = was[page.id];
-    if (before && before.slug !== slug) {
+    if (before && (before.slug !== slug || sectionOf(before) !== section)) {
+      // A new slug and a new Category both move the address. The file is the
+      // same either way (it is named by slug, and `section` is one line in it),
+      // which is why one collection can see both halves of the move.
       moved.push({
-        from: `${SECTION_PATH[section]}${before.slug}/`,
+        from: `${SECTION_PATH[sectionOf(before)]}${before.slug}/`,
         to: `${SECTION_PATH[section]}${slug}/`,
-        why: 'slug changed in Notion',
+        why: before.slug !== slug ? 'slug changed in Notion' : 'Category changed in Notion',
       });
     }
 
@@ -494,6 +505,10 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
     if (pub) fm.push(`publishDate: ${pub.slice(0, 10)}`);
     const tags = normaliseTags(multi('Tags'));
     if (tags.length) fm.push(`tags: ${yamlList(tags)}`);
+    // The byline. Read on every row so a rename of the property is noticed as
+    // drift, but only an article prints it: CoMo signs the letters.
+    const authors = multi('Authors');
+    if (authors.length) fm.push(`authors: ${yamlList(authors)}`);
     if (featured) fm.push(`featuredImage: ${yamlStr(featured)}`);
     const canonical = readUrl('Canonicle URL (optional)', read('Canonicle URL (optional)', 'url')?.url, title, pageUrl);
     if (canonical) fm.push(`canonical: ${yamlStr(canonical)}`);
@@ -503,7 +518,7 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
     if (meta) fm.push(`metaDescription: ${yamlStr(meta)}`);
 
     files.set(`${slug}.md`, `---\n${fm.join('\n')}\n---\n\n${body.trim()}\n`);
-    now[page.id] = { slug, edited, digest: digestOf(body.trim() + '\n') };
+    now[page.id] = { slug, section, edited, digest: digestOf(body.trim() + '\n') };
   }
   process.stdout.write('\n');
 
@@ -512,9 +527,10 @@ async function runContent(outRoot: string, write: boolean, full: boolean) {
   const kept = new Set([...files.keys()]);
   for (const f of readdirSync(outDir).filter((f) => f.endsWith('.md') && !kept.has(f))) {
     const slug = f.replace(/\.md$/, '');
+    const last = Object.values(was).find((e) => e.slug === slug);
     unpublishedButLive.push({
       kind: 'unpublished-but-live', title: slug,
-      url: `${SECTION_PATH['dear-como']}${slug}/`,
+      url: `${SECTION_PATH[sectionOf(last)]}${slug}/`,
       detail: 'The row is gone from Notion. The page is still served; retire it on purpose or restore the row.',
     });
   }

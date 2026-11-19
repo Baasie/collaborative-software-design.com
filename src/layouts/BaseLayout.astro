@@ -104,7 +104,7 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME}: Dear CoMo`} href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME}: writing`} href="/rss.xml" />
     {markdown && (
       <link rel="alternate" type="text/markdown" title={`${title} (markdown)`} href={`${path}index.md`} />
     )}
@@ -279,28 +279,28 @@ const analyticsDomain = import.meta.env.PROD ? import.meta.env.PUBLIC_ANALYTICS_
       }
       .nav-toggle span { display: block; width: 22px; height: 3px; background: var(--color-ink); }
 
-      /* The header switches to the hamburger at 1180px, not at the 800px the
+      /* The header switches to the hamburger at 1280px, not at the 800px the
          rest of the site uses, and that is a measured number rather than a
-         taste. Laid out on one row the flat menu needs 630px, the wordmark
-         240px and BUY BOOK 130px, which at `width: 90%` first fits in a 1180px
-         viewport. Below that it wraps to two rows and makes the sticky header
-         177px tall against 133px, which is a lot of chrome to carry down a
-         tablet. Six items and a 320px wordmark simply do not fit; no amount of
-         tightening gets there, since fitting at 800px would need about a 10px
-         menu.
+         taste. Laid out on one row the flat menu, the wordmark at 240px and BUY
+         BOOK at 130px first fit in a 1280px viewport. Below that it wraps to
+         two rows and makes the sticky header 177px tall against 133px, which is
+         a lot of chrome to carry down a tablet. Seven items and a 320px
+         wordmark simply do not fit at 800px; no amount of tightening gets
+         there.
 
-         It was 1100 until the menu called this column FAQ. `Dear CoMo` is the
-         page's own name and 55px wider, and 55px is the whole margin: measured
-         at 20px steps, 1160 still wrapped and 1180 did not.
+         The history, because each step was a measurement: 1100 while the menu
+         said FAQ; 1180 once it said `Dear CoMo`, 55px wider; 1280 once
+         `Articles` joined it. Measured at 10px steps, 1270 still wrapped and
+         1280 did not. Adding a menu item means measuring this again.
 
-         Between 1180 and 1400 the wordmark comes down to 240px to buy the
-         room. Above that it is 320px with 228px to spare. */
-      @media (min-width: 1180px) and (max-width: 1399.98px) {
+         Between 1280 and 1400 the wordmark comes down to 240px to buy the
+         room. Above that it is 320px with room to spare. */
+      @media (min-width: 1280px) and (max-width: 1399.98px) {
         .brand :global(.logo) { width: 240px; }
         .nav-list { gap: var(--space-4); }
       }
 
-      @media (max-width: 1179.98px) {
+      @media (max-width: 1279.98px) {
         .header-inner { flex-wrap: wrap; }
         /* 320px of wordmark plus a 48px button does not fit a 390px phone, and
            wrapping the button under the logo costs a whole row of height on

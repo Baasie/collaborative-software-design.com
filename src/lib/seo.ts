@@ -96,7 +96,13 @@ export function organisation(site: URL | undefined) {
 export function articleJsonLd(opts: {
   site: URL | undefined; url: string; title: string;
   description?: string; image?: string; published?: Date; tags?: string[];
+  /** The article's own byline, by name. Absent on a letter, which is credited
+   *  to all three authors because CoMo is all three of them. */
+  authors?: string[];
 }) {
+  const people = opts.authors?.length
+    ? opts.authors.map((name) => AUTHORS.find((a) => a.name === name) ?? { name, url: undefined })
+    : AUTHORS;
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -106,7 +112,7 @@ export function articleJsonLd(opts: {
     ...(opts.published ? { datePublished: opts.published.toISOString().slice(0, 10) } : {}),
     ...(opts.tags?.length ? { keywords: opts.tags.join(', ') } : {}),
     mainEntityOfPage: opts.url,
-    author: AUTHORS.map((a) => ({ '@type': 'Person', name: a.name, sameAs: [a.url] })),
+    author: people.map((a) => ({ '@type': 'Person', name: a.name, ...(a.url ? { sameAs: [a.url] } : {}) })),
     publisher: organisation(opts.site),
   };
 }

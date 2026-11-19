@@ -35,24 +35,27 @@ const seo = {
 //
 // `section` is the exception, and deliberately so: it is not a label, it is an
 // ADDRESS. A value outside this set has no page to be rendered at, so the
-// build is the right place to refuse it. Today there is exactly one, because
-// the live site has exactly one: the Dear CoMo column. Notion's `Category` also
-// offers `Article`, but nothing is published under it and no such section
-// exists. The sync reports a published Article as needing a decision rather
-// than inventing an address for it. Adding `/articles/` later is this enum,
-// one line in the sync's mapping, and a page.
+// build is the right place to refuse it. Two sections: the Dear CoMo column
+// (letters at /dear-como/) and the articles (at /articles/). A Category the
+// sync does not map is reported as needing a decision rather than being given
+// an address nobody chose.
 const writing = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
   schema: ({ image }) =>
     z.object({
-      /** The reader's question. It is the title of the page, and it is a
+      /** Notion's `Question`. On a letter it is the reader's question, and a
        *  question rather than a headline because that is the form the column
-       *  takes: someone writes in, CoMo writes back. */
+       *  takes. On an article it is simply the headline. */
       title: z.string(),
-      section: z.enum(['dear-como']),
+      section: z.enum(['dear-como', 'articles']),
       status: z.string(), // Not started | In progress | Ready for Review | Done | Published
       publishDate: z.coerce.date().optional(),
       tags: z.array(z.string()).default([]),
+      /** Notion's `Authors`: the byline of an article, by name. Matched
+       *  against `AUTHORS` in src/lib/seo.ts for the portrait and the bio, so
+       *  who the authors are stays in one place. Empty on a letter, because
+       *  CoMo signs those. */
+      authors: z.array(z.string()).default([]),
       featuredImage: image().optional(),
       /** Notion's `Canonicle URL (optional)`. Set when a piece was published
        *  somewhere else first and that copy should keep the ranking. */

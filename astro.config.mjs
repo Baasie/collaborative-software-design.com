@@ -3,6 +3,9 @@ import { defineConfig } from 'astro/config';
 import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import { unified } from '@astrojs/markdown-remark';
 import { rehypeEmptyAlt } from './src/lib/rehype-alt.mjs';
+import { rehypeTableScroll } from './src/lib/rehype-table-scroll.mjs';
+import { rehypeBookLink } from './src/lib/rehype-book-link.mjs';
+import { BOOK_URL } from './src/lib/seo.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,8 +27,13 @@ export default defineConfig({
     //
     // The plugin gives an image with no caption in Notion an alt attribute.
     // Without one Astro emits no `alt` at all and a screen reader reads the
-    // hashed file name. See src/lib/rehype-alt.mjs.
-    processor: unified({ rehypePlugins: [rehypeEmptyAlt] }),
+    // hashed file name. See src/lib/rehype-alt.mjs. The second wraps a table
+    // so a wide one scrolls by itself on a phone. See rehype-table-scroll.mjs.
+    // The third gives a pasted link to the book its affiliate id. See
+    // rehype-book-link.mjs.
+    processor: unified({
+      rehypePlugins: [rehypeEmptyAlt, rehypeTableScroll, rehypeBookLink({ url: BOOK_URL })],
+    }),
   },
   integrations: [
     sitemap({
@@ -37,7 +45,7 @@ export default defineConfig({
       serialize(item) {
         if (/\/training\/[^/]+\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.MONTHLY; item.priority = 0.9;
-        } else if (/\/dear-como\/[^/]+\/$/.test(item.url)) {
+        } else if (/\/(dear-como|articles)\/[^/]+\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.MONTHLY; item.priority = 0.7;
         } else if (/collaborative-software-design\.com\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.WEEKLY; item.priority = 1.0;

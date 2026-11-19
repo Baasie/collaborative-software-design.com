@@ -1,0 +1,78 @@
+---
+/** The articles index.
+ *
+ * The same ruled list as the Dear CoMo index, because a reader who has met one
+ * should not have to learn the other, and because two or three rows read as a
+ * short list where two or three cards in a grid read as a page with something
+ * missing. No topic filter yet: with this few articles it would filter nothing.
+ * The day there are enough to need one, TagFilter is what /faq/ already uses.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LetterRow from '../../components/LetterRow.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import { articles, INDEX_PATH } from '../../lib/collections';
+import { pageTitle, organisation } from '../../lib/seo';
+
+const entries = await articles();
+
+const description =
+  'Longer pieces by the authors of Collaborative Software Design: one idea from '
+  + 'the work, taken apart properly, with something to try on your own team.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Articles',
+  description,
+  url: new URL('/articles/', Astro.site).toString(),
+  publisher: organisation(Astro.site),
+};
+---
+<BaseLayout title={pageTitle('Articles')} description={description} jsonLd={jsonLd}>
+  <section class="hero section--pink" data-test="articles-hero">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--ink">Longer reads</p>
+      <h1>Articles</h1>
+      <p class="hero-lede">
+        Where Dear CoMo answers one reader’s question, an article takes one idea from
+        our work and follows it all the way through: where it comes from, what goes
+        wrong with it in practice, and what to try on your own team.
+      </p>
+      <p class="hero-aside">
+        Looking for a quick answer to a specific problem? <a href={INDEX_PATH}>Ask Dear CoMo</a>.
+      </p>
+    </div>
+  </section>
+
+  <div class="section section--paper">
+    <div class="wrap">
+      {entries.length > 0 ? (
+        <ol class="articles" data-test="articles-list">
+          {entries.map((e) => <LetterRow entry={e} level={2} />)}
+        </ol>
+      ) : (
+        <p class="empty" data-test="articles-empty">
+          The first article is on its way. Until then, <a href={INDEX_PATH}>Dear CoMo</a>
+          has answers to the questions facilitators write in with.
+        </p>
+      )}
+    </div>
+  </div>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .hero { padding-block: var(--space-16, 4rem) var(--space-12); }
+  .hero h1 { margin: 0 0 var(--space-6); }
+  .hero-lede { font-size: var(--text-lg); max-width: 40rem; margin: 0; }
+  .hero-aside { margin: var(--space-6) 0 0; }
+  .hero-aside a { color: var(--color-ink); }
+
+  .articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 4px solid var(--color-ink);
+  }
+</style>

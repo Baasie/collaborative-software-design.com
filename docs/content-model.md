@@ -9,16 +9,19 @@ holds them differently.
 **Database:** `Dear CoMo Content`
 **Data source id:** `c21ccb43-5f0c-490c-8f81-f5f2794f5322`
 **Collection:** `writing` → `src/content/writing/*.md`
-**Addresses:** index at `/faq/`, letters at `/dear-como/<slug>/`
+**Addresses:** letters' index at `/faq/`, letters at `/dear-como/<slug>/`;
+articles' index at `/articles/`, articles at `/articles/<slug>/`
 
 | Notion property | Type | Front-matter key | Notes |
 |---|---|---|---|
 | `Question` | title | `title` | The reader's question. It is the page's h1, because that is the form the column takes. |
-| `Category` | select | `section` | `Dear Como` → `dear-como`. **Decides the URL.** |
+| `Category` | select | `section` | `Dear Como` → `dear-como`, `Article` → `articles`. **Decides the URL.** |
 | `Slug` | text | *the filename* | And therefore the address. Required: a published row without one is reported, not guessed at. |
 | `Status` | status | `status` | `Published` and `Done` are live. Anything else is not. |
 | `Publish date` | date | `publishDate` | Sorts the index. An undated row sorts last, never first. |
 | `Tags` | multi-select | `tags` | Normalised by `src/lib/tags.ts` on the way in. |
+| `Authors` | multi-select | `authors` | An article's byline. Matched by name against `AUTHORS` in `src/lib/seo.ts` for the portrait and bio. Empty on a letter: CoMo signs those. |
+| `Announced` | checkbox | *not read* | Ticked by the n8n social poller once a letter's Buffer drafts exist. The site ignores it. |
 | `Featured Image` | file | `featuredImage` | Downloaded next to the entry and optimised at build time. |
 | `Meta Description` | text | `metaDescription` | What the card and the search result say. |
 | `Focus keyphrase` | text | `focusKeyphrase` | Editorial only; nothing branches on it. |
@@ -33,30 +36,47 @@ constants, named so nobody has to rediscover this.
 
 ### Why one collection and not one per section
 
-`Category` also offers `Article`. Four rows are drafted under it and none is
-published, and the live site has no such section.
-
 Two collections looked like the obvious shape and was wrong twice over:
 
-- with nothing published under `Article`, `getCollection('articles')` warns on
+- while one section has nothing published, `getCollection()` on it warns on
   every single build, and a warning that is expected is a warning nobody reads;
 - a row that changes `Category` changes **address**. With two collections that
   is one file deleted and another created, in two separate passes, and neither
   pass can see both halves. So the old address breaks silently. With one
   collection it is one file whose `section` line changed, and the run that
-  changed it holds both the old section and the new one, so it can emit the
-  redirect.
+  changed it holds both the old section and the new one, so it emits the
+  redirect. `data/sync-state.json` records each row's section for exactly
+  that.
 
 `section` is the one field in the whole schema held as a `z.enum` rather than a
 string. Everything else is a label, and a label nobody has seen before should
 become a new chip rather than a failed deploy. `section` is not a label. It is
 an address, and a value with no page to render at is a bug in the sync's
-mapping, never an editorial choice. So the sync reports a published `Article` as
-needing a decision rather than inventing `/articles/` for it.
+mapping, never an editorial choice. A Category the sync does not map is
+reported as needing a decision.
 
-**Adding `/articles/` later** is three edits: `SECTION_OF_CATEGORY` and
-`SECTION_PATH` in `scripts/sync-notion.ts`, the `section` enum in
-`src/content.config.ts`, and an index page.
+`letters()` and `articles()` in `src/lib/collections.ts` split the collection
+for the two indexes; `writing()` is both, for the feed and for "Read next".
+`hrefOf()` picks the address from the section, so a list that mixes the two
+cannot send an article to `/dear-como/`.
+
+### The article page
+
+An article is not a long letter, and its page is not the letter template with a
+new eyebrow. What it adds, and why, is at the head of
+`src/pages/articles/[slug].astro`. In short: a standfirst (the Meta
+Description), a byline with portraits and a reading time, contents built from
+the body's own `##` headings (sticky beside the body from 1100px, folded above
+it on a phone), the authors' bios at the foot, and "Read next" by shared tags
+across letters and articles.
+
+Two things in a body are repaired at build time rather than left to the writer,
+because a deploy must never fail over somebody's writing:
+
+- a **table** is wrapped so it scrolls by itself on a phone
+  (`src/lib/rehype-table-scroll.mjs`);
+- a **link to the book** pasted from a browser gets the affiliate parameters
+  (`src/lib/rehype-book-link.mjs`).
 
 ## Trainings, child pages, not a database
 

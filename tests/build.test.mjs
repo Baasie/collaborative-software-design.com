@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { DIST, htmlFiles, read, urlOf, dirSize } from './helpers.mjs';
 
 const pages = htmlFiles();
@@ -207,6 +208,48 @@ test('a long workshop page carries its contents and a following booking bar', ()
     const barAt = html.indexOf('js-book-bar');
     const contactAt = html.indexOf('data-test="contact"');
     assert.ok(barAt > contactAt, `${urlOf(f)} puts the booking bar before the contact section`);
+  }
+});
+
+test('the articles index is built, and the menu leads to it', () => {
+  // Built with no articles published too: that is how the section shipped,
+  // and an index that says "on its way" beats a menu item that 404s.
+  const idx = join(DIST, 'articles', 'index.html');
+  assert.ok(existsSync(idx), '/articles/ was not built');
+  const home = read(join(DIST, 'index.html'));
+  assert.match(home, /<a[^>]+href="\/articles\/"/, 'the menu has no link to /articles/');
+});
+
+test('an article page carries what a long read needs', (t) => {
+  // See the head of src/pages/articles/[slug].astro for why each of these is
+  // there. Every one is easy to lose in a restyle and invisible on a short
+  // piece, which is why they are checked on every article rather than one.
+  const arts = pages.filter((f) => /\/articles\/[^/]+\/index\.html$/.test(f));
+  if (arts.length === 0) {
+    t.skip('no article is published yet; this runs from the first one on');
+    return;
+  }
+  for (const f of arts) {
+    const html = read(f);
+    const u = urlOf(f);
+    assert.match(html, /data-test="article-byline"/, `${u} has no byline`);
+    assert.match(html, /data-test="article-reading-time"[^>]*>\d+ min read</, `${u} has no reading time`);
+    // Its label is "Article", never "Dear CoMo": the letter template's words
+    // on an article are the mistake this page exists to avoid.
+    assert.ok(!/All of Dear CoMo|More letters|Every letter is grounded/.test(html),
+      `${u} still speaks as a Dear CoMo letter`);
+    // The contents point at headings that are really there.
+    const toc = html.match(/data-test="article-toc"[\s\S]*?<\/nav>/)?.[0];
+    if (toc) {
+      for (const [, slug] of toc.matchAll(/href="#([^"]+)"/g)) {
+        assert.ok(html.includes(`id="${slug}"`), `${u} lists #${slug}, which is not on the page`);
+      }
+    }
+    // A table scrolls by itself, inside a region a keyboard can reach.
+    for (const m of html.matchAll(/<table\b/g)) {
+      const before = html.slice(Math.max(0, m.index - 200), m.index);
+      assert.match(before, /class="table-scroll" tabindex="0" role="region"/, `${u} has a table with no scroll wrapper`);
+    }
   }
 });
 

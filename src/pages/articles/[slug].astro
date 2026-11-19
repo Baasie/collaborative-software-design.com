@@ -1,0 +1,271 @@
+---
+/** One article.
+ *
+ * Not the letter template with a different eyebrow. A letter is a short answer
+ * signed by CoMo; an article is a long read by named people, and the example
+ * that shaped this page is 2,300 words with eight sections and a table. So the
+ * page answers the questions a long read raises and a letter does not:
+ *
+ *   who wrote it    a byline with faces, and who they are at the foot
+ *   is it for me    the standfirst (the Meta Description an editor wrote)
+ *   how long        minutes to read, beside the date
+ *   where am I      the contents, built from the body's own h2s: in the empty
+ *                   right-hand column on a wide screen, where it stays in view,
+ *                   and folded above the body on a phone
+ *   what next       related pieces by shared topic, letters and articles alike
+ *
+ * The body is Notion's, untouched, at the same measure as a letter. It sits on
+ * the paper plate every detail page uses, which is also what keeps brand-
+ * coloured text off the orange (see "The trap in this brand" in AGENTS.md).
+ */
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrevNext from '../../components/PrevNext.astro';
+import LetterRow from '../../components/LetterRow.astro';
+import ContactSection from '../../components/ContactSection.astro';
+import { formatDate, isoDate } from '../../lib/dates';
+import { articles, writing, hrefOf, readingMinutes, related, ARTICLES_PATH } from '../../lib/collections';
+import { normaliseTags } from '../../lib/tags';
+import { excerpt } from '../../lib/excerpt';
+import { bylineOf } from '../../lib/portraits';
+import { articleJsonLd, pageTitle, BOOK_URL, AUTHORS } from '../../lib/seo';
+import { socialCard } from '../../lib/social-card';
+
+export async function getStaticPaths() {
+  const entries = await articles();
+  const everything = await writing();
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: entries[i - 1] ? { href: hrefOf(entries[i - 1]), title: entries[i - 1].data.title } : undefined,
+      next: entries[i + 1] ? { href: hrefOf(entries[i + 1]), title: entries[i + 1].data.title } : undefined,
+      more: related(entry, everything),
+    },
+  }));
+}
+
+const { entry, prev, next, more } = Astro.props;
+const { Content, headings } = await render(entry);
+const contents = headings.filter((h) => h.depth === 2);
+const description = entry.data.seoMetadescription
+  ?? entry.data.metaDescription
+  ?? excerpt(entry.body ?? '', entry.data.title);
+const tags = normaliseTags(entry.data.tags);
+const byline = bylineOf(entry.data.authors);
+const minutes = readingMinutes(entry.body ?? '');
+const url = new URL(`${ARTICLES_PATH}${entry.id}/`, Astro.site).toString();
+const image = entry.data.featuredImage ? await socialCard(Astro.site, entry.data.featuredImage) : undefined;
+
+const jsonLd = articleJsonLd({
+  site: Astro.site, url, title: entry.data.title, description, image,
+  published: entry.data.publishDate, tags, authors: entry.data.authors,
+});
+
+/** "Evelyn, Kenny and Gien", off the one list of who the authors are. */
+const firstNames = AUTHORS.map((a) => a.name.split(' ')[0]).join(', ').replace(/, ([^,]*)$/, ' and $1');
+
+const names = (list: { name: string }[]) =>
+  list.length < 2 ? (list[0]?.name ?? '')
+    : `${list.slice(0, -1).map((b) => b.name).join(', ')} & ${list[list.length - 1].name}`;
+---
+<BaseLayout
+  title={pageTitle(entry.data.seoTitle ?? entry.data.title)}
+  description={description}
+  canonical={entry.data.canonical}
+  image={entry.data.featuredImage}
+  jsonLd={jsonLd}
+  ogType="article"
+  markdown
+>
+  <div class="section--paper">
+  <article class="wrap article" data-test="article">
+    <p class="detail-back"><a href={ARTICLES_PATH}>← All articles</a></p>
+
+    <header class="detail-head article-head">
+      <p class="eyebrow">Article</p>
+      <h1>{entry.data.title}</h1>
+      {entry.data.metaDescription && (
+        <p class="standfirst" data-test="article-standfirst">{entry.data.metaDescription}</p>
+      )}
+
+      <div class="byline" data-test="article-byline">
+        {byline.some((b) => b.portrait) && (
+          <span class="byline-faces" aria-hidden="true">
+            {byline.filter((b) => b.portrait).map((b) => (
+              <Image src={b.portrait!} alt="" role="presentation" width={96} height={96} class="byline-face" />
+            ))}
+          </span>
+        )}
+        <span class="byline-text">
+          {byline.length > 0 && <span class="byline-names">{names(byline)}</span>}
+          <span class="byline-meta">
+            {entry.data.publishDate && (
+              <time datetime={isoDate(entry.data.publishDate)}>{formatDate(entry.data.publishDate)}</time>
+            )}
+            {entry.data.publishDate && <span aria-hidden="true"> · </span>}
+            <span data-test="article-reading-time">{minutes} min read</span>
+          </span>
+        </span>
+      </div>
+
+      {tags.length > 0 && (
+        <ul class="chips" aria-label="Topics">
+          {tags.map((t) => <li><span class="chip">{t}</span></li>)}
+        </ul>
+      )}
+    </header>
+
+    {entry.data.featuredImage && (
+      <figure class="detail-figure article-figure">
+        <Image src={entry.data.featuredImage} alt="" role="presentation" width={1200} height={630} />
+      </figure>
+    )}
+
+    <div class="article-grid">
+      {contents.length > 1 && (
+        <nav class="article-toc" aria-label="In this article" data-test="article-toc" data-pagefind-ignore>
+          {/* One list, two presentations. A <details> on a phone so the
+              contents cost one line until asked for; open and sticky beside
+              the body on a wide screen, where the column is otherwise empty.
+              `open` is set by the script below at that width, not here, so
+              without scripting a phone still gets it folded. */}
+          <details class="js-article-toc">
+            <summary>In this article</summary>
+            <ol>
+              {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            </ol>
+          </details>
+        </nav>
+      )}
+
+      <div class="prose article-body"><Content /></div>
+    </div>
+
+    <div class="prose article-foot">
+      {byline.some((b) => b.bio) && (
+        <section class="article-authors" data-test="article-authors" aria-labelledby="about-authors">
+          <h2 id="about-authors">About the {byline.length > 1 ? 'authors' : 'author'}</h2>
+          <ul>
+            {byline.filter((b) => b.bio).map((b) => (
+              <li>
+                {b.portrait && <Image src={b.portrait} alt="" role="presentation" width={160} height={160} class="author-face" />}
+                <p><a href={b.url} rel="noopener">{b.name}</a> {b.bio}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div class="panel-brand">
+        <h2>Where this comes from</h2>
+        <p>
+          This article grows out of <em>Collaborative Software Design</em>, the book{' '}
+          {firstNames} wrote together. If it left you wanting the long version, that is
+          where it is.
+        </p>
+        <p><a class="btn btn--inverse" href={BOOK_URL} rel="noopener">Buy the book</a></p>
+      </div>
+
+      {more.length > 0 && (
+        <section class="article-related" data-test="article-related" aria-labelledby="read-next">
+          <h2 id="read-next">Read next</h2>
+          <ol class="related-list">
+            {more.map((e) => <LetterRow entry={e} level={3} />)}
+          </ol>
+        </section>
+      )}
+
+      <PrevNext prev={prev} next={next} label="More articles" />
+    </div>
+  </article>
+  </div>
+
+  <ContactSection />
+</BaseLayout>
+
+<script>
+  // The contents open themselves where there is room to keep them in view, and
+  // fold again if the window narrows. A media query, not a width read once,
+  // so rotating a tablet does the right thing.
+  const wide = window.matchMedia('(min-width: 1100px)');
+  const sync = () => {
+    for (const d of document.querySelectorAll<HTMLDetailsElement>('.js-article-toc')) d.open = wide.matches;
+  };
+  sync();
+  wide.addEventListener('change', sync);
+</script>
+
+<style>
+  .article { padding-block: var(--space-12); }
+
+  .standfirst {
+    margin: var(--space-4) 0 var(--space-6);
+    max-width: var(--content-width);
+    font-size: var(--text-lg);
+    line-height: 1.6;
+  }
+
+  .byline { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4); }
+  .byline-faces { display: flex; }
+  /* Overlapped, the way a byline of two is usually drawn, with a paper ring so
+     the second face does not merge into the first. */
+  .byline-face {
+    width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--color-paper);
+  }
+  .byline-face + .byline-face { margin-left: calc(-1 * var(--space-3)); }
+  .byline-text { display: flex; flex-direction: column; gap: var(--space-1); }
+  .byline-names { font-family: var(--font-heading); font-weight: 700; font-size: var(--text-lg); line-height: 1.25; }
+  .byline-meta { color: var(--color-ink-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+
+  .article-figure { max-width: var(--content-width); }
+
+  /* --- contents ----------------------------------------------------------- */
+  .article-toc { margin-bottom: var(--space-8); max-width: var(--content-width); }
+  .article-toc details { border-block: 1px solid var(--color-border); padding-block: var(--space-3); }
+  .article-toc summary {
+    cursor: pointer;
+    font-family: var(--font-heading); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em; font-size: var(--text-sm);
+  }
+  .article-toc ol { margin: var(--space-3) 0 0; padding-left: var(--space-5); }
+  .article-toc li { margin-block: var(--space-2); font-size: var(--text-sm); line-height: 1.4; }
+  .article-toc a { color: var(--color-ink); }
+
+  @media (min-width: 1100px) {
+    /* The body keeps the letters' measure; the contents take the column that
+       stands empty beside it on a letter. Source order puts the contents
+       first, so a screen reader and a phone meet them before the body; the
+       grid moves them to the right. */
+    .article-grid {
+      display: grid;
+      grid-template-columns: minmax(0, var(--content-width)) 15rem;
+      column-gap: var(--space-16, 4rem);
+      align-items: start;
+    }
+    .article-toc {
+      grid-column: 2; grid-row: 1;
+      position: sticky;
+      top: calc(var(--header-slim-h, 6rem) + var(--space-6));
+      margin: 0;
+    }
+    .article-toc details { border-bottom: 0; }
+    .article-toc summary { pointer-events: none; list-style: none; }
+    .article-toc summary::-webkit-details-marker { display: none; }
+    .article-body { grid-column: 1; grid-row: 1; }
+  }
+
+  /* --- the foot ----------------------------------------------------------- */
+  .article-foot > * + * { margin-top: var(--space-12); }
+  .article-authors { margin-top: var(--space-12); border-top: 4px solid var(--color-ink); padding-top: var(--space-6); }
+  .article-authors h2, .article-related h2 { margin-top: 0; font-size: var(--text-xl); }
+  .article-authors ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); }
+  .article-authors li { display: grid; grid-template-columns: 80px 1fr; gap: var(--space-4); align-items: start; }
+  .article-authors p { margin: 0; font-size: var(--text-sm); }
+  .article-authors a { font-weight: 700; color: var(--color-ink); }
+  .author-face { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+
+  .related-list { list-style: none; margin: 0; padding: 0; border-top: 4px solid var(--color-ink); }
+</style>

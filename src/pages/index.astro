@@ -47,9 +47,7 @@ import iconDecisions from '../assets/home/icon-decisions.png';
 import iconHeuristics from '../assets/home/icon-heuristics.png';
 import iconSocial from '../assets/home/icon-social-dynamics.png';
 import talkPoster from '../assets/home/talk-goto-2024.jpg';
-import evelyn from '../assets/home/evelyn.jpg';
-import kenny from '../assets/home/kenny.jpg';
-import gien from '../assets/home/gien.jpg';
+import { PORTRAITS } from '../lib/portraits';
 
 const description =
   'An inside track on how to facilitate domain modelling decisions. Pragmatic '
@@ -86,12 +84,6 @@ const LEARN = [
   { icon: iconHeuristics, title: 'Heuristics for software design', second: 'through collaborative modeling' },
   { icon: iconSocial, title: 'How to deal with social dynamics', second: 'when making design decisions' },
 ];
-
-const PORTRAITS: Record<string, ImageMetadata> = {
-  'evelyn-van-kelle': evelyn,
-  'kenny-baas-schwegler': kenny,
-  'gien-verschatse': gien,
-};
 
 /** The GOTO 2024 talk the live page embeds. Held as an id rather than a URL so
  *  the poster, the link and the player cannot drift apart. */
